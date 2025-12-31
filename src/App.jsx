@@ -262,6 +262,9 @@ const App = () => {
   const [salesInvoices, setSalesInvoices] = useState([
     { id: 'INV-20250101-1234', date: `${currentMonthPrefix}-01`, buyer: 'Budi Santoso', priceType: 'retail', items: [{ productId: 1, name: 'Banner Flexi 280gr (200x100 cm)', price: 50000, qty: 1, discount: 0, subtotal: 50000 }], total: 50000, paid: 50000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
     { id: 'INV-20250102-5678', date: `${currentMonthPrefix}-02`, buyer: 'CV Maju Jaya', priceType: 'broker', items: [{ productId: 2, name: 'Sticker Vinyl', price: 45000, qty: 10, discount: 10000, subtotal: 440000 }], total: 440000, paid: 200000, remaining: 240000, paymentMethod: 'Transfer', status: 'belum_lunas' },
+    { id: 'INV-20250103-9999', date: `${currentMonthPrefix}-03`, buyer: 'PT Berjaya Abadi', priceType: 'retail', items: [{ productId: 3, name: 'Sticker Ritrama', price: 65000, qty: 3, discount: 0, subtotal: 195000 }], total: 195000, paid: 195000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250104-1111', date: `${currentMonthPrefix}-04`, buyer: 'CV Berlian Jaya', priceType: 'broker', items: [{ productId: 4, name: 'Kartu Nama 1 Sisi', price: 30000, qty: 200, discount: 0, subtotal: 6000000 }], total: 6000000, paid: 6000000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250105-2222', date: `${currentMonthPrefix}-05`, buyer: 'PT Global Abadi', priceType: 'retail', items: [{ productId: 5, name: 'X-Banner Stand Only', price: 45000, qty: 15, discount: 0, subtotal: 675000 }], total: 675000, paid: 675000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
   ]);
 
   const [purchaseInvoices, setPurchaseInvoices] = useState([
@@ -361,13 +364,33 @@ const App = () => {
              </div>
           </div>
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-             <h3 className="text-lg font-black text-slate-800 mb-4 uppercase italic">Top 10 Produk Terlaris</h3>
+             <h3 className="text-lg font-black text-slate-800 mb-4 uppercase italic">Produk Terlaris</h3>
              <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={topProductsChart} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}>
-                      {topProductsChart.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                    </Pie>
+                    {/*
+                      Ambil 4 produk terbanyak, sisanya jadi 1 slice "Lainnya"
+                    */}
+                    {(() => {
+                      const maxTop = 4;
+                      let top4 = sortedProducts.slice(0, maxTop);
+                      let others = sortedProducts.slice(maxTop);
+                      let chartData = top4;
+                      if (others.length > 0) {
+                        chartData = [
+                          ...top4,
+                          {
+                            name: "Lainnya",
+                            value: others.reduce((sum, prod) => sum + prod.value, 0)
+                          }
+                        ];
+                      }
+                      return (
+                        <Pie data={chartData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                          {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                        </Pie>
+                      );
+                    })()}
                     <Tooltip contentStyle={{borderRadius:'12px', border:'none', boxShadow:'0 10px 15px -3px rgba(0,0,0,0.1)'}} />
                   </PieChart>
                 </ResponsiveContainer>
