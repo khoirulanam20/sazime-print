@@ -512,115 +512,6 @@ const App = () => {
     );
   };
 
-  const InvoiceBelanja = () => {
-    // Default form state, 'targetType' determines where the stock goes
-    const [form, setForm] = useState({ vendor: '', vendorType: 'mitra', targetType: 'material', itemId: '', price: 0, qty: 1, paymentMethod: 'Cash', payAmount: 0 });
-    const total = form.price * form.qty;
-    const remaining = total - form.payAmount;
-
-    // Helper to get unit of selected item
-    const getSelectedUnit = () => {
-        if (!form.itemId) return '';
-        if (form.targetType === 'material') {
-            const m = materials.find(x => x.id == form.itemId);
-            return m ? `(${m.unit})` : '';
-        } else {
-            const p = products.find(x => x.id == form.itemId);
-            return p ? `(${p.unit})` : '';
-        }
-    };
-
-    const handleDelete = (id) => {
-        if(window.confirm('Hapus riwayat belanja ini?')) {
-            setPurchaseInvoices(prev => prev.filter(i => i.id !== id));
-        }
-    }
-
-    const handleSave = () => {
-       // Logic to find Item Name based on ID and Type
-       let itemName = '';
-       if (form.targetType === 'material') {
-           const mat = materials.find(m => m.id == form.itemId);
-           itemName = mat ? mat.name : 'Unknown Material';
-           // Update Stock Material
-           setMaterials(prev => prev.map(m => m.id == form.itemId ? {...m, qty: parseInt(m.qty) + parseInt(form.qty)} : m));
-       } else {
-           const prod = products.find(p => p.id == form.itemId);
-           itemName = prod ? prod.name : 'Unknown Product';
-           // Update Stock Product
-           setProducts(prev => prev.map(p => p.id == form.itemId ? {...p, qty: parseInt(p.qty) + parseInt(form.qty)} : p));
-       }
-
-       const newItem = { 
-           id: generateInvoiceCode('BUY'), 
-           date: new Date().toISOString().slice(0, 10), 
-           ...form, 
-           item: itemName, // Display name for table
-           total, 
-           paid: parseInt(form.payAmount), 
-           remaining: remaining < 0 ? 0 : remaining, 
-           status: remaining <= 0 ? 'lunas' : 'belum_lunas' 
-       };
-
-       if (form.paymentMethod === 'Cash') setWallet(prev => ({...prev, cash: prev.cash - parseInt(form.payAmount)})); 
-       else setWallet(prev => ({...prev, bank: prev.bank - parseInt(form.payAmount)}));
-       
-       setPurchaseInvoices([newItem, ...purchaseInvoices]);
-       setShowModal(null);
-    };
-
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-           <div><h3 className="text-lg font-black text-slate-800 uppercase italic">Belanja Bahan</h3><p className="text-xs text-slate-500 font-medium">Rekap pembelian stok dari vendor.</p></div>
-           <button onClick={() => { setForm({ vendor: '', vendorType: 'mitra', targetType: 'material', itemId: '', price: 0, qty: 1, paymentMethod: 'Cash', payAmount: 0 }); setShowModal('add-purchase'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Catat Belanja</button>
-        </div>
-        <FilterBar startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} dateFilterMode={dateFilterMode} setDateFilterMode={setDateFilterMode} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-           <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">Vendor</th><th className="p-4">Item</th><th className="p-4">Total</th><th className="p-4">Status</th><th className="p-4 text-center">Aksi</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredPurchases.map(p => (<tr key={p.id} className="hover:bg-slate-50"><td className="p-4 font-bold">{p.vendor} <span className="text-[10px] font-normal text-slate-400 block">{p.vendorType}</span></td><td className="p-4">{p.item} <span className="text-[10px] font-mono text-slate-400 block">{p.id}</span></td><td className="p-4 font-black text-red-600">{formatCurrency(p.total)}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${p.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.status.replace('_', ' ')}</span></td><td className="p-4 text-center"><div className="flex justify-center gap-2"><button onClick={() => { setEditItem(p); setShowModal('invoice-detail-purchase'); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600"><Eye className="w-4 h-4" /></button><button onClick={() => handleDelete(p.id)} className="p-2 bg-red-50 hover:bg-red-100 rounded-lg text-red-600"><Trash2 className="w-4 h-4" /></button></div></td></tr>))}</tbody></table>
-        </div>
-        {/* Modal */}
-        {showModal === 'add-purchase' && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
-             <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-6">
-                <div className="flex justify-between items-center mb-6"><h3 className="text-lg font-black text-slate-800 uppercase italic">Input Belanja</h3><button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button></div>
-                <div className="grid grid-cols-2 gap-4">
-                   <div className="col-span-2"><label className="label-text">Nama Vendor</label><input type="text" value={form.vendor} onChange={e => setForm({...form, vendor: e.target.value})} className="input-field" /></div>
-                   <div className="col-span-2"><label className="label-text">Tipe Vendor</label><select className="input-field" value={form.vendorType} onChange={e => setForm({...form, vendorType: e.target.value})}><option value="mitra">Mitra Langganan</option><option value="non-mitra">Umum / Non-Mitra</option></select></div>
-                   
-                   {/* PILIHAN TARGET STOK */}
-                   <div className="col-span-2">
-                       <label className="label-text">Simpan ke Stok</label>
-                       <div className="flex bg-slate-100 p-1 rounded-xl mb-2">
-                           <button onClick={() => setForm({...form, targetType: 'material', itemId: ''})} className={`flex-1 py-2 text-xs font-bold rounded-lg transition ${form.targetType === 'material' ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500'}`}>Bahan Baku</button>
-                           <button onClick={() => setForm({...form, targetType: 'product', itemId: ''})} className={`flex-1 py-2 text-xs font-bold rounded-lg transition ${form.targetType === 'product' ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500'}`}>Produk Jual</button>
-                       </div>
-                   </div>
-
-                   {/* DYNAMIC FIELD BASED ON TARGET */}
-                   <div className="col-span-2">
-                       <label className="label-text">Pilih Item {form.targetType === 'material' ? 'Bahan' : 'Produk'}</label>
-                       <select className="input-field" value={form.itemId} onChange={e => setForm({...form, itemId: e.target.value})}>
-                           <option value="">-- Pilih --</option>
-                           {form.targetType === 'material' 
-                             ? materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.qty} {m.unit})</option>)
-                             : products.map(p => <option key={p.id} value={p.id}>{p.name} {p.width > 0 ? `(${p.width}x${p.length}cm)` : ''} ({p.qty} {p.unit})</option>)
-                           }
-                       </select>
-                   </div>
-
-                   <div><label className="label-text">Harga Satuan</label><input type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="input-field" /></div>
-                   <div><label className="label-text">Qty Masuk {getSelectedUnit()}</label><input type="number" value={form.qty} onChange={e => setForm({...form, qty: e.target.value})} className="input-field" /></div>
-                   <div className="col-span-2 bg-slate-50 p-3 rounded-xl border border-slate-200"><div className="flex justify-between items-center mb-2"><span className="text-xs font-bold text-slate-500 uppercase">Total Belanja</span><span className="text-lg font-black text-slate-900">{formatCurrency(total)}</span></div><div className="grid grid-cols-2 gap-2"><div><label className="label-text">Bayar Via</label><select className="input-field" value={form.paymentMethod} onChange={e => setForm({...form, paymentMethod: e.target.value})}><option value="Cash">Cash</option><option value="Transfer">Transfer</option></select></div><div><label className="label-text">Nominal Bayar</label><input type="number" className="input-field" value={form.payAmount} onChange={e => setForm({...form, payAmount: e.target.value})} /></div></div></div>
-                   <div className="col-span-2"><button onClick={handleSave} className="btn-primary w-full">Simpan Data & Update Stok</button></div>
-                </div>
-             </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const InvoicePenjualan = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -795,6 +686,216 @@ const App = () => {
     };
 
     return isCreatingInvoice ? <InvoiceForm /> : <InvoiceList />;
+  };
+
+  const InputBahan = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [form, setForm] = useState({ name: '', unit: '', qty: 0 });
+    const filteredMaterials = materials.filter(m => m.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    const handleSave = () => {
+       if (editItem) {
+         setMaterials(materials.map(m => m.id === editItem.id ? { ...form, id: editItem.id } : m));
+       } else {
+         setMaterials([...materials, { ...form, id: Date.now() }]);
+       }
+       setForm({ name: '', unit: '', qty: 0 });
+       setEditItem(null);
+       setShowModal(null);
+    };
+
+    const handleDelete = (id) => {
+        if(window.confirm('Hapus bahan ini?')) {
+            setMaterials(materials.filter(m => m.id !== id));
+        }
+    }
+
+    const handleEdit = (item) => {
+        setEditItem(item);
+        setForm(item);
+        setShowModal('add-material');
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+           <div>
+              <h3 className="text-lg font-black text-slate-800 uppercase italic">Master Bahan Baku</h3>
+              <p className="text-xs text-slate-500 font-medium">Stok tinta, bahan roll, kertas, dll.</p>
+           </div>
+           <div className="flex w-full md:w-auto gap-2">
+             <div className="w-full md:w-64">
+               <SearchInput placeholder="Cari Bahan..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+             </div>
+             <button onClick={() => { setEditItem(null); setForm({ name: '', unit: '', qty: 0 }); setShowModal('add-material'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Bahan Baru</button>
+           </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+           <table className="w-full text-left text-sm">
+             <thead className="bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest">
+               <tr>
+                 <th className="p-4">Nama Bahan</th>
+                 <th className="p-4">Satuan</th>
+                 <th className="p-4">Stok Saat Ini</th>
+                 <th className="p-4 text-center">Aksi</th>
+               </tr>
+             </thead>
+             <tbody className="divide-y divide-slate-100">
+               {filteredMaterials.map(m => (
+                 <tr key={m.id} className="hover:bg-slate-50">
+                   <td className="p-4 font-bold">{m.name}</td>
+                   <td className="p-4 text-xs">{m.unit}</td>
+                   <td className="p-4">{m.qty}</td>
+                   <td className="p-4 text-center">
+                     <div className="flex justify-center gap-2">
+                        <button onClick={() => handleEdit(m)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit3 className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(m.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                     </div>
+                   </td>
+                 </tr>
+               ))}
+             </tbody>
+           </table>
+        </div>
+
+        {/* Modal */}
+        {showModal === 'add-material' && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+             <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-black text-slate-800 uppercase italic">{editItem ? 'Edit Bahan' : 'Tambah Bahan'}</h3>
+                  <button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button>
+                </div>
+                <div className="space-y-4">
+                   <div>
+                     <label className="label-text">Nama Bahan</label>
+                     <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="input-field" placeholder="Contoh: Tinta Cyan" />
+                   </div>
+                   <div>
+                     <label className="label-text">Satuan</label>
+                     <input type="text" value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="input-field" placeholder="Liter/Roll/Pcs" />
+                   </div>
+                   <div>
+                     <label className="label-text">Stok Awal</label>
+                     <input type="number" value={form.qty} onChange={e => setForm({...form, qty: e.target.value})} className="input-field" />
+                   </div>
+                   <button onClick={handleSave} className="btn-primary w-full mt-4">{editItem ? 'Simpan Perubahan' : 'Simpan'}</button>
+                </div>
+             </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const InvoiceBelanja = () => {
+    // Default form state, 'targetType' determines where the stock goes
+    const [form, setForm] = useState({ vendor: '', vendorType: 'mitra', targetType: 'material', itemId: '', price: 0, qty: 1, paymentMethod: 'Cash', payAmount: 0 });
+    const total = form.price * form.qty;
+    const remaining = total - form.payAmount;
+
+    // Helper to get unit of selected item
+    const getSelectedUnit = () => {
+        if (!form.itemId) return '';
+        if (form.targetType === 'material') {
+            const m = materials.find(x => x.id == form.itemId);
+            return m ? `(${m.unit})` : '';
+        } else {
+            const p = products.find(x => x.id == form.itemId);
+            return p ? `(${p.unit})` : '';
+        }
+    };
+
+    const handleDelete = (id) => {
+        if(window.confirm('Hapus riwayat belanja ini?')) {
+            setPurchaseInvoices(prev => prev.filter(i => i.id !== id));
+        }
+    }
+
+    const handleSave = () => {
+       // Logic to find Item Name based on ID and Type
+       let itemName = '';
+       if (form.targetType === 'material') {
+           const mat = materials.find(m => m.id == form.itemId);
+           itemName = mat ? mat.name : 'Unknown Material';
+           // Update Stock Material
+           setMaterials(prev => prev.map(m => m.id == form.itemId ? {...m, qty: parseInt(m.qty) + parseInt(form.qty)} : m));
+       } else {
+           const prod = products.find(p => p.id == form.itemId);
+           itemName = prod ? prod.name : 'Unknown Product';
+           // Update Stock Product
+           setProducts(prev => prev.map(p => p.id == form.itemId ? {...p, qty: parseInt(p.qty) + parseInt(form.qty)} : p));
+       }
+
+       const newItem = { 
+           id: generateInvoiceCode('BUY'), 
+           date: new Date().toISOString().slice(0, 10), 
+           ...form, 
+           item: itemName, // Display name for table
+           total, 
+           paid: parseInt(form.payAmount), 
+           remaining: remaining < 0 ? 0 : remaining, 
+           status: remaining <= 0 ? 'lunas' : 'belum_lunas' 
+       };
+
+       if (form.paymentMethod === 'Cash') setWallet(prev => ({...prev, cash: prev.cash - parseInt(form.payAmount)})); 
+       else setWallet(prev => ({...prev, bank: prev.bank - parseInt(form.payAmount)}));
+       
+       setPurchaseInvoices([newItem, ...purchaseInvoices]);
+       setShowModal(null);
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+           <div><h3 className="text-lg font-black text-slate-800 uppercase italic">Belanja Bahan</h3><p className="text-xs text-slate-500 font-medium">Rekap pembelian stok dari vendor.</p></div>
+           <button onClick={() => { setForm({ vendor: '', vendorType: 'mitra', targetType: 'material', itemId: '', price: 0, qty: 1, paymentMethod: 'Cash', payAmount: 0 }); setShowModal('add-purchase'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Catat Belanja</button>
+        </div>
+        <FilterBar startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} dateFilterMode={dateFilterMode} setDateFilterMode={setDateFilterMode} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+           <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">Vendor</th><th className="p-4">Item</th><th className="p-4">Total</th><th className="p-4">Status</th><th className="p-4 text-center">Aksi</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredPurchases.map(p => (<tr key={p.id} className="hover:bg-slate-50"><td className="p-4 font-bold">{p.vendor} <span className="text-[10px] font-normal text-slate-400 block">{p.vendorType}</span></td><td className="p-4">{p.item} <span className="text-[10px] font-mono text-slate-400 block">{p.id}</span></td><td className="p-4 font-black text-red-600">{formatCurrency(p.total)}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${p.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.status.replace('_', ' ')}</span></td><td className="p-4 text-center"><div className="flex justify-center gap-2"><button onClick={() => { setEditItem(p); setShowModal('invoice-detail-purchase'); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600"><Eye className="w-4 h-4" /></button><button onClick={() => handleDelete(p.id)} className="p-2 bg-red-50 hover:bg-red-100 rounded-lg text-red-600"><Trash2 className="w-4 h-4" /></button></div></td></tr>))}</tbody></table>
+        </div>
+        {/* Modal */}
+        {showModal === 'add-purchase' && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+             <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-6">
+                <div className="flex justify-between items-center mb-6"><h3 className="text-lg font-black text-slate-800 uppercase italic">Input Belanja</h3><button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button></div>
+                <div className="grid grid-cols-2 gap-4">
+                   <div className="col-span-2"><label className="label-text">Nama Vendor</label><input type="text" value={form.vendor} onChange={e => setForm({...form, vendor: e.target.value})} className="input-field" /></div>
+                   <div className="col-span-2"><label className="label-text">Tipe Vendor</label><select className="input-field" value={form.vendorType} onChange={e => setForm({...form, vendorType: e.target.value})}><option value="mitra">Mitra Langganan</option><option value="non-mitra">Umum / Non-Mitra</option></select></div>
+                   
+                   {/* PILIHAN TARGET STOK */}
+                   <div className="col-span-2">
+                       <label className="label-text">Simpan ke Stok</label>
+                       <div className="flex bg-slate-100 p-1 rounded-xl mb-2">
+                           <button onClick={() => setForm({...form, targetType: 'material', itemId: ''})} className={`flex-1 py-2 text-xs font-bold rounded-lg transition ${form.targetType === 'material' ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500'}`}>Bahan Baku</button>
+                           <button onClick={() => setForm({...form, targetType: 'product', itemId: ''})} className={`flex-1 py-2 text-xs font-bold rounded-lg transition ${form.targetType === 'product' ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500'}`}>Produk Jual</button>
+                       </div>
+                   </div>
+
+                   {/* DYNAMIC FIELD BASED ON TARGET */}
+                   <div className="col-span-2">
+                       <label className="label-text">Pilih Item {form.targetType === 'material' ? 'Bahan' : 'Produk'}</label>
+                       <select className="input-field" value={form.itemId} onChange={e => setForm({...form, itemId: e.target.value})}>
+                           <option value="">-- Pilih --</option>
+                           {form.targetType === 'material' 
+                             ? materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.qty} {m.unit})</option>)
+                             : products.map(p => <option key={p.id} value={p.id}>{p.name} {p.width > 0 ? `(${p.width}x${p.length}cm)` : ''} ({p.qty} {p.unit})</option>)
+                           }
+                       </select>
+                   </div>
+
+                   <div><label className="label-text">Harga Satuan</label><input type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="input-field" /></div>
+                   <div><label className="label-text">Qty Masuk {getSelectedUnit()}</label><input type="number" value={form.qty} onChange={e => setForm({...form, qty: e.target.value})} className="input-field" /></div>
+                   <div className="col-span-2 bg-slate-50 p-3 rounded-xl border border-slate-200"><div className="flex justify-between items-center mb-2"><span className="text-xs font-bold text-slate-500 uppercase">Total Belanja</span><span className="text-lg font-black text-slate-900">{formatCurrency(total)}</span></div><div className="grid grid-cols-2 gap-2"><div><label className="label-text">Bayar Via</label><select className="input-field" value={form.paymentMethod} onChange={e => setForm({...form, paymentMethod: e.target.value})}><option value="Cash">Cash</option><option value="Transfer">Transfer</option></select></div><div><label className="label-text">Nominal Bayar</label><input type="number" className="input-field" value={form.payAmount} onChange={e => setForm({...form, payAmount: e.target.value})} /></div></div></div>
+                   <div className="col-span-2"><button onClick={handleSave} className="btn-primary w-full">Simpan Data & Update Stok</button></div>
+                </div>
+             </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const PengeluaranLain = () => {
