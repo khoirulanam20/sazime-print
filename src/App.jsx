@@ -241,33 +241,33 @@ const App = () => {
   
   // --- STATE DATA ---
   const [products, setProducts] = useState([
-    { id: 1, name: 'MMT BANNER 280 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 2240, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 2, name: 'MMT BANNER 480 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 420, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 3, name: 'STICKER ORAJET - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 4, name: 'STICKER MASTER - 1,26', unit: 'METER', width: 126, length: 0, area: 0, qty: 63, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 5, name: 'STICKER CINA - 1,56', unit: 'METER', width: 156, length: 0, area: 0, qty: 78, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 8, name: 'LAMINASI DOFF 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 9, name: 'LAMINASI DOFF 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 10, name: 'JASA CUTTING STICKER - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: -200, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 20, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 12, name: 'ALBATROS 0,63', unit: 'METER', width: 63, length: 0, area: 0, qty: 63, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 13, name: 'ALAT X BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 10, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 14, name: 'RING KELING BANNER', unit: 'PACK', width: 0, length: 0, area: 0, qty: 5, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 15, name: 'DTF FILM', unit: 'M. LARI', width: 0, length: 0, area: 0, qty: 100, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 16, name: 'TINTA INDOOR', unit: 'PCS', width: 0, length: 0, area: 0, qty: 4, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 17, name: 'POWDER DTF 1 KG', unit: 'PCS', width: 0, length: 0, area: 0, qty: 5, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 18, name: 'JAHIT KELILING', unit: 'M. KEL', width: 0, length: 0, area: 0, qty: -20, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 19, name: 'JASA DESAIN', unit: 'LEVEL', width: 0, length: 0, area: 0, qty: -20, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 1, name: 'MMT BANNER 280 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 2240, price: 25000, costPrice: 18000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 2, name: 'MMT BANNER 480 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 420, price: 35000, costPrice: 25000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 3, name: 'STICKER ORAJET - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 45000, costPrice: 32000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 4, name: 'STICKER MASTER - 1,26', unit: 'METER', width: 126, length: 0, area: 0, qty: 63, price: 55000, costPrice: 40000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 5, name: 'STICKER CINA - 1,56', unit: 'METER', width: 156, length: 0, area: 0, qty: 78, price: 40000, costPrice: 28000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 15000, costPrice: 10000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 18000, costPrice: 12000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 8, name: 'LAMINASI DOFF 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 16000, costPrice: 11000, vendorId: 1, vendorName: 'Toko Warna Abadi', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 9, name: 'LAMINASI DOFF 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 19000, costPrice: 13000, vendorId: 1, vendorName: 'Toko Warna Abadi', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 10, name: 'JASA CUTTING STICKER - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: -200, price: 8000, costPrice: 0, vendorId: 0, vendorName: 'Internal', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 20, price: 150000, costPrice: 120000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 12, name: 'ALBATROS 0,63', unit: 'METER', width: 63, length: 0, area: 0, qty: 63, price: 25000, costPrice: 18000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 13, name: 'ALAT X BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 10, price: 200000, costPrice: 160000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 14, name: 'RING KELING BANNER', unit: 'PACK', width: 0, length: 0, area: 0, qty: 5, price: 25000, costPrice: 15000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 15, name: 'DTF FILM', unit: 'M. LARI', width: 0, length: 0, area: 0, qty: 100, price: 50000, costPrice: 35000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 16, name: 'TINTA INDOOR', unit: 'PCS', width: 0, length: 0, area: 0, qty: 4, price: 500000, costPrice: 350000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 17, name: 'POWDER DTF 1 KG', unit: 'PCS', width: 0, length: 0, area: 0, qty: 5, price: 250000, costPrice: 180000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 18, name: 'JAHIT KELILING', unit: 'M. KEL', width: 0, length: 0, area: 0, qty: -20, price: 5000, costPrice: 0, vendorId: 0, vendorName: 'Internal', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 19, name: 'JASA DESAIN', unit: 'LEVEL', width: 0, length: 0, area: 0, qty: -20, price: 50000, costPrice: 0, vendorId: 0, vendorName: 'Internal', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
   ]);
 
   const [materials, setMaterials] = useState([
-    { id: 1, name: 'Tinta Ecosolvent Cyan', unit: 'LITER', qty: 10 },
-    { id: 2, name: 'Tinta Ecosolvent Magenta', unit: 'LITER', qty: 8 },
-    { id: 3, name: 'Tinta Ecosolvent Yellow', unit: 'LITER', qty: 9 },
-    { id: 4, name: 'Tinta Ecosolvent Black', unit: 'LITER', qty: 7 },
-    { id: 5, name: 'Mata Ayam (Eyelet)', unit: 'PACK', qty: 50 },
+    { id: 1, name: 'Tinta Ecosolvent Cyan', unit: 'LITER', qty: 10, costPrice: 250000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)' },
+    { id: 2, name: 'Tinta Ecosolvent Magenta', unit: 'LITER', qty: 8, costPrice: 250000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)' },
+    { id: 3, name: 'Tinta Ecosolvent Yellow', unit: 'LITER', qty: 9, costPrice: 250000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)' },
+    { id: 4, name: 'Tinta Ecosolvent Black', unit: 'LITER', qty: 7, costPrice: 250000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)' },
+    { id: 5, name: 'Mata Ayam (Eyelet)', unit: 'PACK', qty: 50, costPrice: 15000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing' },
   ]);
 
   const [vendors, setVendors] = useState([
@@ -275,27 +275,60 @@ const App = () => {
     { id: 2, name: 'PT. Grafika Indonesia', contact: '08198765432', email: 'info@grafikaindonesia.com', address: 'Jl. Sudirman No. 45, Bandung', category: 'Bahan Baku', status: 'Aktif' },
     { id: 3, name: 'CV. Digital Print Supplies', contact: '08134567890', email: 'sales@digitalprint.co.id', address: 'Jl. Malioboro No. 20, Yogyakarta', category: 'Bahan Baku', status: 'Aktif' },
     { id: 4, name: 'Toko Alat Tulis & Printing', contact: '08122334455', email: 'alatprinting@gmail.com', address: 'Jl. Veteran No. 15, Surabaya', category: 'Peralatan', status: 'Aktif' },
+    {
+      id: 5,
+      name: 'MPS (Modern Printing Supplies)',
+      contact: '08155666777',
+      email: 'sales@mps.co.id',
+      address: 'Jl. Industri No. 88, Jakarta',
+      category: 'Bahan Baku',
+      status: 'Aktif',
+      suppliedProducts: [
+        { productId: 1, name: 'MMT BANNER 280 GR', costPrice: 18000 },
+        { productId: 2, name: 'MMT BANNER 480 GR', costPrice: 25000 },
+        { productId: 3, name: 'STICKER ORAJET - 1,06', costPrice: 32000 },
+        { productId: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', costPrice: 10000 },
+        { productId: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', costPrice: 12000 },
+        { productId: 16, name: 'TINTA INDOOR', costPrice: 350000 },
+      ]
+    },
+  ]);
+
+  // Supplier-Product mapping dengan harga modal
+  const [supplierProducts, setSupplierProducts] = useState([
+    {
+      supplierId: 5, // MPS
+      supplierName: 'MPS (Modern Printing Supplies)',
+      products: [
+        { productId: 1, productName: 'MMT BANNER 280 GR', costPrice: 18000 },
+        { productId: 2, productName: 'MMT BANNER 480 GR', costPrice: 25000 },
+        { productId: 3, productName: 'STICKER ORAJET - 1,06', costPrice: 32000 },
+        { productId: 6, productName: 'LAMINASI GLOSS 100 GR - 1,06', costPrice: 10000 },
+        { productId: 7, productName: 'LAMINASI GLOSS 120 GR - 1,06', costPrice: 12000 },
+        { productId: 16, productName: 'TINTA INDOOR', costPrice: 350000 },
+      ]
+    }
   ]);
 
   const _now = new Date();
   const currentMonthPrefix = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '0')}`;
 
   const [salesInvoices, setSalesInvoices] = useState([
-    { id: 'INV-20250101-1234', date: `${currentMonthPrefix}-01`, buyer: 'Budi Santoso', vendor: '', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 200, length: 100, area: 2, unit: 'METER', price: 20000, qty: 1, discount: 0, subtotal: 40000 }], total: 40000, paid: 40000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250102-5678', date: `${currentMonthPrefix}-02`, buyer: 'Siti Aminah', vendor: '', items: [{ productId: 2, name: 'MMT BANNER 480 GR', width: 300, length: 150, area: 4.5, unit: 'METER', price: 35000, qty: 3, discount: 0, subtotal: 157500 }], total: 157500, paid: 157500, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250103-9012', date: `${currentMonthPrefix}-03`, buyer: 'Ahmad Rahman', vendor: '', items: [{ productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 200, area: 2.12, unit: 'METER', price: 45000, qty: 2, discount: 0, subtotal: 90000 }], total: 90000, paid: 90000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250104-3456', date: `${currentMonthPrefix}-04`, buyer: 'Maya Sari', vendor: '', items: [{ productId: 4, name: 'STICKER MASTER - 1,26', width: 126, length: 180, area: 2.268, unit: 'METER', price: 55000, qty: 4, discount: 0, subtotal: 220000 }], total: 220000, paid: 220000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250105-7890', date: `${currentMonthPrefix}-05`, buyer: 'Rudi Hartono', vendor: '', items: [{ productId: 5, name: 'STICKER CINA - 1,56', width: 156, length: 220, area: 3.432, unit: 'METER', price: 40000, qty: 5, discount: 0, subtotal: 200000 }], total: 200000, paid: 200000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250106-1111', date: `${currentMonthPrefix}-06`, buyer: 'Dewi Lestari', vendor: '', items: [{ productId: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', width: 106, length: 150, area: 1.59, unit: 'METER', price: 15000, qty: 3, discount: 0, subtotal: 45000 }], total: 45000, paid: 45000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250107-2222', date: `${currentMonthPrefix}-07`, buyer: 'Joko Widodo', vendor: '', items: [{ productId: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', width: 106, length: 180, area: 1.908, unit: 'METER', price: 18000, qty: 2, discount: 0, subtotal: 36000 }], total: 36000, paid: 36000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250108-3333', date: `${currentMonthPrefix}-08`, buyer: 'Nina Kartika', vendor: '', items: [{ productId: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 150000, qty: 8, discount: 0, subtotal: 1200000 }], total: 1200000, paid: 1200000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250109-4444', date: `${currentMonthPrefix}-09`, buyer: 'Bayu Prasetyo', vendor: '', items: [{ productId: 12, name: 'ALBATROS 0,63', width: 63, length: 120, area: 0.756, unit: 'METER', price: 25000, qty: 6, discount: 0, subtotal: 150000 }], total: 150000, paid: 150000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250110-5555', date: `${currentMonthPrefix}-10`, buyer: 'Rina Amelia', vendor: '', items: [{ productId: 13, name: 'ALAT X BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 200000, qty: 7, discount: 0, subtotal: 1400000 }], total: 1400000, paid: 1400000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250111-6666', date: `${currentMonthPrefix}-11`, buyer: 'Fajar Nugroho', vendor: '', items: [{ productId: 8, name: 'LAMINASI DOFF 100 GR - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 16000, qty: 4, discount: 0, subtotal: 64000 }], total: 64000, paid: 64000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250112-7777', date: `${currentMonthPrefix}-12`, buyer: 'Linda Sari', vendor: '', items: [{ productId: 9, name: 'LAMINASI DOFF 120 GR - 1,06', width: 106, length: 140, area: 1.484, unit: 'METER', price: 19000, qty: 3, discount: 0, subtotal: 57000 }], total: 57000, paid: 57000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250113-8888', date: `${currentMonthPrefix}-13`, buyer: 'Doni Setiawan', vendor: '', items: [{ productId: 10, name: 'JASA CUTTING STICKER - 1,06', width: 106, length: 80, area: 0.848, unit: 'METER', price: 8000, qty: 2, discount: 0, subtotal: 16000 }], total: 16000, paid: 16000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250114-9999', date: `${currentMonthPrefix}-14`, buyer: 'Sari Indah', vendor: '', items: [{ productId: 14, name: 'RING KELING BANNER', width: 0, length: 0, area: 0, unit: 'PACK', price: 25000, qty: 3, discount: 0, subtotal: 75000 }], total: 75000, paid: 75000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250115-0001', date: `${currentMonthPrefix}-15`, buyer: 'Eko Prabowo', vendor: '', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 250, length: 120, area: 3, unit: 'METER', price: 20000, qty: 2, discount: 0, subtotal: 60000 }, { productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 45000, qty: 1, discount: 0, subtotal: 45000 }], total: 105000, paid: 105000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250101-1234', date: `${currentMonthPrefix}-01`, buyer: 'Budi Santoso', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 200, length: 100, area: 2, unit: 'METER', price: 20000, qty: 1, discount: 0, subtotal: 40000 }], total: 40000, paid: 40000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250102-5678', date: `${currentMonthPrefix}-02`, buyer: 'Siti Aminah', items: [{ productId: 2, name: 'MMT BANNER 480 GR', width: 300, length: 150, area: 4.5, unit: 'METER', price: 35000, qty: 3, discount: 0, subtotal: 157500 }], total: 157500, paid: 157500, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250103-9012', date: `${currentMonthPrefix}-03`, buyer: 'Ahmad Rahman', items: [{ productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 200, area: 2.12, unit: 'METER', price: 45000, qty: 2, discount: 0, subtotal: 90000 }], total: 90000, paid: 90000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250104-3456', date: `${currentMonthPrefix}-04`, buyer: 'Maya Sari', items: [{ productId: 4, name: 'STICKER MASTER - 1,26', width: 126, length: 180, area: 2.268, unit: 'METER', price: 55000, qty: 4, discount: 0, subtotal: 220000 }], total: 220000, paid: 220000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250105-7890', date: `${currentMonthPrefix}-05`, buyer: 'Rudi Hartono', items: [{ productId: 5, name: 'STICKER CINA - 1,56', width: 156, length: 220, area: 3.432, unit: 'METER', price: 40000, qty: 5, discount: 0, subtotal: 200000 }], total: 200000, paid: 200000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250106-1111', date: `${currentMonthPrefix}-06`, buyer: 'Dewi Lestari', items: [{ productId: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', width: 106, length: 150, area: 1.59, unit: 'METER', price: 15000, qty: 3, discount: 0, subtotal: 45000 }], total: 45000, paid: 45000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250107-2222', date: `${currentMonthPrefix}-07`, buyer: 'Joko Widodo', items: [{ productId: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', width: 106, length: 180, area: 1.908, unit: 'METER', price: 18000, qty: 2, discount: 0, subtotal: 36000 }], total: 36000, paid: 36000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250108-3333', date: `${currentMonthPrefix}-08`, buyer: 'Nina Kartika', items: [{ productId: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 150000, qty: 8, discount: 0, subtotal: 1200000 }], total: 1200000, paid: 1200000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250109-4444', date: `${currentMonthPrefix}-09`, buyer: 'Bayu Prasetyo', items: [{ productId: 12, name: 'ALBATROS 0,63', width: 63, length: 120, area: 0.756, unit: 'METER', price: 25000, qty: 6, discount: 0, subtotal: 150000 }], total: 150000, paid: 150000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250110-5555', date: `${currentMonthPrefix}-10`, buyer: 'Rina Amelia', items: [{ productId: 13, name: 'ALAT X BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 200000, qty: 7, discount: 0, subtotal: 1400000 }], total: 1400000, paid: 1400000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250111-6666', date: `${currentMonthPrefix}-11`, buyer: 'Fajar Nugroho', items: [{ productId: 8, name: 'LAMINASI DOFF 100 GR - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 16000, qty: 4, discount: 0, subtotal: 64000 }], total: 64000, paid: 64000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250112-7777', date: `${currentMonthPrefix}-12`, buyer: 'Linda Sari', items: [{ productId: 9, name: 'LAMINASI DOFF 120 GR - 1,06', width: 106, length: 140, area: 1.484, unit: 'METER', price: 19000, qty: 3, discount: 0, subtotal: 57000 }], total: 57000, paid: 57000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250113-8888', date: `${currentMonthPrefix}-13`, buyer: 'Doni Setiawan', items: [{ productId: 10, name: 'JASA CUTTING STICKER - 1,06', width: 106, length: 80, area: 0.848, unit: 'METER', price: 8000, qty: 2, discount: 0, subtotal: 16000 }], total: 16000, paid: 16000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250114-9999', date: `${currentMonthPrefix}-14`, buyer: 'Sari Indah', items: [{ productId: 14, name: 'RING KELING BANNER', width: 0, length: 0, area: 0, unit: 'PACK', price: 25000, qty: 3, discount: 0, subtotal: 75000 }], total: 75000, paid: 75000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250115-0001', date: `${currentMonthPrefix}-15`, buyer: 'Eko Prabowo', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 250, length: 120, area: 3, unit: 'METER', price: 20000, qty: 2, discount: 0, subtotal: 60000 }, { productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 45000, qty: 1, discount: 0, subtotal: 45000 }], total: 105000, paid: 105000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
   ]);
 
   const [purchaseInvoices, setPurchaseInvoices] = useState([
@@ -455,11 +488,27 @@ const App = () => {
       length: 0,
       qty: 0,
       price: 0,
+      costPrice: 0,
+      vendorId: '',
+      vendorName: '',
       widthLock: 'unlock', // lock, unlock, rejected
       lengthLock: 'unlock', // lock, unlock, rejected
       priceLock: 'unlock' // lock, unlock, rejected
     });
-    
+
+    // Update vendor name when vendorId changes
+    useEffect(() => {
+        if (form.vendorId) {
+            const vendor = vendors.find(v => v.id == form.vendorId);
+            if (vendor) {
+                setForm(prev => ({
+                    ...prev,
+                    vendorName: vendor.name
+                }));
+            }
+        }
+    }, [form.vendorId, vendors]);
+
     const handleSubmit = (e) => {
       e.preventDefault();
       // Calculate area if dimensions provided
@@ -522,7 +571,7 @@ const App = () => {
              <div className="w-full md:w-64">
                <SearchInput placeholder="Cari Produk..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
              </div>
-             <button onClick={() => { setEditItem(null); setForm({ name: '', unit: 'METER', width: 0, length: 0, qty: 0, price: 0, widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' }); setShowModal('add-product'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Produk Baru</button>
+             <button onClick={() => { setEditItem(null); setForm({ name: '', unit: 'METER', width: 0, length: 0, qty: 0, price: 0, costPrice: 0, vendorId: '', vendorName: '', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' }); setShowModal('add-product'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Produk Baru</button>
            </div>
         </div>
 
@@ -531,12 +580,14 @@ const App = () => {
             <thead className="bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest">
               <tr>
                 <th className="p-4">Nama Produk</th>
+                <th className="p-4 text-center">Vendor</th>
                 <th className="p-4 text-center">L (Lebar)</th>
                 <th className="p-4 text-center">P (Panjang)</th>
                 <th className="p-4 text-center">Stok (Qty)</th>
                 <th className="p-4 text-center">Satuan</th>
                 <th className="p-4 text-center">Luas (m²)</th>
                 <th className="p-4 text-right">Harga Jual</th>
+                <th className="p-4 text-right">Harga Beli</th>
                 <th className="p-4 text-center">Status Lock</th>
                 <th className="p-4 text-center">Aksi</th>
               </tr>
@@ -547,6 +598,7 @@ const App = () => {
                   <td className="p-4 font-bold">
                       {p.name}
                   </td>
+                  <td className="p-4 text-center text-sm text-slate-600">{p.vendorName || '-'}</td>
                   <td className="p-4 text-center font-mono">{p.width || '-'}</td>
                   <td className="p-4 text-center font-mono">{p.length || '-'}</td>
                   <td className="p-4 text-center font-bold text-slate-700">{p.qty}</td>
@@ -557,6 +609,7 @@ const App = () => {
                       : '-'}
                   </td>
                   <td className="p-4 text-right font-bold text-emerald-600">{formatCurrency(p.price)}</td>
+                  <td className="p-4 text-right font-bold text-blue-600">{p.costPrice ? formatCurrency(p.costPrice) : '-'}</td>
                   <td className="p-4 text-center text-xs">
                     <div className="flex flex-col gap-1">
                       <div className="flex gap-1 justify-center">
@@ -603,6 +656,16 @@ const App = () => {
                    <label className="label-text">Nama Item</label>
                    <input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="input-field" placeholder="Contoh: Banner Flexi" />
                  </div>
+                 <div className="col-span-2">
+                   <label className="label-text">Vendor/Pemasok</label>
+                   <select value={form.vendorId} onChange={e => setForm({...form, vendorId: e.target.value})} className="input-field">
+                     <option value="">-- Pilih Vendor --</option>
+                     {vendors.filter(v => v.status === 'Aktif').map(v => (
+                       <option key={v.id} value={v.id}>{v.name}</option>
+                     ))}
+                     <option value="0">Internal</option>
+                   </select>
+                 </div>
                  <div>
                    <label className="label-text">Stok (QTY)</label>
                    <input type="number" required value={form.qty} onChange={e => setForm({...form, qty: e.target.value})} className="input-field" />
@@ -625,9 +688,13 @@ const App = () => {
                     <label className="label-text">P (Panjang cm) - Nullable</label>
                    <input type="number" step="0.01" value={form.length} onChange={e => setForm({...form, length: e.target.value})} className="input-field" placeholder="0" />
                  </div>
-                 <div className="col-span-2">
+                 <div>
                    <label className="label-text">Harga Jual</label>
                    <input type="number" required value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="input-field" placeholder="0" />
+                 </div>
+                 <div>
+                   <label className="label-text">Harga Beli</label>
+                   <input type="number" value={form.costPrice} onChange={e => setForm({...form, costPrice: e.target.value})} className="input-field" placeholder="0" />
                  </div>
                  <div className="col-span-2 space-y-3">
                    <h5 className="text-xs font-black text-slate-600 uppercase tracking-widest">Status Lock</h5>
@@ -687,7 +754,8 @@ const App = () => {
       noTagihan: 'SUP-002',
       nomorInternal: generateInvoiceCode('BUY'),
       date: new Date().toISOString().slice(0, 10),
-      vendor: '',
+      vendorId: '', // ID vendor dari dropdown
+      vendor: '', // Nama vendor (diisi otomatis saat vendorId dipilih)
       salesName: '',
       address: '',
       paymentMethod: 'Cash',
@@ -710,6 +778,10 @@ const App = () => {
     const [cart, setCart] = useState([]);
     const [paidAmount, setPaidAmount] = useState(0);
 
+    // Supplier-specific products
+    const selectedVendor = vendors.find(v => v.id == header.vendorId);
+    const availableProducts = selectedVendor?.suppliedProducts || [];
+
     // Derived Logic for Item Entry
     const selectedProduct = itemEntry.targetType === 'product' 
         ? products.find(p => p.id == itemEntry.itemId) 
@@ -717,10 +789,9 @@ const App = () => {
 
     useEffect(() => {
         if (selectedProduct) {
-            // Default rules: 
-            // If Lot = Lock, purchase unit = DB unit.
-            // If Lot = Roll, purchase unit = ROLL (only if DB = METER)
-            const unit = (itemEntry.lot === 'Roll' && selectedProduct.unit === 'METER') ? 'ROLL' : selectedProduct.unit;
+            // Default rules:
+            // Purchase unit always from database regardless of Lot selection
+            const unit = selectedProduct.unit;
             
             setItemEntry(prev => ({
                 ...prev, 
@@ -735,10 +806,12 @@ const App = () => {
     // Load data for editing
     useEffect(() => {
         if (editItem && isCreatingPurchase) {
+            const vendorData = vendors.find(v => v.name === editItem.vendor);
             setHeader({
                 noTagihan: editItem.noTagihan,
                 nomorInternal: editItem.id,
                 date: editItem.date,
+                vendorId: vendorData?.id || '',
                 vendor: editItem.vendor,
                 salesName: editItem.salesName || '',
                 address: editItem.address || '',
@@ -749,16 +822,39 @@ const App = () => {
         } else if (!editItem && isCreatingPurchase) {
             setHeader(prev => ({...prev, nomorInternal: generateInvoiceCode('BUY')}));
         }
-    }, [editItem, isCreatingPurchase]);
+    }, [editItem, isCreatingPurchase, vendors]);
+
+    // Update vendor name when vendorId changes
+    useEffect(() => {
+        if (header.vendorId) {
+            const vendor = vendors.find(v => v.id == header.vendorId);
+            if (vendor) {
+                setHeader(prev => ({
+                    ...prev,
+                    vendor: vendor.name,
+                    address: vendor.address,
+                    salesName: vendor.contact // Using contact as sales name for simplicity
+                }));
+            }
+        }
+    }, [header.vendorId, vendors]);
 
     const addToCart = () => {
-        if (!selectedProduct || !header.vendor) return alert("Pilih Item dan Vendor");
+        if (!selectedProduct || !header.vendorId) return alert("Pilih Item dan Vendor");
 
         const width = parseFloat(itemEntry.width) || 0;
         const length = parseFloat(itemEntry.length) || 0;
         const qty = parseInt(itemEntry.qty) || 1;
         const discount = parseFloat(itemEntry.discount) || 0;
-        const price = parseFloat(itemEntry.price) || 0;
+
+        // Get price from supplier's product list or use manual input
+        let price = parseFloat(itemEntry.price) || 0;
+        if (itemEntry.targetType === 'product' && header.vendorId) {
+            const supplierProduct = availableProducts.find(p => p.productId == itemEntry.itemId);
+            if (supplierProduct) {
+                price = supplierProduct.costPrice;
+            }
+        }
         
         let area = 0;
         let subtotal = 0;
@@ -892,8 +988,8 @@ const App = () => {
                       <div><label className="label-text">No. Tagihan (Supplier)</label><input type="text" value={header.noTagihan} onChange={e => setHeader({...header, noTagihan: e.target.value})} className="input-field" placeholder="INV-SUP-..." /></div>
                       <div><label className="label-text">No. Internal (Auto)</label><input type="text" value={header.nomorInternal} disabled className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" /></div>
                       <div><label className="label-text">Hari - Tanggal</label><input type="date" value={header.date} onChange={e => setHeader({...header, date: e.target.value})} className="input-field" /></div>
-                      <div><label className="label-text">Nama Supplier</label><input type="text" value={header.vendor} onChange={e => setHeader({...header, vendor: e.target.value})} className="input-field" placeholder="PT..." /></div>
-                      <div><label className="label-text">Nama Sales</label><input type="text" value={header.salesName} onChange={e => setHeader({...header, salesName: e.target.value})} className="input-field" /></div>
+                      <div><label className="label-text">Nama Supplier</label><select value={header.vendorId} onChange={e => setHeader({...header, vendorId: e.target.value})} className="input-field"><option value="">-- Pilih Supplier --</option>{vendors.filter(v => v.status === 'Aktif').map(v => (<option key={v.id} value={v.id}>{v.name}</option>))}</select></div>
+                      <div><label className="label-text">Kontak</label><input type="text" value={header.salesName} onChange={e => setHeader({...header, salesName: e.target.value})} className="input-field" /></div>
                       <div><label className="label-text">Alamat</label><input type="text" value={header.address} onChange={e => setHeader({...header, address: e.target.value})} className="input-field" /></div>
                    </div>
                 </div>
@@ -913,9 +1009,18 @@ const App = () => {
                            <label className="label-text">Nama Item</label>
                            <select className="input-field" value={itemEntry.itemId} onChange={e => setItemEntry({...itemEntry, itemId: e.target.value})}>
                                <option value="">-- Pilih --</option>
-                               {itemEntry.targetType === 'material' 
+                               {itemEntry.targetType === 'material'
                                  ? materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.qty} {m.unit})</option>)
-                                 : products.map(p => <option key={p.id} value={p.id}>{p.name} {p.width > 0 ? `(${p.width}x${p.length}cm)` : ''} ({p.qty} {p.unit})</option>)
+                                 : header.vendorId && availableProducts.length > 0
+                                   ? availableProducts.map(p => {
+                                       const product = products.find(prod => prod.id === p.productId);
+                                       return product ? (
+                                         <option key={p.productId} value={p.productId}>
+                                           {p.name} - Modal: Rp {formatCurrency(p.costPrice)}
+                                         </option>
+                                       ) : null;
+                                     })
+                                   : <option disabled>-- Pilih Supplier terlebih dahulu --</option>
                                }
                            </select>
                        </div>
@@ -929,7 +1034,7 @@ const App = () => {
                        </div>
 
                        <div className="col-span-2">
-                           <label className="label-text">Satuan Beli</label>
+                           <label className="label-text">Satuan</label>
                            <input type="text" value={itemEntry.purchaseUnit} disabled className="input-field bg-slate-100 text-slate-500" />
                        </div>
 
@@ -1061,7 +1166,6 @@ const App = () => {
         noTagihan: generateInvoiceCode(),
         date: new Date().toISOString().slice(0, 10),
         buyer: '',
-        vendor: '',
         paymentMethod: 'Cash',
       });
 
@@ -1086,7 +1190,6 @@ const App = () => {
                 noTagihan: editItem.id,
                 date: editItem.date,
                 buyer: editItem.buyer,
-                vendor: editItem.vendor || '',
                 paymentMethod: editItem.paymentMethod
             });
             setCart(editItem.items);
@@ -1163,7 +1266,6 @@ const App = () => {
           id: header.noTagihan,
           date: header.date,
           buyer: header.buyer,
-          vendor: header.vendor,
           items: cart,
           total: totalTagihan,
           paid: parseFloat(paidAmount),
@@ -1203,7 +1305,7 @@ const App = () => {
                {/* 1. Header Nota */}
                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                   <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><FileText className="w-4 h-4 mr-2"/> Informasi Nota</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label className="label-text">Nomor Tagihan</label>
                         <input type="text" value={header.noTagihan} disabled className="input-field bg-slate-100 text-slate-500 font-mono cursor-not-allowed" />
@@ -1215,15 +1317,6 @@ const App = () => {
                     <div>
                         <label className="label-text">Nama Pelanggan</label>
                         <input type="text" value={header.buyer} onChange={e => setHeader({...header, buyer: e.target.value})} className="input-field" placeholder="Nama Customer" />
-                    </div>
-                    <div>
-                        <label className="label-text">Vendor/Pemasok</label>
-                        <select value={header.vendor} onChange={e => setHeader({...header, vendor: e.target.value})} className="input-field">
-                            <option value="">-- Pilih Vendor (Opsional) --</option>
-                            {vendors.filter(v => v.status === 'Aktif').map(v => (
-                                <option key={v.id} value={v.name}>{v.name}</option>
-                            ))}
-                        </select>
                     </div>
                     <div>
                         <label className="label-text">Sistem Bayar</label>
@@ -1591,8 +1684,21 @@ const App = () => {
 
   const MasterBahan = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [form, setForm] = useState({ name: '', unit: '', qty: 0 });
+    const [form, setForm] = useState({ name: '', unit: '', qty: 0, costPrice: 0, vendorId: '', vendorName: '' });
     const filteredMaterials = materials.filter(m => m.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    // Update vendor name when vendorId changes
+    useEffect(() => {
+        if (form.vendorId) {
+            const vendor = vendors.find(v => v.id == form.vendorId);
+            if (vendor) {
+                setForm(prev => ({
+                    ...prev,
+                    vendorName: vendor.name
+                }));
+            }
+        }
+    }, [form.vendorId, vendors]);
 
     const handleSave = () => {
        if (editItem) {
@@ -1600,7 +1706,7 @@ const App = () => {
        } else {
          setMaterials([...materials, { ...form, id: Date.now() }]);
        }
-       setForm({ name: '', unit: '', qty: 0 });
+       setForm({ name: '', unit: '', qty: 0, costPrice: 0, vendorId: '', vendorName: '' });
        setEditItem(null);
        setShowModal(null);
     };
@@ -1628,7 +1734,7 @@ const App = () => {
              <div className="w-full md:w-64">
                <SearchInput placeholder="Cari Bahan..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
              </div>
-             <button onClick={() => { setEditItem(null); setForm({ name: '', unit: '', qty: 0 }); setShowModal('add-material'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Bahan Baru</button>
+             <button onClick={() => { setEditItem(null); setForm({ name: '', unit: '', qty: 0, costPrice: 0, vendorId: '', vendorName: '' }); setShowModal('add-material'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Bahan Baru</button>
            </div>
         </div>
 
@@ -1637,7 +1743,9 @@ const App = () => {
              <thead className="bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest">
                <tr>
                  <th className="p-4">Nama Bahan</th>
+                 <th className="p-4">Vendor</th>
                  <th className="p-4">Satuan</th>
+                 <th className="p-4 text-right">Harga Beli</th>
                  <th className="p-4">Stok Saat Ini</th>
                  <th className="p-4 text-center">Aksi</th>
                </tr>
@@ -1646,7 +1754,9 @@ const App = () => {
                {filteredMaterials.map(m => (
                  <tr key={m.id} className="hover:bg-slate-50">
                    <td className="p-4 font-bold">{m.name}</td>
+                   <td className="p-4 text-sm text-slate-600">{m.vendorName || '-'}</td>
                    <td className="p-4 text-xs">{m.unit}</td>
+                   <td className="p-4 text-right font-bold text-blue-600">{m.costPrice ? formatCurrency(m.costPrice) : '-'}</td>
                    <td className="p-4">{m.qty}</td>
                    <td className="p-4 text-center">
                      <div className="flex justify-center gap-2">
@@ -1680,6 +1790,20 @@ const App = () => {
                    <div>
                      <label className="label-text">Stok Awal</label>
                      <input type="number" value={form.qty} onChange={e => setForm({...form, qty: e.target.value})} className="input-field" />
+                   </div>
+                   <div>
+                     <label className="label-text">Harga Beli</label>
+                     <input type="number" value={form.costPrice} onChange={e => setForm({...form, costPrice: e.target.value})} className="input-field" placeholder="0" />
+                   </div>
+                   <div>
+                     <label className="label-text">Vendor/Pemasok</label>
+                     <select value={form.vendorId} onChange={e => setForm({...form, vendorId: e.target.value})} className="input-field">
+                       <option value="">-- Pilih Vendor --</option>
+                       {vendors.filter(v => v.status === 'Aktif').map(v => (
+                         <option key={v.id} value={v.id}>{v.name}</option>
+                       ))}
+                       <option value="0">Internal</option>
+                     </select>
                    </div>
                    <button onClick={handleSave} className="btn-primary w-full mt-4">{editItem ? 'Simpan Perubahan' : 'Simpan'}</button>
                 </div>
@@ -1836,7 +1960,6 @@ const App = () => {
               <th className="p-4">TGL</th>
               <th className="p-4">NOTA</th>
               <th className="p-4">CUSTOMER</th>
-              <th className="p-4">VENDOR</th>
               <th className="p-4">METODE BAYAR</th>
               <th className="p-4">#</th>
               <th className="p-4 text-right">TAGIHAN</th>
@@ -1851,7 +1974,6 @@ const App = () => {
                 <td className="p-4 font-mono text-xs font-bold">{sale.date}</td>
                 <td className="p-4 font-mono text-xs font-bold text-blue-600">{sale.id}</td>
                 <td className="p-4 font-bold">{sale.buyer}</td>
-                <td className="p-4 text-sm text-slate-600">{sale.vendor || '-'}</td>
                 <td className="p-4">
                   <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${
                     sale.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' :
@@ -1886,7 +2008,7 @@ const App = () => {
               <th className="p-4">TGL</th>
               <th className="p-4">NOTA</th>
               <th className="p-4">NAMA SUPPLIER</th>
-              <th className="p-4">NAMA SALES</th>
+              <th className="p-4">KONTAK</th>
               <th className="p-4">METODE BAYAR</th>
               <th className="p-4">#</th>
               <th className="p-4 text-right">TAGIHAN</th>
