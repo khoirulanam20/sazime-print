@@ -81,6 +81,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => (
       <div className="mb-2 px-3 text-[10px] font-black uppercase text-slate-500 tracking-widest mt-6">Database & Stok</div>
       {[
         { id: 'database-produk', icon: Database, label: 'Database Produk' },
+        { id: 'database-vendor', icon: Truck, label: 'Database Vendor' },
         { id: 'master-bahan', icon: Layers, label: 'Master Bahan Baku' },
       ].map((item) => (
         <button
@@ -269,25 +270,32 @@ const App = () => {
     { id: 5, name: 'Mata Ayam (Eyelet)', unit: 'PACK', qty: 50 },
   ]);
 
+  const [vendors, setVendors] = useState([
+    { id: 1, name: 'Toko Warna Abadi', contact: '08123456789', email: 'warnaabadi@gmail.com', address: 'Jl. Maju Mundur No. 1, Jakarta', category: 'Bahan Baku', status: 'Aktif' },
+    { id: 2, name: 'PT. Grafika Indonesia', contact: '08198765432', email: 'info@grafikaindonesia.com', address: 'Jl. Sudirman No. 45, Bandung', category: 'Bahan Baku', status: 'Aktif' },
+    { id: 3, name: 'CV. Digital Print Supplies', contact: '08134567890', email: 'sales@digitalprint.co.id', address: 'Jl. Malioboro No. 20, Yogyakarta', category: 'Bahan Baku', status: 'Aktif' },
+    { id: 4, name: 'Toko Alat Tulis & Printing', contact: '08122334455', email: 'alatprinting@gmail.com', address: 'Jl. Veteran No. 15, Surabaya', category: 'Peralatan', status: 'Aktif' },
+  ]);
+
   const _now = new Date();
   const currentMonthPrefix = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '0')}`;
 
   const [salesInvoices, setSalesInvoices] = useState([
-    { id: 'INV-20250101-1234', date: `${currentMonthPrefix}-01`, buyer: 'Budi Santoso', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 200, length: 100, area: 2, unit: 'METER', price: 20000, qty: 1, discount: 0, subtotal: 40000 }], total: 40000, paid: 40000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250102-5678', date: `${currentMonthPrefix}-02`, buyer: 'Siti Aminah', items: [{ productId: 2, name: 'MMT BANNER 480 GR', width: 300, length: 150, area: 4.5, unit: 'METER', price: 35000, qty: 3, discount: 0, subtotal: 157500 }], total: 157500, paid: 157500, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250103-9012', date: `${currentMonthPrefix}-03`, buyer: 'Ahmad Rahman', items: [{ productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 200, area: 2.12, unit: 'METER', price: 45000, qty: 2, discount: 0, subtotal: 90000 }], total: 90000, paid: 90000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250104-3456', date: `${currentMonthPrefix}-04`, buyer: 'Maya Sari', items: [{ productId: 4, name: 'STICKER MASTER - 1,26', width: 126, length: 180, area: 2.268, unit: 'METER', price: 55000, qty: 4, discount: 0, subtotal: 220000 }], total: 220000, paid: 220000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250105-7890', date: `${currentMonthPrefix}-05`, buyer: 'Rudi Hartono', items: [{ productId: 5, name: 'STICKER CINA - 1,56', width: 156, length: 220, area: 3.432, unit: 'METER', price: 40000, qty: 5, discount: 0, subtotal: 200000 }], total: 200000, paid: 200000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250106-1111', date: `${currentMonthPrefix}-06`, buyer: 'Dewi Lestari', items: [{ productId: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', width: 106, length: 150, area: 1.59, unit: 'METER', price: 15000, qty: 3, discount: 0, subtotal: 45000 }], total: 45000, paid: 45000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250107-2222', date: `${currentMonthPrefix}-07`, buyer: 'Joko Widodo', items: [{ productId: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', width: 106, length: 180, area: 1.908, unit: 'METER', price: 18000, qty: 2, discount: 0, subtotal: 36000 }], total: 36000, paid: 36000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250108-3333', date: `${currentMonthPrefix}-08`, buyer: 'Nina Kartika', items: [{ productId: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 150000, qty: 8, discount: 0, subtotal: 1200000 }], total: 1200000, paid: 1200000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250109-4444', date: `${currentMonthPrefix}-09`, buyer: 'Bayu Prasetyo', items: [{ productId: 12, name: 'ALBATROS 0,63', width: 63, length: 120, area: 0.756, unit: 'METER', price: 25000, qty: 6, discount: 0, subtotal: 150000 }], total: 150000, paid: 150000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250110-5555', date: `${currentMonthPrefix}-10`, buyer: 'Rina Amelia', items: [{ productId: 13, name: 'ALAT X BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 200000, qty: 7, discount: 0, subtotal: 1400000 }], total: 1400000, paid: 1400000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250111-6666', date: `${currentMonthPrefix}-11`, buyer: 'Fajar Nugroho', items: [{ productId: 8, name: 'LAMINASI DOFF 100 GR - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 16000, qty: 4, discount: 0, subtotal: 64000 }], total: 64000, paid: 64000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250112-7777', date: `${currentMonthPrefix}-12`, buyer: 'Linda Sari', items: [{ productId: 9, name: 'LAMINASI DOFF 120 GR - 1,06', width: 106, length: 140, area: 1.484, unit: 'METER', price: 19000, qty: 3, discount: 0, subtotal: 57000 }], total: 57000, paid: 57000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250113-8888', date: `${currentMonthPrefix}-13`, buyer: 'Doni Setiawan', items: [{ productId: 10, name: 'JASA CUTTING STICKER - 1,06', width: 106, length: 80, area: 0.848, unit: 'METER', price: 8000, qty: 2, discount: 0, subtotal: 16000 }], total: 16000, paid: 16000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250114-9999', date: `${currentMonthPrefix}-14`, buyer: 'Sari Indah', items: [{ productId: 14, name: 'RING KELING BANNER', width: 0, length: 0, area: 0, unit: 'PACK', price: 25000, qty: 3, discount: 0, subtotal: 75000 }], total: 75000, paid: 75000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250115-0001', date: `${currentMonthPrefix}-15`, buyer: 'Eko Prabowo', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 250, length: 120, area: 3, unit: 'METER', price: 20000, qty: 2, discount: 0, subtotal: 60000 }, { productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 45000, qty: 1, discount: 0, subtotal: 45000 }], total: 105000, paid: 105000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250101-1234', date: `${currentMonthPrefix}-01`, buyer: 'Budi Santoso', vendor: '', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 200, length: 100, area: 2, unit: 'METER', price: 20000, qty: 1, discount: 0, subtotal: 40000 }], total: 40000, paid: 40000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250102-5678', date: `${currentMonthPrefix}-02`, buyer: 'Siti Aminah', vendor: '', items: [{ productId: 2, name: 'MMT BANNER 480 GR', width: 300, length: 150, area: 4.5, unit: 'METER', price: 35000, qty: 3, discount: 0, subtotal: 157500 }], total: 157500, paid: 157500, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250103-9012', date: `${currentMonthPrefix}-03`, buyer: 'Ahmad Rahman', vendor: '', items: [{ productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 200, area: 2.12, unit: 'METER', price: 45000, qty: 2, discount: 0, subtotal: 90000 }], total: 90000, paid: 90000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250104-3456', date: `${currentMonthPrefix}-04`, buyer: 'Maya Sari', vendor: '', items: [{ productId: 4, name: 'STICKER MASTER - 1,26', width: 126, length: 180, area: 2.268, unit: 'METER', price: 55000, qty: 4, discount: 0, subtotal: 220000 }], total: 220000, paid: 220000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250105-7890', date: `${currentMonthPrefix}-05`, buyer: 'Rudi Hartono', vendor: '', items: [{ productId: 5, name: 'STICKER CINA - 1,56', width: 156, length: 220, area: 3.432, unit: 'METER', price: 40000, qty: 5, discount: 0, subtotal: 200000 }], total: 200000, paid: 200000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250106-1111', date: `${currentMonthPrefix}-06`, buyer: 'Dewi Lestari', vendor: '', items: [{ productId: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', width: 106, length: 150, area: 1.59, unit: 'METER', price: 15000, qty: 3, discount: 0, subtotal: 45000 }], total: 45000, paid: 45000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250107-2222', date: `${currentMonthPrefix}-07`, buyer: 'Joko Widodo', vendor: '', items: [{ productId: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', width: 106, length: 180, area: 1.908, unit: 'METER', price: 18000, qty: 2, discount: 0, subtotal: 36000 }], total: 36000, paid: 36000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250108-3333', date: `${currentMonthPrefix}-08`, buyer: 'Nina Kartika', vendor: '', items: [{ productId: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 150000, qty: 8, discount: 0, subtotal: 1200000 }], total: 1200000, paid: 1200000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250109-4444', date: `${currentMonthPrefix}-09`, buyer: 'Bayu Prasetyo', vendor: '', items: [{ productId: 12, name: 'ALBATROS 0,63', width: 63, length: 120, area: 0.756, unit: 'METER', price: 25000, qty: 6, discount: 0, subtotal: 150000 }], total: 150000, paid: 150000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250110-5555', date: `${currentMonthPrefix}-10`, buyer: 'Rina Amelia', vendor: '', items: [{ productId: 13, name: 'ALAT X BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 200000, qty: 7, discount: 0, subtotal: 1400000 }], total: 1400000, paid: 1400000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250111-6666', date: `${currentMonthPrefix}-11`, buyer: 'Fajar Nugroho', vendor: '', items: [{ productId: 8, name: 'LAMINASI DOFF 100 GR - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 16000, qty: 4, discount: 0, subtotal: 64000 }], total: 64000, paid: 64000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250112-7777', date: `${currentMonthPrefix}-12`, buyer: 'Linda Sari', vendor: '', items: [{ productId: 9, name: 'LAMINASI DOFF 120 GR - 1,06', width: 106, length: 140, area: 1.484, unit: 'METER', price: 19000, qty: 3, discount: 0, subtotal: 57000 }], total: 57000, paid: 57000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250113-8888', date: `${currentMonthPrefix}-13`, buyer: 'Doni Setiawan', vendor: '', items: [{ productId: 10, name: 'JASA CUTTING STICKER - 1,06', width: 106, length: 80, area: 0.848, unit: 'METER', price: 8000, qty: 2, discount: 0, subtotal: 16000 }], total: 16000, paid: 16000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250114-9999', date: `${currentMonthPrefix}-14`, buyer: 'Sari Indah', vendor: '', items: [{ productId: 14, name: 'RING KELING BANNER', width: 0, length: 0, area: 0, unit: 'PACK', price: 25000, qty: 3, discount: 0, subtotal: 75000 }], total: 75000, paid: 75000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250115-0001', date: `${currentMonthPrefix}-15`, buyer: 'Eko Prabowo', vendor: '', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 250, length: 120, area: 3, unit: 'METER', price: 20000, qty: 2, discount: 0, subtotal: 60000 }, { productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 45000, qty: 1, discount: 0, subtotal: 45000 }], total: 105000, paid: 105000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
   ]);
 
   const [purchaseInvoices, setPurchaseInvoices] = useState([
@@ -1053,6 +1061,7 @@ const App = () => {
         noTagihan: generateInvoiceCode(),
         date: new Date().toISOString().slice(0, 10),
         buyer: '',
+        vendor: '',
         paymentMethod: 'Cash',
       });
 
@@ -1077,6 +1086,7 @@ const App = () => {
                 noTagihan: editItem.id,
                 date: editItem.date,
                 buyer: editItem.buyer,
+                vendor: editItem.vendor || '',
                 paymentMethod: editItem.paymentMethod
             });
             setCart(editItem.items);
@@ -1153,6 +1163,7 @@ const App = () => {
           id: header.noTagihan,
           date: header.date,
           buyer: header.buyer,
+          vendor: header.vendor,
           items: cart,
           total: totalTagihan,
           paid: parseFloat(paidAmount),
@@ -1192,7 +1203,7 @@ const App = () => {
                {/* 1. Header Nota */}
                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                   <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><FileText className="w-4 h-4 mr-2"/> Informasi Nota</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label className="label-text">Nomor Tagihan</label>
                         <input type="text" value={header.noTagihan} disabled className="input-field bg-slate-100 text-slate-500 font-mono cursor-not-allowed" />
@@ -1204,6 +1215,15 @@ const App = () => {
                     <div>
                         <label className="label-text">Nama Pelanggan</label>
                         <input type="text" value={header.buyer} onChange={e => setHeader({...header, buyer: e.target.value})} className="input-field" placeholder="Nama Customer" />
+                    </div>
+                    <div>
+                        <label className="label-text">Vendor/Pemasok</label>
+                        <select value={header.vendor} onChange={e => setHeader({...header, vendor: e.target.value})} className="input-field">
+                            <option value="">-- Pilih Vendor (Opsional) --</option>
+                            {vendors.filter(v => v.status === 'Aktif').map(v => (
+                                <option key={v.id} value={v.name}>{v.name}</option>
+                            ))}
+                        </select>
                     </div>
                     <div>
                         <label className="label-text">Sistem Bayar</label>
@@ -1387,6 +1407,186 @@ const App = () => {
     };
 
     return isCreatingInvoice ? <InvoiceForm /> : <InvoiceList />;
+  };
+
+  const DatabaseVendor = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [form, setForm] = useState({
+      name: '',
+      contact: '',
+      email: '',
+      address: '',
+      category: 'Bahan Baku',
+      status: 'Aktif'
+    });
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (!form.name.trim()) return alert("Nama vendor harus diisi");
+
+      const payload = {
+        ...form,
+        name: form.name.trim(),
+        contact: form.contact.trim(),
+        email: form.email.trim(),
+        address: form.address.trim(),
+        category: form.category,
+        status: form.status
+      };
+
+      if (editItem) {
+        setVendors(vendors.map(v => v.id === editItem.id ? { ...payload, id: editItem.id } : v));
+      } else {
+        setVendors([...vendors, { ...payload, id: Date.now() }]);
+      }
+      setForm({
+        name: '',
+        contact: '',
+        email: '',
+        address: '',
+        category: 'Bahan Baku',
+        status: 'Aktif'
+      });
+      setEditItem(null);
+      setShowModal(null);
+    };
+
+    const handleDelete = (id) => {
+      if(window.confirm('Hapus vendor ini?')) {
+        setVendors(vendors.filter(v => v.id !== id));
+      }
+    };
+
+    const handleEdit = (item) => {
+      setEditItem(item);
+      setForm(item);
+      setShowModal('add-vendor');
+    };
+
+    const filteredVendors = vendors.filter(v => v.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div>
+            <h3 className="text-lg font-black text-slate-800 uppercase italic">Database Vendor</h3>
+            <p className="text-xs text-slate-500 font-medium">Daftar vendor/supplier yang bekerja sama.</p>
+          </div>
+          <div className="flex w-full md:w-auto gap-2">
+            <div className="w-full md:w-64">
+              <SearchInput placeholder="Cari Vendor..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+            </div>
+            <button onClick={() => { setEditItem(null); setForm({ name: '', contact: '', email: '', address: '', category: 'Bahan Baku', status: 'Aktif' }); setShowModal('add-vendor'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Tambah Vendor</button>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest">
+              <tr>
+                <th className="p-4">Nama Vendor</th>
+                <th className="p-4">Kontak</th>
+                <th className="p-4">Email</th>
+                <th className="p-4">Alamat</th>
+                <th className="p-4 text-center">Kategori</th>
+                <th className="p-4 text-center">Status</th>
+                <th className="p-4 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {filteredVendors.map(v => (
+                <tr key={v.id} className="hover:bg-slate-50">
+                  <td className="p-4 font-bold">{v.name}</td>
+                  <td className="p-4 font-mono text-sm">{v.contact}</td>
+                  <td className="p-4 text-slate-600">{v.email}</td>
+                  <td className="p-4 text-slate-600 max-w-xs truncate" title={v.address}>{v.address}</td>
+                  <td className="p-4 text-center">
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
+                      v.category === 'Bahan Baku' ? 'bg-blue-100 text-blue-700' :
+                      v.category === 'Peralatan' ? 'bg-green-100 text-green-700' :
+                      'bg-purple-100 text-purple-700'
+                    }`}>
+                      {v.category}
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
+                      v.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                    }`}>
+                      {v.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <button onClick={() => handleEdit(v)} className="p-1 text-blue-600 hover:bg-blue-50 rounded">
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleDelete(v.id)} className="p-1 text-red-600 hover:bg-red-50 rounded">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filteredVendors.length === 0 && (
+            <div className="p-8 text-center text-slate-500">
+              <Truck className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>Tidak ada data vendor</p>
+            </div>
+          )}
+        </div>
+
+        {showModal === 'add-vendor' && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-black text-slate-800 uppercase italic">{editItem ? 'Edit Vendor' : 'Tambah Vendor Baru'}</h3>
+                <button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button>
+              </div>
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="label-text">Nama Vendor</label>
+                  <input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="input-field" placeholder="PT. Contoh Vendor" />
+                </div>
+                <div>
+                  <label className="label-text">Nomor Kontak</label>
+                  <input type="text" required value={form.contact} onChange={e => setForm({...form, contact: e.target.value})} className="input-field" placeholder="08123456789" />
+                </div>
+                <div>
+                  <label className="label-text">Email</label>
+                  <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="input-field" placeholder="vendor@email.com" />
+                </div>
+                <div className="col-span-2">
+                  <label className="label-text">Alamat</label>
+                  <textarea value={form.address} onChange={e => setForm({...form, address: e.target.value})} className="input-field" rows="3" placeholder="Jl. Contoh No. 123, Kota" />
+                </div>
+                <div>
+                  <label className="label-text">Kategori</label>
+                  <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="input-field">
+                    <option value="Bahan Baku">Bahan Baku</option>
+                    <option value="Peralatan">Peralatan</option>
+                    <option value="Jasa">Jasa</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="label-text">Status</label>
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="input-field">
+                    <option value="Aktif">Aktif</option>
+                    <option value="Tidak Aktif">Tidak Aktif</option>
+                  </select>
+                </div>
+                <div className="col-span-2 mt-4">
+                  <button type="submit" className="btn-primary w-full">{editItem ? 'Simpan Perubahan' : 'Simpan Vendor'}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const MasterBahan = () => {
@@ -1636,6 +1836,7 @@ const App = () => {
               <th className="p-4">TGL</th>
               <th className="p-4">NOTA</th>
               <th className="p-4">CUSTOMER</th>
+              <th className="p-4">VENDOR</th>
               <th className="p-4">METODE BAYAR</th>
               <th className="p-4">#</th>
               <th className="p-4 text-right">TAGIHAN</th>
@@ -1650,6 +1851,7 @@ const App = () => {
                 <td className="p-4 font-mono text-xs font-bold">{sale.date}</td>
                 <td className="p-4 font-mono text-xs font-bold text-blue-600">{sale.id}</td>
                 <td className="p-4 font-bold">{sale.buyer}</td>
+                <td className="p-4 text-sm text-slate-600">{sale.vendor || '-'}</td>
                 <td className="p-4">
                   <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${
                     sale.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' :
@@ -1818,7 +2020,7 @@ const App = () => {
   };
 
   const Modal = () => {
-    if (!showModal || !editItem || ['add-product', 'add-material', 'add-purchase', 'add-expense'].includes(showModal)) return null;
+    if (!showModal || !editItem || ['add-product', 'add-material', 'add-purchase', 'add-expense', 'add-vendor'].includes(showModal)) return null;
     const [payAdd, setPayAdd] = useState(0);
     const handleAddPayment = () => {
        const newPaid = editItem.paid + parseInt(payAdd); const newRemaining = editItem.total - newPaid;
@@ -1986,6 +2188,7 @@ const App = () => {
          <main className="flex-1 p-4 md:p-8 pb-24 lg:pb-8 max-w-[1600px] mx-auto w-full">
             {activeMenu === 'dashboard' && <Dashboard />}
             {activeMenu === 'database-produk' && <DatabaseProduk />}
+            {activeMenu === 'database-vendor' && <DatabaseVendor />}
             {activeMenu === 'nota-pelanggan' && <NotaPelanggan />}
             {activeMenu === 'rekap-cashflow' && <RekapCashflow />}
             {activeMenu === 'master-bahan' && <MasterBahan />}
