@@ -40,6 +40,550 @@ const generateInvoiceCode = (prefix = 'INV') => {
   return `${prefix}-${ymd}-${random}`;
 };
 
+/**
+ * Komponen SearchableSelect
+ * Komponen reusable untuk memilih item dengan fitur pencarian
+ */
+const SearchableSelect = ({
+  items,
+  placeholder,
+  label,
+  onSelect,
+  selectedValue,
+  displayFormat,
+  searchKey = 'name',
+  showCategory = false,
+  categoryKey = 'kategori',
+  disabled = false
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const wrapperRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // Set selected item berdasarkan selectedValue
+  useEffect(() => {
+    if (selectedValue) {
+      const item = items.find(item => item.id == selectedValue);
+      if (item) {
+        setSelectedItem(item);
+        setQuery(displayFormat ? displayFormat(item) : item[searchKey]);
+      }
+    } else {
+      setSelectedItem(null);
+      setQuery('');
+    }
+  }, [selectedValue, items, displayFormat, searchKey]);
+
+  // Filter items berdasarkan query pencarian
+  const filteredItems = useMemo(() => {
+    return items.filter((item) =>
+      item[searchKey].toLowerCase().includes(query.toLowerCase())
+    );
+  }, [items, query, searchKey]);
+
+  // Handle klik di luar komponen untuk menutup dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsOpen(false);
+        // Jika tidak ada item terpilih, reset query agar bersih kembali
+        if (!selectedItem) setQuery('');
+        else setQuery(displayFormat ? displayFormat(selectedItem) : selectedItem[searchKey]);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [selectedItem, displayFormat, searchKey]);
+
+  // Handle pemilihan item
+  const handleSelect = (item) => {
+    setSelectedItem(item);
+    setQuery(displayFormat ? displayFormat(item) : item[searchKey]);
+    setIsOpen(false);
+    onSelect(item);
+    setHighlightedIndex(0);
+  };
+
+  // Handle hapus pilihan
+  const handleClear = (e) => {
+    e.stopPropagation();
+    setSelectedItem(null);
+    setQuery('');
+    onSelect(null);
+    inputRef.current?.focus();
+  };
+
+  // Handle navigasi keyboard
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setIsOpen(true);
+      setHighlightedIndex((prev) =>
+        prev < filteredItems.length - 1 ? prev + 1 : prev
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setIsOpen(true);
+      setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (isOpen && filteredItems.length > 0) {
+        handleSelect(filteredItems[highlightedIndex]);
+      }
+    } else if (e.key === 'Escape') {
+      setIsOpen(false);
+      if (selectedItem) setQuery(displayFormat ? displayFormat(selectedItem) : selectedItem[searchKey]);
+      else setQuery('');
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2 w-full" ref={wrapperRef}>
+      {label && <label className="label-text">{label}</label>}
+
+      <div className="relative group">
+        {/* Input Wrapper */}
+        <div
+          className={`
+            flex items-center bg-white border rounded-lg px-3 py-2.5 shadow-sm transition-all duration-200
+            ${disabled ? 'bg-slate-100 cursor-not-allowed' : ''}
+            ${isOpen ? 'border-red-500 ring-2 ring-red-100' : 'border-slate-300 hover:border-slate-400'}
+          `}
+          onClick={() => {
+            if (!disabled) {
+              setIsOpen(true);
+              inputRef.current?.focus();
+            }
+          }}
+        >
+          <Search className="w-5 h-5 text-slate-400 mr-2" />
+
+          <input
+            ref={inputRef}
+            type="text"
+            className={`flex-1 bg-transparent outline-none text-slate-800 placeholder-slate-400 text-sm md:text-base w-full ${disabled ? 'cursor-not-allowed' : ''}`}
+            placeholder={disabled ? '-- Pilih Supplier terlebih dahulu --' : placeholder}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setIsOpen(true);
+              setSelectedItem(null);
+            }}
+            onKeyDown={handleKeyDown}
+            onFocus={() => !disabled && setIsOpen(true)}
+            disabled={disabled}
+          />
+
+          <div className="flex items-center gap-1">
+            {selectedItem && !disabled && (
+              <button
+                onClick={handleClear}
+                className="p-1 hover:bg-slate-100 rounded-full text-slate-400 hover:text-red-500 transition-colors"
+                title="Hapus pilihan"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+            <ChevronDown
+              className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            />
+          </div>
+        </div>
+
+        {/* Dropdown List */}
+        {isOpen && !disabled && (
+          <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-60 overflow-y-auto overflow-x-hidden animate-in fade-in zoom-in-95 duration-100">
+            {filteredItems.length === 0 ? (
+              <div className="p-4 text-center text-slate-500 text-sm">
+                Produk "<span className="font-medium text-slate-700">{query}</span>" tidak ditemukan.
+              </div>
+            ) : (
+              <ul className="py-1">
+                {filteredItems.map((item, index) => (
+                  <li
+                    key={item.id}
+                    onClick={() => handleSelect(item)}
+                    className={`
+                      px-4 py-3 cursor-pointer text-sm md:text-base flex justify-between items-center transition-colors
+                      ${index === highlightedIndex ? 'bg-red-50 text-red-900' : 'text-slate-700 hover:bg-slate-50'}
+                      ${selectedItem?.id === item.id ? 'bg-red-100 font-medium' : ''}
+                    `}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                  >
+                    <div className="flex flex-col">
+                      <span>{displayFormat ? displayFormat(item) : item[searchKey]}</span>
+                      {showCategory && item[categoryKey] && (
+                        <span className="text-xs text-slate-500">{item[categoryKey]}</span>
+                      )}
+                    </div>
+                    {selectedItem?.id === item.id && (
+                      <Check className="w-4 h-4 text-red-600" />
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Helper Text */}
+      {!disabled && (
+        <p className="text-xs text-slate-500 mt-1">
+          Tips: Ketik nama produk atau gunakan panah atas/bawah keyboard.
+        </p>
+      )}
+    </div>
+  );
+};
+
+// Komponen untuk halaman form produk (create/edit)
+const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) => {
+  const [form, setForm] = useState({
+    name: '',
+    unit: 'METER',
+    width: 0,
+    length: 0,
+    qty: 0,
+    price: 0,
+    vendorPrices: [],
+    tipeItem: 'Jual dan Beli',
+    priceLock: 'unlock',
+    widthSellLock: 'unlock',
+    widthBuyLock: 'unlock',
+    lengthSellLock: 'unlock',
+    lengthBuyLock: 'unlock'
+  });
+
+  // Load data when editing
+  useEffect(() => {
+    if (mode === 'edit' && editingProduct) {
+      setForm(editingProduct);
+    } else if (mode === 'create') {
+      setForm({
+        name: '',
+        unit: 'METER',
+        width: 0,
+        length: 0,
+        qty: 0,
+        price: 0,
+        vendorPrices: [],
+        tipeItem: 'Jual dan Beli',
+        priceLock: 'unlock',
+        widthSellLock: 'unlock',
+        widthBuyLock: 'unlock',
+        lengthSellLock: 'unlock',
+        lengthBuyLock: 'unlock'
+      });
+    }
+  }, [mode, editingProduct]);
+
+  // Update vendor name when vendorId changes
+  useEffect(() => {
+    if (form.vendorId) {
+      const vendor = vendors.find(v => v.id == form.vendorId);
+      if (vendor) {
+        setForm(prev => ({
+          ...prev,
+          vendorName: vendor.name
+        }));
+      }
+    }
+  }, [form.vendorId, vendors]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Calculate area if dimensions provided
+    const area = (parseFloat(form.width || 0) * parseFloat(form.length || 0)) / 10000;
+
+    const payload = {
+      ...form,
+      area,
+      qty: parseInt(form.qty),
+      price: parseInt(form.price),
+      width: parseFloat(form.width || 0),
+      length: parseFloat(form.length || 0),
+      vendorPrices: form.vendorPrices,
+      tipeItem: form.tipeItem,
+      priceLock: form.priceLock,
+      widthSellLock: form.widthSellLock,
+      widthBuyLock: form.widthBuyLock,
+      lengthSellLock: form.lengthSellLock,
+      lengthBuyLock: form.lengthBuyLock
+    };
+
+    onSave(payload);
+  };
+
+  const handleVendorPriceAdd = () => {
+    const vendorSelect = document.getElementById('newVendorSelect');
+    const priceInput = document.getElementById('newVendorPrice');
+    const vendorId = vendorSelect.value;
+    const costPrice = parseInt(priceInput.value);
+
+    if (!vendorId || !costPrice) return alert('Pilih vendor dan masukkan harga');
+
+    // Check if buy locks are active
+    if (form.widthBuyLock === 'lock' || form.lengthBuyLock === 'lock') {
+      return alert('Dimensi beli terkunci. Tidak dapat menambah harga vendor baru.');
+    }
+
+    const vendor = vendors.find(v => v.id == vendorId) || { id: 0, name: 'Internal' };
+    setForm(prev => ({
+      ...prev,
+      vendorPrices: [...prev.vendorPrices, {
+        vendorId: parseInt(vendorId),
+        vendorName: vendor.name,
+        costPrice
+      }]
+    }));
+
+    // Reset inputs
+    vendorSelect.value = '';
+    priceInput.value = '';
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <button onClick={onCancel} className="mr-4 p-2 rounded-full hover:bg-slate-200 transition">
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h3 className="text-xl font-black text-slate-800 uppercase italic">
+            {mode === 'edit' ? 'Edit Produk' : 'Tambah Produk Baru'}
+          </h3>
+        </div>
+      </div>
+
+      {/* Form */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="col-span-2">
+            <label className="label-text">Nama Item</label>
+            <input
+              type="text"
+              required
+              value={form.name}
+              onChange={e => setForm({...form, name: e.target.value})}
+              className="input-field"
+              placeholder="Contoh: Banner Flexi"
+            />
+          </div>
+
+          <div>
+            <label className="label-text">Satuan</label>
+            <select value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="input-field">
+              <option value="METER">METER</option>
+              <option value="PCS">PCS</option>
+              <option value="PACK">PACK</option>
+              <option value="M. LARI">M. LARI</option>
+              <option value="M. KEL">M. KEL</option>
+              <option value="LEVEL">LEVEL</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="label-text">Tipe Item</label>
+            <select value={form.tipeItem} onChange={e => setForm({...form, tipeItem: e.target.value})} className="input-field">
+              <option value="Jual">Jual</option>
+              <option value="Beli">Beli</option>
+              <option value="Jual dan Beli">Jual dan Beli</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="label-text">L (Lebar cm) - Nullable {form.widthBuyLock === 'lock' ? '(Locked - Beli)' : ''}</label>
+            <input
+              type="number"
+              step="0.01"
+              value={form.width}
+              onChange={e => form.widthBuyLock !== 'lock' && setForm({...form, width: e.target.value})}
+              className={`input-field ${form.widthBuyLock === 'lock' ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+              placeholder="0"
+              disabled={form.widthBuyLock === 'lock'}
+            />
+          </div>
+
+          <div>
+            <label className="label-text">P (Panjang cm) - Nullable {form.lengthBuyLock === 'lock' ? '(Locked - Beli)' : ''}</label>
+            <input
+              type="number"
+              step="0.01"
+              value={form.length}
+              onChange={e => form.lengthBuyLock !== 'lock' && setForm({...form, length: e.target.value})}
+              className={`input-field ${form.lengthBuyLock === 'lock' ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+              placeholder="0"
+              disabled={form.lengthBuyLock === 'lock'}
+            />
+          </div>
+
+          <div>
+            <label className="label-text">Qty Stok</label>
+            <input
+              type="number"
+              value={form.qty}
+              onChange={e => setForm({...form, qty: e.target.value})}
+              className="input-field"
+              placeholder="0"
+            />
+          </div>
+
+          <div>
+            <label className="label-text">Harga Jual</label>
+            <input
+              type="number"
+              required
+              value={form.price}
+              onChange={e => setForm({...form, price: e.target.value})}
+              className="input-field"
+              placeholder="0"
+            />
+          </div>
+
+          <div className="col-span-2">
+            <label className="label-text mb-2 block">Harga Beli per Vendor</label>
+            <div className="space-y-2 max-h-32 overflow-y-auto border border-slate-200 rounded-lg p-2">
+              {form.vendorPrices.length === 0 ? (
+                <p className="text-sm text-slate-500 text-center py-2">Belum ada vendor ditambahkan</p>
+              ) : (
+                form.vendorPrices.map((vp, index) => (
+                  <div key={index} className="flex items-center justify-between bg-slate-50 p-2 rounded">
+                    <span className="text-sm font-medium">{vp.vendorName}</span>
+                    <span className="text-sm text-blue-600 font-bold">{formatCurrency(vp.costPrice)}</span>
+                    <button
+                      type="button"
+                      onClick={() => setForm(prev => ({
+                        ...prev,
+                        vendorPrices: prev.vendorPrices.filter((_, i) => i !== index)
+                      }))}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="flex gap-2 mt-2">
+              <select
+                id="newVendorSelect"
+                className="flex-1 input-field text-sm"
+                defaultValue=""
+              >
+                <option value="">-- Pilih Vendor --</option>
+                {vendors.filter(v => v.status === 'Aktif' && !form.vendorPrices.some(vp => vp.vendorId == v.id)).map(v => (
+                  <option key={v.id} value={v.id}>{v.name}</option>
+                ))}
+                {!form.vendorPrices.some(vp => vp.vendorId == 0) && <option value="0">Internal</option>}
+              </select>
+              <input
+                type="number"
+                id="newVendorPrice"
+                placeholder="Harga"
+                className="flex-1 input-field text-sm"
+                defaultValue=""
+              />
+              <button
+                type="button"
+                onClick={handleVendorPriceAdd}
+                className="btn-primary text-sm px-3 py-2"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <div className="col-span-2 space-y-3">
+            <h5 className="text-xs font-black text-slate-600 uppercase tracking-widest">Status Lock</h5>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                <label className="text-xs font-bold text-slate-600">L Jual:</label>
+                <select
+                  value={form.widthSellLock}
+                  onChange={e => setForm({...form, widthSellLock: e.target.value})}
+                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                >
+                  <option value="unlock">Unlock</option>
+                  <option value="lock">Lock</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                <label className="text-xs font-bold text-slate-600">L Beli:</label>
+                <select
+                  value={form.widthBuyLock}
+                  onChange={e => setForm({...form, widthBuyLock: e.target.value})}
+                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                >
+                  <option value="unlock">Unlock</option>
+                  <option value="lock">Lock</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                <label className="text-xs font-bold text-slate-600">P Jual:</label>
+                <select
+                  value={form.lengthSellLock}
+                  onChange={e => setForm({...form, lengthSellLock: e.target.value})}
+                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                >
+                  <option value="unlock">Unlock</option>
+                  <option value="lock">Lock</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                <label className="text-xs font-bold text-slate-600">P Beli:</label>
+                <select
+                  value={form.lengthBuyLock}
+                  onChange={e => setForm({...form, lengthBuyLock: e.target.value})}
+                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                >
+                  <option value="unlock">Unlock</option>
+                  <option value="lock">Lock</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Keterangan Status Lock */}
+            <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <div className="flex items-start gap-2">
+                <div className="w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center mt-0.5">
+                  <span className="text-white text-xs font-bold">!</span>
+                </div>
+                <div className="text-xs text-amber-800">
+                  <p className="font-semibold mb-1">Keterangan Status Lock:</p>
+                  <ul className="space-y-1 text-amber-700">
+                    <li><strong>L Jual Lock:</strong> Jika aktif, lebar pada invoice jual terkunci sesuai database</li>
+                    <li><strong>L Beli Lock:</strong> Jika aktif, lebar terkunci untuk pembelian (tidak bisa edit di form produk & invoice beli)</li>
+                    <li><strong>P Jual Lock:</strong> Jika aktif, panjang pada invoice jual terkunci sesuai database</li>
+                    <li><strong>P Beli Lock:</strong> Jika aktif, panjang terkunci untuk pembelian (tidak bisa edit di form produk & invoice beli)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-span-2 flex gap-3 pt-4">
+            <button type="submit" className="btn-primary flex-1">
+              {mode === 'edit' ? 'Simpan Perubahan' : 'Simpan Produk'}
+            </button>
+            <button type="button" onClick={onCancel} className="px-6 py-3 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 // --- SUB-KOMPONEN UI ---
 
 const Sidebar = ({ activeMenu, setActiveMenu }) => (
@@ -82,7 +626,6 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => (
       {[
         { id: 'database-produk', icon: Database, label: 'Database Produk' },
         { id: 'database-vendor', icon: Truck, label: 'Database Vendor' },
-        { id: 'master-bahan', icon: Layers, label: 'Master Bahan Baku' },
       ].map((item) => (
         <button
           key={item.id}
@@ -241,34 +784,27 @@ const App = () => {
   
   // --- STATE DATA ---
   const [products, setProducts] = useState([
-    { id: 1, name: 'MMT BANNER 280 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 2240, price: 25000, costPrice: 18000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 2, name: 'MMT BANNER 480 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 420, price: 35000, costPrice: 25000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 3, name: 'STICKER ORAJET - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 45000, costPrice: 32000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 4, name: 'STICKER MASTER - 1,26', unit: 'METER', width: 126, length: 0, area: 0, qty: 63, price: 55000, costPrice: 40000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 5, name: 'STICKER CINA - 1,56', unit: 'METER', width: 156, length: 0, area: 0, qty: 78, price: 40000, costPrice: 28000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 15000, costPrice: 10000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 18000, costPrice: 12000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 8, name: 'LAMINASI DOFF 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 16000, costPrice: 11000, vendorId: 1, vendorName: 'Toko Warna Abadi', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 9, name: 'LAMINASI DOFF 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 19000, costPrice: 13000, vendorId: 1, vendorName: 'Toko Warna Abadi', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 10, name: 'JASA CUTTING STICKER - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: -200, price: 8000, costPrice: 0, vendorId: 0, vendorName: 'Internal', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 20, price: 150000, costPrice: 120000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 12, name: 'ALBATROS 0,63', unit: 'METER', width: 63, length: 0, area: 0, qty: 63, price: 25000, costPrice: 18000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 13, name: 'ALAT X BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 10, price: 200000, costPrice: 160000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 14, name: 'RING KELING BANNER', unit: 'PACK', width: 0, length: 0, area: 0, qty: 5, price: 25000, costPrice: 15000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 15, name: 'DTF FILM', unit: 'M. LARI', width: 0, length: 0, area: 0, qty: 100, price: 50000, costPrice: 35000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 16, name: 'TINTA INDOOR', unit: 'PCS', width: 0, length: 0, area: 0, qty: 4, price: 500000, costPrice: 350000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 17, name: 'POWDER DTF 1 KG', unit: 'PCS', width: 0, length: 0, area: 0, qty: 5, price: 250000, costPrice: 180000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 18, name: 'JAHIT KELILING', unit: 'M. KEL', width: 0, length: 0, area: 0, qty: -20, price: 5000, costPrice: 0, vendorId: 0, vendorName: 'Internal', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
-    { id: 19, name: 'JASA DESAIN', unit: 'LEVEL', width: 0, length: 0, area: 0, qty: -20, price: 50000, costPrice: 0, vendorId: 0, vendorName: 'Internal', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' },
+    { id: 1, name: 'MMT BANNER 280 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 2240, price: 25000, vendorPrices: [{ vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', costPrice: 18000 }], tipeItem: 'Jual dan Beli', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 2, name: 'MMT BANNER 480 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 420, price: 35000, costPrice: 25000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 3, name: 'STICKER ORAJET - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 45000, costPrice: 32000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 4, name: 'STICKER MASTER - 1,26', unit: 'METER', width: 126, length: 0, area: 0, qty: 63, price: 55000, costPrice: 40000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 5, name: 'STICKER CINA - 1,56', unit: 'METER', width: 156, length: 0, area: 0, qty: 78, price: 40000, costPrice: 28000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 15000, costPrice: 10000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 18000, costPrice: 12000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 8, name: 'LAMINASI DOFF 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 16000, costPrice: 11000, vendorId: 1, vendorName: 'Toko Warna Abadi', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 9, name: 'LAMINASI DOFF 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 19000, costPrice: 13000, vendorId: 1, vendorName: 'Toko Warna Abadi', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 10, name: 'JASA CUTTING STICKER - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: -200, price: 8000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 20, price: 150000, costPrice: 120000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 12, name: 'ALBATROS 0,63', unit: 'METER', width: 63, length: 0, area: 0, qty: 63, price: 25000, costPrice: 18000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 13, name: 'ALAT X BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 10, price: 200000, costPrice: 160000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 14, name: 'RING KELING BANNER', unit: 'PACK', width: 0, length: 0, area: 0, qty: 5, price: 25000, costPrice: 15000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 15, name: 'DTF FILM', unit: 'M. LARI', width: 0, length: 0, area: 0, qty: 100, price: 50000, costPrice: 35000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 16, name: 'TINTA INDOOR', unit: 'PCS', width: 0, length: 0, area: 0, qty: 4, price: 500000, costPrice: 350000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 17, name: 'POWDER DTF 1 KG', unit: 'PCS', width: 0, length: 0, area: 0, qty: 5, price: 250000, costPrice: 180000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 18, name: 'JAHIT KELILING', unit: 'M. KEL', width: 0, length: 0, area: 0, qty: -20, price: 5000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 19, name: 'JASA DESAIN', unit: 'LEVEL', width: 0, length: 0, area: 0, qty: -20, price: 50000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
   ]);
 
-  const [materials, setMaterials] = useState([
-    { id: 1, name: 'Tinta Ecosolvent Cyan', unit: 'LITER', qty: 10, costPrice: 250000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)' },
-    { id: 2, name: 'Tinta Ecosolvent Magenta', unit: 'LITER', qty: 8, costPrice: 250000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)' },
-    { id: 3, name: 'Tinta Ecosolvent Yellow', unit: 'LITER', qty: 9, costPrice: 250000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)' },
-    { id: 4, name: 'Tinta Ecosolvent Black', unit: 'LITER', qty: 7, costPrice: 250000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)' },
-    { id: 5, name: 'Mata Ayam (Eyelet)', unit: 'PACK', qty: 50, costPrice: 15000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing' },
-  ]);
 
   const [vendors, setVendors] = useState([
     { id: 1, name: 'Toko Warna Abadi', contact: '08123456789', email: 'warnaabadi@gmail.com', address: 'Jl. Maju Mundur No. 1, Jakarta', category: 'Bahan Baku', status: 'Aktif' },
@@ -374,10 +910,14 @@ const App = () => {
   const [statusFilter, setStatusFilter] = useState('all');
 
   // --- MODAL & FORM STATES ---
-  const [showModal, setShowModal] = useState(null); 
+  const [showModal, setShowModal] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [isCreatingInvoice, setIsCreatingInvoice] = useState(false);
   const [isCreatingPurchase, setIsCreatingPurchase] = useState(false);
+
+  // --- PRODUCT FORM PAGE STATES ---
+  const [productFormMode, setProductFormMode] = useState(null); // null, 'create', 'edit'
+  const [editingProduct, setEditingProduct] = useState(null);
 
   // --- CALCULATIONS FOR DASHBOARD ---
   const filteredSales = useMemo(() => salesInvoices.filter(i => i.date >= startDate && i.date <= endDate && (statusFilter === 'all' || i.status === statusFilter)), [salesInvoices, startDate, endDate, statusFilter]);
@@ -481,70 +1021,6 @@ const App = () => {
 
   const DatabaseProduk = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [form, setForm] = useState({
-      name: '',
-      unit: 'METER',
-      width: 0,
-      length: 0,
-      qty: 0,
-      price: 0,
-      costPrice: 0,
-      vendorId: '',
-      vendorName: '',
-      widthLock: 'unlock', // lock, unlock, rejected
-      lengthLock: 'unlock', // lock, unlock, rejected
-      priceLock: 'unlock' // lock, unlock, rejected
-    });
-
-    // Update vendor name when vendorId changes
-    useEffect(() => {
-        if (form.vendorId) {
-            const vendor = vendors.find(v => v.id == form.vendorId);
-            if (vendor) {
-                setForm(prev => ({
-                    ...prev,
-                    vendorName: vendor.name
-                }));
-            }
-        }
-    }, [form.vendorId, vendors]);
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      // Calculate area if dimensions provided
-      const area = (parseFloat(form.width || 0) * parseFloat(form.length || 0)) / 10000;
-      
-      const payload = {
-          ...form,
-          area,
-          qty: parseInt(form.qty),
-          price: parseInt(form.price),
-          width: parseFloat(form.width || 0),
-          length: parseFloat(form.length || 0),
-          widthLock: form.widthLock,
-          lengthLock: form.lengthLock,
-          priceLock: form.priceLock
-      };
-      
-      if (editItem) {
-        setProducts(products.map(p => p.id === editItem.id ? { ...payload, id: editItem.id } : p));
-      } else {
-        setProducts([...products, { ...payload, id: Date.now() }]);
-      }
-      setForm({
-        name: '',
-        unit: 'METER',
-        width: 0,
-        length: 0,
-        qty: 0,
-        price: 0,
-        widthLock: 'unlock',
-        lengthLock: 'unlock',
-        priceLock: 'unlock'
-      });
-      setEditItem(null);
-      setShowModal(null);
-    };
 
     const handleDelete = (id) => {
         if(window.confirm('Hapus produk ini?')) {
@@ -553,9 +1029,8 @@ const App = () => {
     }
 
     const handleEdit = (item) => {
-        setEditItem(item);
-        setForm(item);
-        setShowModal('add-product');
+        setEditingProduct(item);
+        setProductFormMode('edit');
     }
 
     const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -571,7 +1046,7 @@ const App = () => {
              <div className="w-full md:w-64">
                <SearchInput placeholder="Cari Produk..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
              </div>
-             <button onClick={() => { setEditItem(null); setForm({ name: '', unit: 'METER', width: 0, length: 0, qty: 0, price: 0, costPrice: 0, vendorId: '', vendorName: '', widthLock: 'unlock', lengthLock: 'unlock', priceLock: 'unlock' }); setShowModal('add-product'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Produk Baru</button>
+             <button onClick={() => { setEditingProduct(null); setProductFormMode('create'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Produk Baru</button>
            </div>
         </div>
 
@@ -580,6 +1055,7 @@ const App = () => {
             <thead className="bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest">
               <tr>
                 <th className="p-4">Nama Produk</th>
+                <th className="p-4 text-center">Tipe Item</th>
                 <th className="p-4 text-center">Vendor</th>
                 <th className="p-4 text-center">L (Lebar)</th>
                 <th className="p-4 text-center">P (Panjang)</th>
@@ -598,6 +1074,7 @@ const App = () => {
                   <td className="p-4 font-bold">
                       {p.name}
                   </td>
+                  <td className="p-4 text-center text-xs font-black bg-blue-50 text-blue-700 rounded px-2 py-1">{p.tipeItem || 'Jual dan Beli'}</td>
                   <td className="p-4 text-center text-sm text-slate-600">{p.vendorName || '-'}</td>
                   <td className="p-4 text-center font-mono">{p.width || '-'}</td>
                   <td className="p-4 text-center font-mono">{p.length || '-'}</td>
@@ -609,26 +1086,47 @@ const App = () => {
                       : '-'}
                   </td>
                   <td className="p-4 text-right font-bold text-emerald-600">{formatCurrency(p.price)}</td>
-                  <td className="p-4 text-right font-bold text-blue-600">{p.costPrice ? formatCurrency(p.costPrice) : '-'}</td>
+                  <td className="p-4 text-right text-xs">
+                    <div className="space-y-1">
+                      {p.vendorPrices && p.vendorPrices.length > 0 ? (
+                        p.vendorPrices.map((vp, index) => (
+                          <div key={index} className="flex justify-between items-center">
+                            <span className="text-slate-600 truncate max-w-20" title={vp.vendorName}>{vp.vendorName}</span>
+                            <span className="font-bold text-blue-600 ml-1">{formatCurrency(vp.costPrice)}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <span className="text-slate-400">-</span>
+                      )}
+                    </div>
+                  </td>
                   <td className="p-4 text-center text-xs">
                     <div className="flex flex-col gap-1">
-                      <div className="flex gap-1 justify-center">
-                        <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                          p.widthLock === 'lock' ? 'bg-red-100 text-red-700' :
-                          p.widthLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
-                          'bg-green-100 text-green-700'
-                        }`}>L: {p.widthLock}</span>
-                        <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                          p.lengthLock === 'lock' ? 'bg-red-100 text-red-700' :
-                          p.lengthLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
-                          'bg-green-100 text-green-700'
-                        }`}>P: {p.lengthLock}</span>
-                      </div>
                       <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
                         p.priceLock === 'lock' ? 'bg-red-100 text-red-700' :
                         p.priceLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
                         'bg-green-100 text-green-700'
                       }`}>Price: {p.priceLock}</span>
+                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
+                        p.widthSellLock === 'lock' ? 'bg-blue-100 text-blue-700' :
+                        p.widthSellLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>L-J: {p.widthSellLock}</span>
+                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
+                        p.widthBuyLock === 'lock' ? 'bg-purple-100 text-purple-700' :
+                        p.widthBuyLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>L-B: {p.widthBuyLock}</span>
+                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
+                        p.lengthSellLock === 'lock' ? 'bg-blue-100 text-blue-700' :
+                        p.lengthSellLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>P-J: {p.lengthSellLock}</span>
+                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
+                        p.lengthBuyLock === 'lock' ? 'bg-purple-100 text-purple-700' :
+                        p.lengthBuyLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>P-B: {p.lengthBuyLock}</span>
                     </div>
                   </td>
                   <td className="p-4 text-center">
@@ -643,107 +1141,6 @@ const App = () => {
           </table>
         </div>
 
-        {/* Modal Add Product */}
-        {showModal === 'add-product' && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl p-6">
-               <div className="flex justify-between items-center mb-6">
-                 <h3 className="text-lg font-black text-slate-800 uppercase italic">{editItem ? 'Edit Produk' : 'Tambah Produk Baru'}</h3>
-                 <button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button>
-               </div>
-               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <div className="col-span-2">
-                   <label className="label-text">Nama Item</label>
-                   <input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="input-field" placeholder="Contoh: Banner Flexi" />
-                 </div>
-                 <div className="col-span-2">
-                   <label className="label-text">Vendor/Pemasok</label>
-                   <select value={form.vendorId} onChange={e => setForm({...form, vendorId: e.target.value})} className="input-field">
-                     <option value="">-- Pilih Vendor --</option>
-                     {vendors.filter(v => v.status === 'Aktif').map(v => (
-                       <option key={v.id} value={v.id}>{v.name}</option>
-                     ))}
-                     <option value="0">Internal</option>
-                   </select>
-                 </div>
-                 <div>
-                   <label className="label-text">Stok (QTY)</label>
-                   <input type="number" required value={form.qty} onChange={e => setForm({...form, qty: e.target.value})} className="input-field" />
-                 </div>
-                 <div>
-                   <label className="label-text">Satuan</label>
-                   <select value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="input-field">
-                      <option value="METER">METER</option>
-                      <option value="PCS">PCS</option>
-                      <option value="PACK">PACK</option>
-                      <option value="M. LARI">M. LARI</option>
-                      <option value="LEVEL">LEVEL</option>
-                   </select>
-                 </div>
-                 <div>
-                   <label className="label-text">L (Lebar cm) - Nullable</label>
-                   <input type="number" step="0.01" value={form.width} onChange={e => setForm({...form, width: e.target.value})} className="input-field" placeholder="0" />
-                 </div>
-                 <div>
-                    <label className="label-text">P (Panjang cm) - Nullable</label>
-                   <input type="number" step="0.01" value={form.length} onChange={e => setForm({...form, length: e.target.value})} className="input-field" placeholder="0" />
-                 </div>
-                 <div>
-                   <label className="label-text">Harga Jual</label>
-                   <input type="number" required value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="input-field" placeholder="0" />
-                 </div>
-                 <div>
-                   <label className="label-text">Harga Beli</label>
-                   <input type="number" value={form.costPrice} onChange={e => setForm({...form, costPrice: e.target.value})} className="input-field" placeholder="0" />
-                 </div>
-                 <div className="col-span-2 space-y-3">
-                   <h5 className="text-xs font-black text-slate-600 uppercase tracking-widest">Status Lock</h5>
-                   <div className="grid grid-cols-1 gap-2">
-                     <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                       <label className="text-xs font-bold text-slate-600">L (Lebar):</label>
-                       <select
-                         value={form.widthLock}
-                         onChange={e => setForm({...form, widthLock: e.target.value})}
-                         className="text-xs px-2 py-1 rounded border border-slate-300"
-                       >
-                         <option value="unlock">Unlock</option>
-                         <option value="lock">Lock</option>
-                         <option value="rejected">Rejected</option>
-                       </select>
-                     </div>
-                     <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                       <label className="text-xs font-bold text-slate-600">P (Panjang):</label>
-                       <select
-                         value={form.lengthLock}
-                         onChange={e => setForm({...form, lengthLock: e.target.value})}
-                         className="text-xs px-2 py-1 rounded border border-slate-300"
-                       >
-                         <option value="unlock">Unlock</option>
-                         <option value="lock">Lock</option>
-                         <option value="rejected">Rejected</option>
-                       </select>
-                     </div>
-                     <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                       <label className="text-xs font-bold text-slate-600">Harga Jual:</label>
-                       <select
-                         value={form.priceLock}
-                         onChange={e => setForm({...form, priceLock: e.target.value})}
-                         className="text-xs px-2 py-1 rounded border border-slate-300"
-                       >
-                         <option value="unlock">Unlock</option>
-                         <option value="lock">Lock</option>
-                         <option value="rejected">Rejected</option>
-                       </select>
-                     </div>
-                   </div>
-                 </div>
-                 <div className="col-span-2 mt-4">
-                   <button type="submit" className="btn-primary w-full">{editItem ? 'Simpan Perubahan' : 'Simpan Produk'}</button>
-                 </div>
-               </form>
-            </div>
-          </div>
-        )}
       </div>
     );
   };
@@ -763,7 +1160,7 @@ const App = () => {
 
     // Item Entry State
     const [itemEntry, setItemEntry] = useState({
-      targetType: 'material',
+      targetType: 'product',
       itemId: '',
       width: 0, 
       length: 0, 
@@ -780,28 +1177,28 @@ const App = () => {
 
     // Supplier-specific products
     const selectedVendor = vendors.find(v => v.id == header.vendorId);
-    const availableProducts = selectedVendor?.suppliedProducts || [];
+    const allAvailableProducts = selectedVendor?.suppliedProducts || [];
+    const availableProducts = allAvailableProducts;
 
     // Derived Logic for Item Entry
-    const selectedProduct = itemEntry.targetType === 'product' 
-        ? products.find(p => p.id == itemEntry.itemId) 
-        : materials.find(m => m.id == itemEntry.itemId);
+    const selectedProduct = products.find(p => p.id == itemEntry.itemId);
 
     useEffect(() => {
         if (selectedProduct) {
             // Default rules:
             // Purchase unit always from database regardless of Lot selection
             const unit = selectedProduct.unit;
-            
+
             setItemEntry(prev => ({
-                ...prev, 
+                ...prev,
                 purchaseUnit: unit,
                 // If not METER, clear dimensions
-                width: selectedProduct.unit !== 'METER' ? 0 : (selectedProduct.width || 0),
-                length: selectedProduct.unit !== 'METER' ? 0 : (selectedProduct.length || 0),
+                width: selectedProduct.unit !== 'METER' ? 0 : (selectedProduct.widthSellLock === 'lock' ? (selectedProduct.width || 0) : (prev.width || selectedProduct.width || 0)),
+                length: selectedProduct.unit !== 'METER' ? 0 : (selectedProduct.lengthSellLock === 'lock' ? (selectedProduct.length || 0) : (prev.length || selectedProduct.length || 0)),
+                price: selectedProduct.priceLock === 'lock' ? (selectedProduct.price || 0) : (prev.price || selectedProduct.price || 0),
             }));
         }
-    }, [itemEntry.itemId, itemEntry.targetType, itemEntry.lot]);
+    }, [itemEntry.itemId, itemEntry.lot]);
 
     // Load data for editing
     useEffect(() => {
@@ -833,7 +1230,7 @@ const App = () => {
                     ...prev,
                     vendor: vendor.name,
                     address: vendor.address,
-                    salesName: vendor.contact // Using contact as sales name for simplicity
+                    salesName: vendor.sales || '-'
                 }));
             }
         }
@@ -847,12 +1244,12 @@ const App = () => {
         const qty = parseInt(itemEntry.qty) || 1;
         const discount = parseFloat(itemEntry.discount) || 0;
 
-        // Get price from supplier's product list or use manual input
-        let price = parseFloat(itemEntry.price) || 0;
-        if (itemEntry.targetType === 'product' && header.vendorId) {
-            const supplierProduct = availableProducts.find(p => p.productId == itemEntry.itemId);
-            if (supplierProduct) {
-                price = supplierProduct.costPrice;
+        // Get price from product's vendor prices
+        let price = 0;
+        if (header.vendorId) {
+            const vendorPrice = selectedProduct.vendorPrices?.find(vp => vp.vendorId == header.vendorId);
+            if (vendorPrice) {
+                price = vendorPrice.costPrice;
             }
         }
         
@@ -877,7 +1274,6 @@ const App = () => {
 
         const newItem = {
             id: Date.now(),
-            targetType: itemEntry.targetType,
             itemId: itemEntry.itemId,
             name: selectedProduct.name,
             width, length, qty, lot: itemEntry.lot,
@@ -904,11 +1300,7 @@ const App = () => {
 
        // Update Stocks
        cart.forEach(item => {
-           if (item.targetType === 'material') {
-               setMaterials(prev => prev.map(m => m.id == item.itemId ? {...m, qty: parseInt(m.qty) + item.addedQty} : m));
-           } else {
-               setProducts(prev => prev.map(p => p.id == item.itemId ? {...p, qty: parseInt(p.qty) + item.addedQty} : p));
-           }
+           setProducts(prev => prev.map(p => p.id == item.itemId ? {...p, qty: parseInt(p.qty) + item.addedQty} : p));
        });
 
        const newInvoice = { 
@@ -989,7 +1381,7 @@ const App = () => {
                       <div><label className="label-text">No. Internal (Auto)</label><input type="text" value={header.nomorInternal} disabled className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" /></div>
                       <div><label className="label-text">Hari - Tanggal</label><input type="date" value={header.date} onChange={e => setHeader({...header, date: e.target.value})} className="input-field" /></div>
                       <div><label className="label-text">Nama Supplier</label><select value={header.vendorId} onChange={e => setHeader({...header, vendorId: e.target.value})} className="input-field"><option value="">-- Pilih Supplier --</option>{vendors.filter(v => v.status === 'Aktif').map(v => (<option key={v.id} value={v.id}>{v.name}</option>))}</select></div>
-                      <div><label className="label-text">Kontak</label><input type="text" value={header.salesName} onChange={e => setHeader({...header, salesName: e.target.value})} className="input-field" /></div>
+                      <div><label className="label-text">Sales</label><input type="text" value={header.salesName} onChange={e => setHeader({...header, salesName: e.target.value})} className="input-field" /></div>
                       <div><label className="label-text">Alamat</label><input type="text" value={header.address} onChange={e => setHeader({...header, address: e.target.value})} className="input-field" /></div>
                    </div>
                 </div>
@@ -997,32 +1389,31 @@ const App = () => {
                 {/* Item Entry */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><ShoppingCart className="w-4 h-4 mr-2"/> Input Item</h4>
-                   
-                   {/* Type Selection */}
-                   <div className="flex bg-slate-100 p-1 rounded-xl mb-4">
-                       <button onClick={() => setItemEntry({...itemEntry, targetType: 'material', itemId: ''})} className={`flex-1 py-2 text-xs font-bold rounded-lg transition ${itemEntry.targetType === 'material' ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500'}`}>Bahan Baku</button>
-                       <button onClick={() => setItemEntry({...itemEntry, targetType: 'product', itemId: ''})} className={`flex-1 py-2 text-xs font-bold rounded-lg transition ${itemEntry.targetType === 'product' ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500'}`}>Produk Jual</button>
-                   </div>
 
                    <div className="grid grid-cols-12 gap-3 items-end">
-                       <div className="col-span-4">
-                           <label className="label-text">Nama Item</label>
-                           <select className="input-field" value={itemEntry.itemId} onChange={e => setItemEntry({...itemEntry, itemId: e.target.value})}>
-                               <option value="">-- Pilih --</option>
-                               {itemEntry.targetType === 'material'
-                                 ? materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.qty} {m.unit})</option>)
-                                 : header.vendorId && availableProducts.length > 0
-                                   ? availableProducts.map(p => {
-                                       const product = products.find(prod => prod.id === p.productId);
-                                       return product ? (
-                                         <option key={p.productId} value={p.productId}>
-                                           {p.name} - Modal: Rp {formatCurrency(p.costPrice)}
-                                         </option>
-                                       ) : null;
-                                     })
-                                   : <option disabled>-- Pilih Supplier terlebih dahulu --</option>
-                               }
-                           </select>
+                       <div className="col-span-8">
+                           <SearchableSelect
+                              items={header.vendorId && availableProducts.length > 0 ? availableProducts.map(p => {
+                                 const product = products.find(prod => prod.id === p.productId);
+                                 const vendorPrice = product?.vendorPrices?.find(vp => vp.vendorId == header.vendorId);
+                                 return product ? {
+                                    ...product,
+                                    displayName: `${product.name} - Modal: Rp ${vendorPrice ? formatCurrency(vendorPrice.costPrice) : 'N/A'}`
+                                 } : null;
+                              }).filter(Boolean) : []}
+                              label="Nama Item"
+                              placeholder="Ketik nama produk..."
+                              selectedValue={itemEntry.itemId}
+                              displayFormat={(item) => item.displayName || item.name}
+                              disabled={!header.vendorId}
+                              onSelect={(item) => {
+                                 if (item) {
+                                    setItemEntry({...itemEntry, itemId: item.id});
+                                 } else {
+                                    setItemEntry({...itemEntry, itemId: ''});
+                                 }
+                              }}
+                           />
                        </div>
                        
                        <div className="col-span-2">
@@ -1039,28 +1430,29 @@ const App = () => {
                        </div>
 
                        <div className="col-span-2">
-                           <label className="label-text">L (cm) (Locked)</label>
+                           <label className="label-text">L (cm) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
                            <input
                                 type="number"
-                                className="input-field bg-slate-100"
+                                className="input-field bg-slate-100 text-slate-500 cursor-not-allowed"
                                 value={itemEntry.width}
                                 placeholder="0"
-                                readOnly={true}
+                                disabled={true}
                            />
                        </div>
                        <div className="col-span-2">
-                           <label className="label-text">P (cm) {itemEntry.lot === 'Roll' ? '(Pjg/Roll)' : ''}</label>
-                           <input 
-                                type="number" 
-                                className={`input-field ${selectedProduct?.unit !== 'METER' ? 'bg-slate-100' : ''}`} 
-                                value={itemEntry.length} 
-                                onChange={e => setItemEntry({...itemEntry, length: e.target.value})} 
+                           <label className="label-text">P (cm) {itemEntry.lot === 'Roll' ? '(Pjg/Roll)' : ''} {selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                           <input
+                                type="number"
+                                className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+                                value={itemEntry.length}
+                                onChange={e => (selectedProduct?.unit === 'METER' && selectedProduct?.lengthSellLock !== 'lock') && setItemEntry({...itemEntry, length: e.target.value})}
                                 placeholder="0"
+                                disabled={selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock'}
                                 readOnly={selectedProduct?.unit !== 'METER'}
                            />
                        </div>
                        <div className="col-span-2"><label className="label-text">Qty</label><input type="number" className="input-field" value={itemEntry.qty} onChange={e => setItemEntry({...itemEntry, qty: e.target.value})} placeholder="1" /></div>
-                       <div className="col-span-3"><label className="label-text">Harga</label><input type="number" className="input-field" value={itemEntry.price} onChange={e => setItemEntry({...itemEntry, price: e.target.value})} placeholder="0" /></div>
+                       <div className="col-span-3"><label className="label-text">Harga {selectedProduct?.priceLock === 'lock' ? '(Locked)' : ''}</label><input type="number" className="input-field" value={itemEntry.price} onChange={e => selectedProduct?.priceLock !== 'lock' && setItemEntry({...itemEntry, price: e.target.value})} placeholder="0" disabled={selectedProduct?.priceLock === 'lock'} /></div>
                        <div className="col-span-3"><label className="label-text">Disc</label><input type="number" className="input-field" value={itemEntry.discount} onChange={e => setItemEntry({...itemEntry, discount: e.target.value})} placeholder="0" /></div>
                        
                        <div className="col-span-4 mt-2 text-right">
@@ -1097,7 +1489,7 @@ const App = () => {
                                         <td className="p-3 text-center">{idx + 1}</td>
                                         <td className="p-3 font-bold">{item.name}</td>
                                         <td className="p-3 text-center">{item.width || '-'}</td>
-                                        <td className="p-3 text-center">{item.length || '-'}</td>
+                                        <td className="p-3 text-center">{item.lot === 'Lock' ? '-' : (item.length || '-')}</td>
                                         <td className="p-3 text-center font-bold">{item.qty}</td>
                                         <td className="p-3 text-center">{item.lot}</td>
                                         <td className="p-3 text-center">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
@@ -1132,7 +1524,6 @@ const App = () => {
                                 <select value={header.paymentMethod} onChange={e => setHeader({...header, paymentMethod: e.target.value})} className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl font-bold text-sm">
                                     <option value="Cash">Cash</option>
                                     <option value="Transfer">Transfer</option>
-                                    <option value="Tempo">Tempo</option>
                                 </select>
                             </div>
                             <div className="flex justify-between text-sm font-bold pt-2 border-t border-slate-800">
@@ -1199,14 +1590,20 @@ const App = () => {
 
       // Derived Logic
       const selectedProduct = products.find(p => p.id == itemEntry.selectedProductId);
+      const filteredProducts = products.filter(p => {
+          const tipeItem = p.tipeItem || 'Jual dan Beli'; // Default ke 'Jual dan Beli' jika tidak ada
+          return tipeItem === 'Jual' || tipeItem === 'Jual dan Beli';
+      });
 
       // Effect to handle "L" from database when product changes
       useEffect(() => {
           if (selectedProduct) {
               setItemEntry(prev => ({
                   ...prev,
-                  // "L" always takes from database produk and can be edited
-                  width: selectedProduct.width || 0
+                  // "L" always takes from database produk, but can be edited unless locked
+                  width: selectedProduct.widthSellLock === 'lock' ? (selectedProduct.width || 0) : (prev.width || selectedProduct.width || 0),
+                  // "P" always takes from database produk, but can be edited unless locked
+                  length: selectedProduct.lengthSellLock === 'lock' ? (selectedProduct.length || 0) : (prev.length || selectedProduct.length || 0)
               }));
           }
       }, [itemEntry.selectedProductId, selectedProduct]);
@@ -1323,7 +1720,6 @@ const App = () => {
                         <select value={header.paymentMethod} onChange={e => setHeader({...header, paymentMethod: e.target.value})} className="input-field">
                             <option value="Cash">Cash</option>
                             <option value="Transfer">Transfer</option>
-                            <option value="Tempo">Tempo</option>
                         </select>
                     </div>
                   </div>
@@ -1333,32 +1729,42 @@ const App = () => {
                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                   <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><ShoppingCart className="w-4 h-4 mr-2"/> Input Barang</h4>
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                     <div className="md:col-span-6">
-                        <label className="label-text">Produk (NAMA)</label>
-                        <select value={itemEntry.selectedProductId} onChange={e => setItemEntry({...itemEntry, selectedProductId: e.target.value})} className="input-field">
-                            <option value="">-- Pilih Produk --</option>
-                            {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                        </select>
-                     </div>
-                     <div className="md:col-span-2">
-                        <label className="label-text">L (cm)</label>
-                        <input
-                            type="number"
-                            value={itemEntry.width}
-                            onChange={e => setItemEntry({...itemEntry, width: e.target.value})}
-                            className="input-field"
-                            placeholder="0"
+                     <div className="md:col-span-12">
+                        <SearchableSelect
+                           items={filteredProducts}
+                           label="Nama Item"
+                           placeholder="Ketik nama produk..."
+                           selectedValue={itemEntry.selectedProductId}
+                           displayFormat={(item) => `${item.name} - Rp ${formatCurrency(item.price)}`}
+                           onSelect={(item) => {
+                              if (item) {
+                                 setItemEntry({...itemEntry, selectedProductId: item.id});
+                              } else {
+                                 setItemEntry({...itemEntry, selectedProductId: ''});
+                              }
+                           }}
                         />
                      </div>
                      <div className="md:col-span-2">
-                        <label className="label-text">P (cm) {selectedProduct?.unit !== 'METER' ? '(Locked)' : ''}</label>
-                        <input 
-                            type="number" 
-                            value={itemEntry.length} 
-                            onChange={e => setItemEntry({...itemEntry, length: e.target.value})} 
-                            className={`input-field ${selectedProduct?.unit !== 'METER' ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`} 
-                            placeholder="0" 
-                            readOnly={selectedProduct?.unit !== 'METER'}
+                        <label className="label-text">L (cm) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                        <input
+                            type="number"
+                            value={itemEntry.width}
+                            onChange={e => selectedProduct?.widthSellLock !== 'lock' && setItemEntry({...itemEntry, width: e.target.value})}
+                            className={`input-field ${selectedProduct?.widthSellLock === 'lock' ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+                            placeholder="0"
+                            disabled={selectedProduct?.widthSellLock === 'lock'}
+                        />
+                     </div>
+                     <div className="md:col-span-2">
+                        <label className="label-text">P (cm) {selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                        <input
+                            type="number"
+                            value={itemEntry.length}
+                            onChange={e => (selectedProduct?.unit === 'METER' && selectedProduct?.lengthSellLock !== 'lock') && setItemEntry({...itemEntry, length: e.target.value})}
+                            className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+                            placeholder="0"
+                            disabled={selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock'}
                         />
                      </div>
                      <div className="md:col-span-2">
@@ -1509,6 +1915,7 @@ const App = () => {
       contact: '',
       email: '',
       address: '',
+      sales: '',
       category: 'Bahan Baku',
       status: 'Aktif'
     });
@@ -1523,6 +1930,7 @@ const App = () => {
         contact: form.contact.trim(),
         email: form.email.trim(),
         address: form.address.trim(),
+        sales: form.sales.trim(),
         category: form.category,
         status: form.status
       };
@@ -1537,6 +1945,7 @@ const App = () => {
         contact: '',
         email: '',
         address: '',
+        sales: '',
         category: 'Bahan Baku',
         status: 'Aktif'
       });
@@ -1569,7 +1978,7 @@ const App = () => {
             <div className="w-full md:w-64">
               <SearchInput placeholder="Cari Vendor..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
             </div>
-            <button onClick={() => { setEditItem(null); setForm({ name: '', contact: '', email: '', address: '', category: 'Bahan Baku', status: 'Aktif' }); setShowModal('add-vendor'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Tambah Vendor</button>
+            <button onClick={() => { setEditItem(null); setForm({ name: '', contact: '', email: '', address: '', sales: '', category: 'Bahan Baku', status: 'Aktif' }); setShowModal('add-vendor'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Tambah Vendor</button>
           </div>
         </div>
 
@@ -1580,6 +1989,7 @@ const App = () => {
                 <th className="p-4">Nama Vendor</th>
                 <th className="p-4">Kontak</th>
                 <th className="p-4">Email</th>
+                <th className="p-4">Sales</th>
                 <th className="p-4">Alamat</th>
                 <th className="p-4 text-center">Kategori</th>
                 <th className="p-4 text-center">Status</th>
@@ -1592,6 +2002,7 @@ const App = () => {
                   <td className="p-4 font-bold">{v.name}</td>
                   <td className="p-4 font-mono text-sm">{v.contact}</td>
                   <td className="p-4 text-slate-600">{v.email}</td>
+                  <td className="p-4 text-slate-600">{v.sales || '-'}</td>
                   <td className="p-4 text-slate-600 max-w-xs truncate" title={v.address}>{v.address}</td>
                   <td className="p-4 text-center">
                     <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
@@ -1611,6 +2022,9 @@ const App = () => {
                   </td>
                   <td className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2">
+                      <button onClick={() => setShowModal({ type: 'vendor-detail', data: v })} className="p-1 text-green-600 hover:bg-green-50 rounded">
+                        <Eye className="w-4 h-4" />
+                      </button>
                       <button onClick={() => handleEdit(v)} className="p-1 text-blue-600 hover:bg-blue-50 rounded">
                         <Edit3 className="w-4 h-4" />
                       </button>
@@ -1651,6 +2065,10 @@ const App = () => {
                   <label className="label-text">Email</label>
                   <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="input-field" placeholder="vendor@email.com" />
                 </div>
+                <div>
+                  <label className="label-text">Sales</label>
+                  <input type="text" value={form.sales} onChange={e => setForm({...form, sales: e.target.value})} className="input-field" placeholder="Nama Sales" />
+                </div>
                 <div className="col-span-2">
                   <label className="label-text">Alamat</label>
                   <textarea value={form.address} onChange={e => setForm({...form, address: e.target.value})} className="input-field" rows="3" placeholder="Jl. Contoh No. 123, Kota" />
@@ -1678,141 +2096,101 @@ const App = () => {
             </div>
           </div>
         )}
-      </div>
-    );
-  };
 
-  const MasterBahan = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [form, setForm] = useState({ name: '', unit: '', qty: 0, costPrice: 0, vendorId: '', vendorName: '' });
-    const filteredMaterials = materials.filter(m => m.name.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    // Update vendor name when vendorId changes
-    useEffect(() => {
-        if (form.vendorId) {
-            const vendor = vendors.find(v => v.id == form.vendorId);
-            if (vendor) {
-                setForm(prev => ({
-                    ...prev,
-                    vendorName: vendor.name
-                }));
-            }
-        }
-    }, [form.vendorId, vendors]);
-
-    const handleSave = () => {
-       if (editItem) {
-         setMaterials(materials.map(m => m.id === editItem.id ? { ...form, id: editItem.id } : m));
-       } else {
-         setMaterials([...materials, { ...form, id: Date.now() }]);
-       }
-       setForm({ name: '', unit: '', qty: 0, costPrice: 0, vendorId: '', vendorName: '' });
-       setEditItem(null);
-       setShowModal(null);
-    };
-
-    const handleDelete = (id) => {
-        if(window.confirm('Hapus bahan ini?')) {
-            setMaterials(materials.filter(m => m.id !== id));
-        }
-    }
-
-    const handleEdit = (item) => {
-        setEditItem(item);
-        setForm(item);
-        setShowModal('add-material');
-    }
-
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-           <div>
-              <h3 className="text-lg font-black text-slate-800 uppercase italic">Master Bahan Baku</h3>
-              <p className="text-xs text-slate-500 font-medium">Stok tinta, bahan roll, kertas, dll.</p>
-           </div>
-           <div className="flex w-full md:w-auto gap-2">
-             <div className="w-full md:w-64">
-               <SearchInput placeholder="Cari Bahan..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-             </div>
-             <button onClick={() => { setEditItem(null); setForm({ name: '', unit: '', qty: 0, costPrice: 0, vendorId: '', vendorName: '' }); setShowModal('add-material'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Bahan Baru</button>
-           </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-           <table className="w-full text-left text-sm">
-             <thead className="bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest">
-               <tr>
-                 <th className="p-4">Nama Bahan</th>
-                 <th className="p-4">Vendor</th>
-                 <th className="p-4">Satuan</th>
-                 <th className="p-4 text-right">Harga Beli</th>
-                 <th className="p-4">Stok Saat Ini</th>
-                 <th className="p-4 text-center">Aksi</th>
-               </tr>
-             </thead>
-             <tbody className="divide-y divide-slate-100">
-               {filteredMaterials.map(m => (
-                 <tr key={m.id} className="hover:bg-slate-50">
-                   <td className="p-4 font-bold">{m.name}</td>
-                   <td className="p-4 text-sm text-slate-600">{m.vendorName || '-'}</td>
-                   <td className="p-4 text-xs">{m.unit}</td>
-                   <td className="p-4 text-right font-bold text-blue-600">{m.costPrice ? formatCurrency(m.costPrice) : '-'}</td>
-                   <td className="p-4">{m.qty}</td>
-                   <td className="p-4 text-center">
-                     <div className="flex justify-center gap-2">
-                        <button onClick={() => handleEdit(m)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit3 className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(m.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
-                     </div>
-                   </td>
-                 </tr>
-               ))}
-             </tbody>
-           </table>
-        </div>
-
-        {/* Modal */}
-        {showModal === 'add-material' && (
+        {/* Vendor Detail Modal */}
+        {showModal?.type === 'vendor-detail' && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
-             <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg font-black text-slate-800 uppercase italic">{editItem ? 'Edit Bahan' : 'Tambah Bahan'}</h3>
-                  <button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button>
+            <div className="bg-white rounded-2xl w-full max-w-4xl shadow-2xl p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-black text-slate-800 uppercase italic">Detail Vendor</h3>
+                <button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button>
+              </div>
+
+              {showModal.data && (
+                <div className="space-y-6">
+                  {/* Vendor Info */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Nama Vendor</label>
+                        <p className="text-lg font-bold text-slate-800">{showModal.data.name}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Kontak</label>
+                        <p className="text-sm text-slate-600">{showModal.data.contact}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Email</label>
+                        <p className="text-sm text-slate-600">{showModal.data.email || '-'}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Sales</label>
+                        <p className="text-sm text-slate-600">{showModal.data.sales || '-'}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Alamat</label>
+                        <p className="text-sm text-slate-600">{showModal.data.address}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Kategori</label>
+                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
+                          showModal.data.category === 'Bahan Baku' ? 'bg-blue-100 text-blue-700' :
+                          showModal.data.category === 'Peralatan' ? 'bg-green-100 text-green-700' :
+                          'bg-purple-100 text-purple-700'
+                        }`}>
+                          {showModal.data.category}
+                        </span>
+                      </div>
+                      <div>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Status</label>
+                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
+                          showModal.data.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                        }`}>
+                          {showModal.data.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Products Supplied */}
+                  <div>
+                    <h4 className="text-sm font-black text-slate-700 uppercase tracking-widest mb-4">Produk yang Disediakan</h4>
+                    <div className="bg-slate-50 rounded-lg p-4">
+                      {showModal.data.suppliedProducts && showModal.data.suppliedProducts.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {showModal.data.suppliedProducts.map(sp => {
+                            const product = products.find(p => p.id == sp.productId);
+                            return product ? (
+                              <div key={sp.productId} className="bg-white p-3 rounded-lg border border-slate-200">
+                                <div className="font-bold text-sm text-slate-800">{product.name}</div>
+                                <div className="text-xs text-slate-500 mt-1">
+                                  Unit: {product.unit} | Stok: {product.qty}
+                                </div>
+                                <div className="text-xs text-blue-600 mt-1 font-bold">
+                                  Harga Beli: {product.vendorPrices?.find(vp => vp.vendorId == showModal.data.id) ?
+                                    formatCurrency(product.vendorPrices.find(vp => vp.vendorId == showModal.data.id).costPrice) :
+                                    'N/A'}
+                                </div>
+                              </div>
+                            ) : null;
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-slate-500 text-center py-4">Tidak ada produk yang terkait dengan vendor ini</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-4">
-                   <div>
-                     <label className="label-text">Nama Bahan</label>
-                     <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="input-field" placeholder="Contoh: Tinta Cyan" />
-                   </div>
-                   <div>
-                     <label className="label-text">Satuan</label>
-                     <input type="text" value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="input-field" placeholder="Liter/Roll/Pcs" />
-                   </div>
-                   <div>
-                     <label className="label-text">Stok Awal</label>
-                     <input type="number" value={form.qty} onChange={e => setForm({...form, qty: e.target.value})} className="input-field" />
-                   </div>
-                   <div>
-                     <label className="label-text">Harga Beli</label>
-                     <input type="number" value={form.costPrice} onChange={e => setForm({...form, costPrice: e.target.value})} className="input-field" placeholder="0" />
-                   </div>
-                   <div>
-                     <label className="label-text">Vendor/Pemasok</label>
-                     <select value={form.vendorId} onChange={e => setForm({...form, vendorId: e.target.value})} className="input-field">
-                       <option value="">-- Pilih Vendor --</option>
-                       {vendors.filter(v => v.status === 'Aktif').map(v => (
-                         <option key={v.id} value={v.id}>{v.name}</option>
-                       ))}
-                       <option value="0">Internal</option>
-                     </select>
-                   </div>
-                   <button onClick={handleSave} className="btn-primary w-full mt-4">{editItem ? 'Simpan Perubahan' : 'Simpan'}</button>
-                </div>
-             </div>
+              )}
+            </div>
           </div>
         )}
       </div>
     );
   };
+
 
   const PengeluaranLain = () => {
     const [form, setForm] = useState({ vendor: '', item: '', price: 0, paymentMethod: 'Cash' });
@@ -2308,15 +2686,37 @@ const App = () => {
          <header className="lg:hidden h-16 bg-red-700 text-white flex items-center px-4 sticky top-0 z-40 shadow-md"><h1 className="font-black text-xl italic tracking-tight">{activeMenu.replace(/-/g, ' ').toUpperCase()}</h1></header>
          <header className="hidden lg:flex h-20 bg-white/80 backdrop-blur border-b border-slate-200 items-center justify-between px-8 sticky top-0 z-40"><h2 className="text-2xl font-black text-slate-800 italic uppercase tracking-tight">{activeMenu.replace(/-/g, ' ')}</h2><div className="flex items-center space-x-4"><div className="text-right"><p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Saldo Kas</p><p className="font-black text-slate-900 text-lg">{formatCurrency(wallet.cash)}</p></div><div className="h-8 w-[1px] bg-slate-200 mx-2"></div><div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-black shadow-lg shadow-red-200">A</div></div></header>
          <main className="flex-1 p-4 md:p-8 pb-24 lg:pb-8 max-w-[1600px] mx-auto w-full">
-            {activeMenu === 'dashboard' && <Dashboard />}
-            {activeMenu === 'database-produk' && <DatabaseProduk />}
-            {activeMenu === 'database-vendor' && <DatabaseVendor />}
-            {activeMenu === 'nota-pelanggan' && <NotaPelanggan />}
-            {activeMenu === 'rekap-cashflow' && <RekapCashflow />}
-            {activeMenu === 'master-bahan' && <MasterBahan />}
-            {activeMenu === 'nota-supplier' && <NotaSupplier />}
-            {activeMenu === 'pengeluaran-lain' && <PengeluaranLain />}
-            {activeMenu === 'withdraw' && <Withdraw />}
+            {productFormMode ? (
+               <ProductFormPage
+                  mode={productFormMode}
+                  editingProduct={editingProduct}
+                  onSave={(productData) => {
+                     if (productFormMode === 'edit') {
+                        setProducts(products.map(p => p.id === editingProduct.id ? { ...productData, id: editingProduct.id } : p));
+                     } else {
+                        setProducts([...products, { ...productData, id: Date.now() }]);
+                     }
+                     setProductFormMode(null);
+                     setEditingProduct(null);
+                  }}
+                  onCancel={() => {
+                     setProductFormMode(null);
+                     setEditingProduct(null);
+                  }}
+                  vendors={vendors}
+               />
+            ) : (
+               <>
+                  {activeMenu === 'dashboard' && <Dashboard />}
+                  {activeMenu === 'database-produk' && <DatabaseProduk />}
+                  {activeMenu === 'database-vendor' && <DatabaseVendor />}
+                  {activeMenu === 'nota-pelanggan' && <NotaPelanggan />}
+                  {activeMenu === 'rekap-cashflow' && <RekapCashflow />}
+                  {activeMenu === 'nota-supplier' && <NotaSupplier />}
+                  {activeMenu === 'pengeluaran-lain' && <PengeluaranLain />}
+                  {activeMenu === 'withdraw' && <Withdraw />}
+               </>
+            )}
          </main>
       </div>
       <BottomNavbar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
