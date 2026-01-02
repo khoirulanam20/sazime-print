@@ -1103,11 +1103,6 @@ const App = () => {
                   <td className="p-4 text-center text-xs">
                     <div className="flex flex-col gap-1">
                       <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.priceLock === 'lock' ? 'bg-red-100 text-red-700' :
-                        p.priceLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
-                        'bg-green-100 text-green-700'
-                      }`}>Price: {p.priceLock}</span>
-                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
                         p.widthSellLock === 'lock' ? 'bg-blue-100 text-blue-700' :
                         p.widthSellLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
                         'bg-green-100 text-green-700'
