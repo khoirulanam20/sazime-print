@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import * as XLSX from 'xlsx';
 import {
   LineChart, Line, AreaChart, Area, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -2307,6 +2308,61 @@ const App = () => {
   const RekapCashflow = () => {
     const [activeSubmenu, setActiveSubmenu] = useState('penjualan');
 
+    // Export functions
+    const exportPenjualanToExcel = () => {
+      const data = filteredSales.map((sale, idx) => ({
+        'No': idx + 1,
+        'Hari': getDayName(sale.date),
+        'Tanggal': sale.date,
+        'Nota': sale.id,
+        'Customer': sale.buyer,
+        'Metode Bayar': sale.paymentMethod,
+        'Tagihan': sale.total,
+        'Terbayar': sale.paid,
+        'Kurang': sale.remaining
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Penjualan');
+      XLSX.writeFile(wb, `Laporan_Penjualan_${startDate}_to_${endDate}.xlsx`);
+    };
+
+    const exportBelanjaBahanToExcel = () => {
+      const data = filteredPurchases.map((purchase, idx) => ({
+        'No': idx + 1,
+        'Hari': getDayName(purchase.date),
+        'Tanggal': purchase.date,
+        'Nota': purchase.noTagihan,
+        'Supplier': purchase.vendor,
+        'Kontak': purchase.salesName || '-',
+        'Metode Bayar': purchase.paymentMethod,
+        'Tagihan': purchase.total,
+        'Terbayar': purchase.paid,
+        'Kurang': purchase.remaining
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Belanja Bahan');
+      XLSX.writeFile(wb, `Laporan_Belanja_Bahan_${startDate}_to_${endDate}.xlsx`);
+    };
+
+    const exportBelanjaLainnyaToExcel = () => {
+      const data = filteredExpenses.map((expense, idx) => ({
+        'No': idx + 1,
+        'Hari': getDayName(expense.date),
+        'Tanggal': expense.date,
+        'Keterangan': expense.description,
+        'Jumlah': expense.amount
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Belanja Lainnya');
+      XLSX.writeFile(wb, `Laporan_Belanja_Lainnya_${startDate}_to_${endDate}.xlsx`);
+    };
+
     const submenus = [
       { id: 'penjualan', label: 'Penjualan', icon: TrendingUp },
       { id: 'belanja-bahan', label: 'Belanja Bahan', icon: ShoppingCart },
@@ -2323,8 +2379,19 @@ const App = () => {
     const PenjualanSubmenu = () => (
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="p-6 border-b border-slate-100">
-          <h3 className="text-lg font-black text-slate-800 uppercase italic">Laporan Penjualan</h3>
-          <p className="text-xs text-slate-500 font-medium">Rekap transaksi penjualan pelanggan.</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-black text-slate-800 uppercase italic">Laporan Penjualan</h3>
+              <p className="text-xs text-slate-500 font-medium">Rekap transaksi penjualan pelanggan.</p>
+            </div>
+            <button
+              onClick={exportPenjualanToExcel}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition"
+            >
+              <Download className="w-4 h-4" />
+              Export Excel
+            </button>
+          </div>
         </div>
         <table className="w-full text-left whitespace-nowrap">
           <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
@@ -2371,8 +2438,19 @@ const App = () => {
     const BelanjaBahanSubmenu = () => (
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="p-6 border-b border-slate-100">
-          <h3 className="text-lg font-black text-slate-800 uppercase italic">Laporan Belanja Bahan</h3>
-          <p className="text-xs text-slate-500 font-medium">Rekap pembelian bahan baku dari supplier.</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-black text-slate-800 uppercase italic">Laporan Belanja Bahan</h3>
+              <p className="text-xs text-slate-500 font-medium">Rekap pembelian bahan baku dari supplier.</p>
+            </div>
+            <button
+              onClick={exportBelanjaBahanToExcel}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition"
+            >
+              <Download className="w-4 h-4" />
+              Export Excel
+            </button>
+          </div>
         </div>
         <table className="w-full text-left whitespace-nowrap">
           <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
@@ -2421,8 +2499,19 @@ const App = () => {
     const BelanjaLainnyaSubmenu = () => (
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="p-6 border-b border-slate-100">
-          <h3 className="text-lg font-black text-slate-800 uppercase italic">Laporan Belanja Lainnya</h3>
-          <p className="text-xs text-slate-500 font-medium">Rekap pengeluaran operasional lainnya.</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-black text-slate-800 uppercase italic">Laporan Belanja Lainnya</h3>
+              <p className="text-xs text-slate-500 font-medium">Rekap pengeluaran operasional lainnya.</p>
+            </div>
+            <button
+              onClick={exportBelanjaLainnyaToExcel}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition"
+            >
+              <Download className="w-4 h-4" />
+              Export Excel
+            </button>
+          </div>
         </div>
         <table className="w-full text-left whitespace-nowrap">
           <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
