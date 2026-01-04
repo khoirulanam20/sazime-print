@@ -250,7 +250,21 @@ const SearchableSelect = ({
 };
 
 // Komponen untuk halaman form produk (create/edit)
-const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) => {
+const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, masterUnits }) => {
+
+  // Helper function untuk mendapatkan styling berdasarkan status lock
+  const getLockStatusStyle = (status) => {
+    switch (status) {
+      case 'unlock':
+        return 'bg-green-50 border-green-300 text-green-700';
+      case 'lock':
+        return 'bg-red-50 border-red-300 text-red-700';
+      case 'rejected':
+        return 'bg-gray-50 border-gray-300 text-black';
+      default:
+        return 'bg-slate-50 border-slate-300 text-slate-700';
+    }
+  };
   const [form, setForm] = useState({
     name: '',
     unit: 'METER',
@@ -288,7 +302,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
         widthSellLock: 'unlock',
         widthBuyLock: 'unlock',
         lengthSellLock: 'unlock',
-        lengthBuyLock: 'unlock', lotLock: 'unlock',
+        lengthBuyLock: 'unlock',
         lotLock: 'unlock'
       });
     }
@@ -307,59 +321,60 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
     }
   }, [form.vendorId, vendors]);
 
-  // Auto-set status lock to rejected based on unit and tipeItem rules
+  // Auto-set status lock to rejected based on master unit rules and tipeItem rules
   useEffect(() => {
+    const currentUnit = masterUnits.find(u => u.name === form.unit);
+    if (!currentUnit) return;
+
     setForm(prev => {
       const updates = {};
 
-      // Aturan satuan: Meter/Meter Lari enable 'P','L','Lot', lainnya disable
-      const isMeterUnit = form.unit === 'METER' || form.unit === 'M. LARI';
-      const isOtherUnit = !isMeterUnit;
+      // Get base rules from master unit
+      const baseRules = {
+        widthSellLock: currentUnit.lSellRule,
+        widthBuyLock: currentUnit.lBuyRule,
+        lengthSellLock: currentUnit.pSellRule,
+        lengthBuyLock: currentUnit.pBuyRule,
+        lotLock: currentUnit.lotRule
+      };
 
-      // Aturan Tipe Item:
-      // - Jual dan Beli = "P", "L", "Lot" Jual dan Beli = enable
-      // - Jual = "P", "L" Jual = enable, "P", "L", "Lot" = disable
-      // - Beli = "P", "L" Jual = disable, "P", "L", "Lot" = enable
-
-      if (isOtherUnit) {
-        // Untuk unit selain METER/M. LARI, semua field disabled - set to rejected
-        updates.widthSellLock = 'rejected';
+      // Apply item type overrides
+      if (form.tipeItem === 'Jual') {
+        // For "Jual" items, disable buy dimensions and lot
         updates.widthBuyLock = 'rejected';
-        updates.lengthSellLock = 'rejected';
         updates.lengthBuyLock = 'rejected';
         updates.lotLock = 'rejected';
+        // Keep sell dimensions as per master unit
+        updates.widthSellLock = baseRules.widthSellLock;
+        updates.lengthSellLock = baseRules.lengthSellLock;
+      } else if (form.tipeItem === 'Beli') {
+        // For "Beli" items, disable sell dimensions
+        updates.widthSellLock = 'rejected';
+        updates.lengthSellLock = 'rejected';
+        // Keep buy dimensions and lot as per master unit
+        updates.widthBuyLock = baseRules.widthBuyLock;
+        updates.lengthBuyLock = baseRules.lengthBuyLock;
+        updates.lotLock = baseRules.lotLock;
       } else {
-        // Untuk METER/M. LARI, aturan berdasarkan tipe item
-        if (form.tipeItem === 'Jual') {
-          // P, L enabled untuk jual, Lot disabled - set Lot to rejected
-          updates.lotLock = 'rejected';
-          // Pastikan field yang enabled kembali ke unlock jika sebelumnya rejected
-          if (prev.widthSellLock === 'rejected') updates.widthSellLock = 'unlock';
-          if (prev.lengthSellLock === 'rejected') updates.lengthSellLock = 'unlock';
-        } else if (form.tipeItem === 'Beli') {
-          // P, L disabled untuk jual, Lot enabled untuk beli - set P, L jual to rejected
-          updates.widthSellLock = 'rejected';
-          updates.lengthSellLock = 'rejected';
-          // Pastikan Lot kembali ke unlock jika sebelumnya rejected
-          if (prev.lotLock === 'rejected') updates.lotLock = 'unlock';
-        } else {
-          // Jual dan Beli = semua enabled - pastikan semua kembali ke unlock jika sebelumnya rejected
-          if (prev.widthSellLock === 'rejected') updates.widthSellLock = 'unlock';
-          if (prev.lengthSellLock === 'rejected') updates.lengthSellLock = 'unlock';
-          if (prev.lotLock === 'rejected') updates.lotLock = 'unlock';
-        }
-        // Width dan Length Buy selalu enabled untuk semua tipe item
-        if (prev.widthBuyLock === 'rejected') updates.widthBuyLock = 'unlock';
-        if (prev.lengthBuyLock === 'rejected') updates.lengthBuyLock = 'unlock';
+        // For "Jual dan Beli" items, use master unit rules directly
+        updates.widthSellLock = baseRules.widthSellLock;
+        updates.widthBuyLock = baseRules.widthBuyLock;
+        updates.lengthSellLock = baseRules.lengthSellLock;
+        updates.lengthBuyLock = baseRules.lengthBuyLock;
+        updates.lotLock = baseRules.lotLock;
       }
 
       // Only update if there are changes
-      if (Object.keys(updates).length > 0) {
+      const hasChanges = Object.keys(updates).some(key =>
+        prev[key] !== updates[key]
+      );
+
+      if (hasChanges) {
         return { ...prev, ...updates };
       }
       return prev;
     });
-  }, [form.unit, form.tipeItem]);
+  }, [form.unit, form.tipeItem, masterUnits]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -445,12 +460,9 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
           <div>
             <label className="label-text">Satuan</label>
             <select value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="input-field">
-              <option value="METER">METER</option>
-              <option value="PCS">PCS</option>
-              <option value="PACK">PACK</option>
-              <option value="M. LARI">M. LARI</option>
-              <option value="M. KEL">M. KEL</option>
-              <option value="LEVEL">LEVEL</option>
+              {masterUnits.map(unit => (
+                <option key={unit.id} value={unit.name}>{unit.name}</option>
+              ))}
             </select>
           </div>
 
@@ -600,7 +612,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                     }
                     setForm({...form, widthSellLock: e.target.value});
                   }}
-                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                  className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.widthSellLock)}`}
                   disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Beli'}
                 >
                   <option value="unlock">Unlock</option>
@@ -620,7 +632,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                     }
                     setForm({...form, widthBuyLock: e.target.value});
                   }}
-                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                  className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.widthBuyLock)}`}
                   disabled={form.unit !== 'METER' && form.unit !== 'M. LARI'}
                 >
                   <option value="unlock">Unlock</option>
@@ -643,7 +655,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                     }
                     setForm({...form, lengthSellLock: e.target.value});
                   }}
-                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                  className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.lengthSellLock)}`}
                   disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Beli'}
                 >
                   <option value="unlock">Unlock</option>
@@ -663,7 +675,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                     }
                     setForm({...form, lengthBuyLock: e.target.value});
                   }}
-                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                  className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.lengthBuyLock)}`}
                   disabled={form.unit !== 'METER' && form.unit !== 'M. LARI'}
                 >
                   <option value="unlock">Unlock</option>
@@ -686,7 +698,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                     }
                     setForm({...form, lotLock: e.target.value});
                   }}
-                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                  className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.lotLock)}`}
                   disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Jual'}
                 >
                   <option value="unlock">Unlock</option>
@@ -772,6 +784,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => (
       {[
         { id: 'database-produk', icon: Database, label: 'Database Produk' },
         { id: 'database-vendor', icon: Truck, label: 'Database Vendor' },
+        { id: 'master-satuan', icon: Settings, label: 'Master Satuan' },
       ].map((item) => (
         <button
           key={item.id}
@@ -929,8 +942,18 @@ const App = () => {
   const [activeMenu, setActiveMenu] = useState('dashboard');
   
   // --- STATE DATA ---
+  // Master Units dengan rules setting untuk P, L, dan Lot
+  const [masterUnits, setMasterUnits] = useState([
+    { id: 1, name: 'METER', pSellRule: 'unlock', pBuyRule: 'unlock', lSellRule: 'unlock', lBuyRule: 'unlock', lotRule: 'unlock' },
+    { id: 2, name: 'PCS', pSellRule: 'rejected', pBuyRule: 'rejected', lSellRule: 'rejected', lBuyRule: 'rejected', lotRule: 'unlock' },
+    { id: 3, name: 'PACK', pSellRule: 'rejected', pBuyRule: 'rejected', lSellRule: 'rejected', lBuyRule: 'rejected', lotRule: 'unlock' },
+    { id: 4, name: 'M. LARI', pSellRule: 'unlock', pBuyRule: 'unlock', lSellRule: 'unlock', lBuyRule: 'unlock', lotRule: 'unlock' },
+    { id: 5, name: 'M. KEL', pSellRule: 'rejected', pBuyRule: 'rejected', lSellRule: 'rejected', lBuyRule: 'rejected', lotRule: 'unlock' },
+    { id: 6, name: 'LEVEL', pSellRule: 'rejected', pBuyRule: 'rejected', lSellRule: 'rejected', lBuyRule: 'rejected', lotRule: 'unlock' },
+  ]);
+
   const [products, setProducts] = useState([
-    { id: 1, name: 'MMT BANNER 280 GR', unit: 'METER', width: 0.2, length: 1, area: 0, qty: 2240, price: 25000, lot: 'Roll', vendorPrices: [{ vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', costPrice: 18000 }], tipeItem: 'Jual dan Beli', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock', lotLock: 'unlock' },
+    { id: 1, name: 'MMT BANNER 280 GR', unit: 'METER', width: 0.2, length: 1, area: 0, qty: 2240, price: 25000, lot: 'Roll', vendorPrices: [{ vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', costPrice: 18000 }], tipeItem: 'Jual dan Beli', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
     { id: 2, name: 'MMT BANNER 480 GR', unit: 'METER', width: 0.2, length: 1, area: 0, qty: 420, price: 35000, costPrice: 25000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
     { id: 3, name: 'STICKER ORAJET - 1,06', unit: 'METER', width: 1.06, length: 2, area: 0, qty: 53, price: 45000, costPrice: 32000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
     { id: 4, name: 'STICKER MASTER - 1,26', unit: 'METER', width: 1.26, length: 1.8, area: 0, qty: 63, price: 55000, costPrice: 40000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
@@ -1228,23 +1251,23 @@ const App = () => {
                   <td className="p-4 text-center text-xs">
                     <div className="flex flex-col gap-1">
                       <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.widthSellLock === 'lock' ? 'bg-blue-100 text-blue-700' :
-                        p.widthSellLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
+                        p.widthSellLock === 'lock' ? 'bg-red-100 text-red-700' :
+                        p.widthSellLock === 'rejected' ? 'bg-gray-100 text-black' :
                         'bg-green-100 text-green-700'
                       }`}>L-J: {p.widthSellLock}</span>
                       <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.widthBuyLock === 'lock' ? 'bg-purple-100 text-purple-700' :
-                        p.widthBuyLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
+                        p.widthBuyLock === 'lock' ? 'bg-red-100 text-red-700' :
+                        p.widthBuyLock === 'rejected' ? 'bg-gray-100 text-black' :
                         'bg-green-100 text-green-700'
                       }`}>L-B: {p.widthBuyLock}</span>
                       <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.lengthSellLock === 'lock' ? 'bg-blue-100 text-blue-700' :
-                        p.lengthSellLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
+                        p.lengthSellLock === 'lock' ? 'bg-red-100 text-red-700' :
+                        p.lengthSellLock === 'rejected' ? 'bg-gray-100 text-black' :
                         'bg-green-100 text-green-700'
                       }`}>P-J: {p.lengthSellLock}</span>
                       <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.lengthBuyLock === 'lock' ? 'bg-purple-100 text-purple-700' :
-                        p.lengthBuyLock === 'rejected' ? 'bg-orange-100 text-orange-700' :
+                        p.lengthBuyLock === 'lock' ? 'bg-red-100 text-red-700' :
+                        p.lengthBuyLock === 'rejected' ? 'bg-gray-100 text-black' :
                         'bg-green-100 text-green-700'
                       }`}>P-B: {p.lengthBuyLock}</span>
                     </div>
@@ -2030,6 +2053,280 @@ const App = () => {
     };
 
     return isCreatingInvoice ? <InvoiceForm /> : <InvoiceList />;
+  };
+
+  const MasterSatuan = () => {
+    const [form, setForm] = useState({
+      name: '',
+      pSellRule: 'unlock',
+      pBuyRule: 'unlock',
+      lSellRule: 'unlock',
+      lBuyRule: 'unlock',
+      lotRule: 'unlock'
+    });
+    const [editingUnit, setEditingUnit] = useState(null);
+    const [showForm, setShowForm] = useState(false);
+
+    // Helper function untuk mendapatkan styling berdasarkan status lock
+    const getLockStatusStyle = (status) => {
+      switch (status) {
+        case 'unlock':
+          return 'bg-green-50 border-green-300 text-green-700';
+        case 'lock':
+          return 'bg-red-50 border-red-300 text-red-700';
+        case 'rejected':
+          return 'bg-gray-50 border-gray-300 text-black';
+        default:
+          return 'bg-slate-50 border-slate-300 text-slate-700';
+      }
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (editingUnit) {
+        // Edit existing unit
+        setMasterUnits(masterUnits.map(unit =>
+          unit.id === editingUnit.id ? { ...form, id: editingUnit.id } : unit
+        ));
+        setEditingUnit(null);
+      } else {
+        // Add new unit
+        const newUnit = {
+          ...form,
+          id: Math.max(...masterUnits.map(u => u.id)) + 1
+        };
+        setMasterUnits([...masterUnits, newUnit]);
+      }
+      setForm({
+        name: '',
+        pSellRule: 'unlock',
+        pBuyRule: 'unlock',
+        lSellRule: 'unlock',
+        lBuyRule: 'unlock',
+        lotRule: 'unlock'
+      });
+      setShowForm(false);
+    };
+
+    const handleEdit = (unit) => {
+      setForm(unit);
+      setEditingUnit(unit);
+      setShowForm(true);
+    };
+
+    const handleDelete = (id) => {
+      if (window.confirm('Hapus satuan ini?')) {
+        setMasterUnits(masterUnits.filter(u => u.id !== id));
+      }
+    };
+
+    const getStatusColor = (status) => {
+      switch (status) {
+        case 'unlock': return 'bg-green-100 text-green-700';
+        case 'lock': return 'bg-red-100 text-red-700';
+        case 'rejected': return 'bg-gray-100 text-black';
+        default: return 'bg-gray-100 text-gray-700';
+      }
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-black text-slate-800">Master Satuan</h2>
+          <button
+            onClick={() => {
+              setShowForm(!showForm);
+              if (!showForm) {
+                setForm({
+                  name: '',
+                  pSellRule: 'unlock',
+                  pBuyRule: 'unlock',
+                  lSellRule: 'unlock',
+                  lBuyRule: 'unlock',
+                  lotRule: 'unlock'
+                });
+                setEditingUnit(null);
+              }
+            }}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            {showForm ? 'Batal' : 'Tambah Satuan'}
+          </button>
+        </div>
+
+        {showForm && (
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <h3 className="text-lg font-bold mb-4">{editingUnit ? 'Edit Satuan' : 'Tambah Satuan Baru'}</h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="label-text">Nama Satuan</label>
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={e => setForm({...form, name: e.target.value})}
+                  className="input-field"
+                  placeholder="Contoh: METER, PCS, PACK"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                  <label className="label-text">P (Panjang) Jual</label>
+                  <select
+                    value={form.pSellRule}
+                    onChange={e => setForm({...form, pSellRule: e.target.value})}
+                    className={`input-field font-bold uppercase ${getLockStatusStyle(form.pSellRule)}`}
+                  >
+                    <option value="unlock">Unlock</option>
+                    <option value="lock">Lock</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="label-text">P (Panjang) Beli</label>
+                  <select
+                    value={form.pBuyRule}
+                    onChange={e => setForm({...form, pBuyRule: e.target.value})}
+                    className={`input-field font-bold uppercase ${getLockStatusStyle(form.pBuyRule)}`}
+                  >
+                    <option value="unlock">Unlock</option>
+                    <option value="lock">Lock</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="label-text">L (Lebar) Jual</label>
+                  <select
+                    value={form.lSellRule}
+                    onChange={e => setForm({...form, lSellRule: e.target.value})}
+                    className={`input-field font-bold uppercase ${getLockStatusStyle(form.lSellRule)}`}
+                  >
+                    <option value="unlock">Unlock</option>
+                    <option value="lock">Lock</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="label-text">L (Lebar) Beli</label>
+                  <select
+                    value={form.lBuyRule}
+                    onChange={e => setForm({...form, lBuyRule: e.target.value})}
+                    className={`input-field font-bold uppercase ${getLockStatusStyle(form.lBuyRule)}`}
+                  >
+                    <option value="unlock">Unlock</option>
+                    <option value="lock">Lock</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="label-text">Lot</label>
+                  <select
+                    value={form.lotRule}
+                    onChange={e => setForm({...form, lotRule: e.target.value})}
+                    className={`input-field font-bold uppercase ${getLockStatusStyle(form.lotRule)}`}
+                  >
+                    <option value="unlock">Unlock</option>
+                    <option value="lock">Lock</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button type="submit" className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition">
+                  {editingUnit ? 'Update' : 'Simpan'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg font-bold hover:bg-slate-300 transition"
+                >
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-slate-200">
+            <h3 className="text-lg font-bold">Daftar Satuan</h3>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50">
+                <tr>
+                  <th className="p-4 text-left">Satuan</th>
+                  <th className="p-4 text-center">P Jual</th>
+                  <th className="p-4 text-center">P Beli</th>
+                  <th className="p-4 text-center">L Jual</th>
+                  <th className="p-4 text-center">L Beli</th>
+                  <th className="p-4 text-center">Lot</th>
+                  <th className="p-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {masterUnits.map(unit => (
+                  <tr key={unit.id} className="hover:bg-slate-50">
+                    <td className="p-4 font-bold">{unit.name}</td>
+                    <td className="p-4 text-center">
+                      <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${getStatusColor(unit.pSellRule)}`}>
+                        {unit.pSellRule}
+                      </span>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${getStatusColor(unit.pBuyRule)}`}>
+                        {unit.pBuyRule}
+                      </span>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${getStatusColor(unit.lSellRule)}`}>
+                        {unit.lSellRule}
+                      </span>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${getStatusColor(unit.lBuyRule)}`}>
+                        {unit.lBuyRule}
+                      </span>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${getStatusColor(unit.lotRule)}`}>
+                        {unit.lotRule}
+                      </span>
+                    </td>
+                    <td className="p-4 text-center">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => handleEdit(unit)}
+                          className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"
+                          title="Edit"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(unit.id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                          title="Hapus"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const DatabaseVendor = () => {
@@ -2906,6 +3203,7 @@ const App = () => {
                <ProductFormPage
                   mode={productFormMode}
                   editingProduct={editingProduct}
+                  masterUnits={masterUnits}
                   onSave={(productData) => {
                      if (productFormMode === 'edit') {
                         setProducts(products.map(p => p.id === editingProduct.id ? { ...productData, id: editingProduct.id } : p));
@@ -2926,6 +3224,7 @@ const App = () => {
                   {activeMenu === 'dashboard' && <Dashboard />}
                   {activeMenu === 'database-produk' && <DatabaseProduk />}
                   {activeMenu === 'database-vendor' && <DatabaseVendor />}
+                  {activeMenu === 'master-satuan' && <MasterSatuan />}
                   {activeMenu === 'nota-pelanggan' && <NotaPelanggan />}
                   {activeMenu === 'rekap-cashflow' && <RekapCashflow />}
                   {activeMenu === 'nota-supplier' && <NotaSupplier />}
