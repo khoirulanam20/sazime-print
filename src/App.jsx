@@ -2780,6 +2780,7 @@ const App = () => {
                                     <th className="py-2 px-1 text-center">QTY</th>
                                     <th className="py-2 px-1 text-center">LUAS</th>
                                     <th className="py-2 px-1 text-center">SAT</th>
+                                    {isPurchase && <th className="py-2 px-1 text-center">CONV</th>}
                                     <th className="py-2 px-1 text-right">HARGA</th>
                                     <th className="py-2 px-1 text-right">DISKON</th>
                                     <th className="py-2 px-1 text-right">SUB TOTAL</th>
@@ -2790,11 +2791,8 @@ const App = () => {
                                     <tr key={i}>
                                         <td className="py-2 px-1 text-center font-medium">{i + 1}</td>
                                         <td className="py-2 px-1 font-bold">{item.name}</td>
-                                        {isPurchase && <td className="py-2 px-1 text-center text-slate-500">{(() => {
-                                          const product = products.find(p => p.id === item.productId);
-                                          return product?.lot || '-';
-                                        })()}</td>}
-                                        {!isPurchase && <td className="py-2 px-1 text-slate-600">{item.itemDesc}</td>}
+                                        {isPurchase && <td className="py-2 px-1 text-center text-slate-500">{item.lot || '-'}</td>}
+                                        {!isPurchase && <td className="py-2 px-1 text-slate-600">-</td>}
                                         <td className="py-2 px-1 text-center">
                                           {(() => {
                                             const product = products.find(p => p.id === item.productId);
@@ -2814,6 +2812,7 @@ const App = () => {
                                         <td className="py-2 px-1 text-center font-bold">{item.qty}</td>
                                         <td className="py-2 px-1 text-center">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
                                         <td className="py-2 px-1 text-center">{item.purchaseUnit || item.unit}</td>
+                                        {isPurchase && <td className="py-2 px-1 text-center">{item.conversion || 1}</td>}
                                         <td className="py-2 px-1 text-right">{formatCurrency(item.price)}</td>
                                         <td className="py-2 px-1 text-right text-red-500">{item.discount > 0 ? formatCurrency(item.discount) : '-'}</td>
                                         <td className="py-2 px-1 text-right font-bold">{formatCurrency(item.subtotal)}</td>
