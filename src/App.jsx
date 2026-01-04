@@ -34,6 +34,14 @@ const formatCurrency = (value) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
 };
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const generateInvoiceCode = (prefix = 'INV') => {
   const date = new Date();
   const ymd = date.toISOString().slice(2, 10).replace(/-/g, '');
@@ -250,13 +258,15 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
     length: 0,
     qty: 0,
     price: 0,
+    lot: 'Roll',
     vendorPrices: [],
     tipeItem: 'Jual dan Beli',
     priceLock: 'unlock',
     widthSellLock: 'unlock',
     widthBuyLock: 'unlock',
     lengthSellLock: 'unlock',
-    lengthBuyLock: 'unlock'
+    lengthBuyLock: 'unlock',
+    lotLock: 'unlock'
   });
 
   // Load data when editing
@@ -271,13 +281,15 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
         length: 0,
         qty: 0,
         price: 0,
+        lot: 'Roll',
         vendorPrices: [],
         tipeItem: 'Jual dan Beli',
         priceLock: 'unlock',
         widthSellLock: 'unlock',
         widthBuyLock: 'unlock',
         lengthSellLock: 'unlock',
-        lengthBuyLock: 'unlock'
+        lengthBuyLock: 'unlock', lotLock: 'unlock',
+        lotLock: 'unlock'
       });
     }
   }, [mode, editingProduct]);
@@ -294,6 +306,60 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
       }
     }
   }, [form.vendorId, vendors]);
+
+  // Auto-set status lock to rejected based on unit and tipeItem rules
+  useEffect(() => {
+    setForm(prev => {
+      const updates = {};
+
+      // Aturan satuan: Meter/Meter Lari enable 'P','L','Lot', lainnya disable
+      const isMeterUnit = form.unit === 'METER' || form.unit === 'M. LARI';
+      const isOtherUnit = !isMeterUnit;
+
+      // Aturan Tipe Item:
+      // - Jual dan Beli = "P", "L", "Lot" Jual dan Beli = enable
+      // - Jual = "P", "L" Jual = enable, "P", "L", "Lot" = disable
+      // - Beli = "P", "L" Jual = disable, "P", "L", "Lot" = enable
+
+      if (isOtherUnit) {
+        // Untuk unit selain METER/M. LARI, semua field disabled - set to rejected
+        updates.widthSellLock = 'rejected';
+        updates.widthBuyLock = 'rejected';
+        updates.lengthSellLock = 'rejected';
+        updates.lengthBuyLock = 'rejected';
+        updates.lotLock = 'rejected';
+      } else {
+        // Untuk METER/M. LARI, aturan berdasarkan tipe item
+        if (form.tipeItem === 'Jual') {
+          // P, L enabled untuk jual, Lot disabled - set Lot to rejected
+          updates.lotLock = 'rejected';
+          // Pastikan field yang enabled kembali ke unlock jika sebelumnya rejected
+          if (prev.widthSellLock === 'rejected') updates.widthSellLock = 'unlock';
+          if (prev.lengthSellLock === 'rejected') updates.lengthSellLock = 'unlock';
+        } else if (form.tipeItem === 'Beli') {
+          // P, L disabled untuk jual, Lot enabled untuk beli - set P, L jual to rejected
+          updates.widthSellLock = 'rejected';
+          updates.lengthSellLock = 'rejected';
+          // Pastikan Lot kembali ke unlock jika sebelumnya rejected
+          if (prev.lotLock === 'rejected') updates.lotLock = 'unlock';
+        } else {
+          // Jual dan Beli = semua enabled - pastikan semua kembali ke unlock jika sebelumnya rejected
+          if (prev.widthSellLock === 'rejected') updates.widthSellLock = 'unlock';
+          if (prev.lengthSellLock === 'rejected') updates.lengthSellLock = 'unlock';
+          if (prev.lotLock === 'rejected') updates.lotLock = 'unlock';
+        }
+        // Width dan Length Buy selalu enabled untuk semua tipe item
+        if (prev.widthBuyLock === 'rejected') updates.widthBuyLock = 'unlock';
+        if (prev.lengthBuyLock === 'rejected') updates.lengthBuyLock = 'unlock';
+      }
+
+      // Only update if there are changes
+      if (Object.keys(updates).length > 0) {
+        return { ...prev, ...updates };
+      }
+      return prev;
+    });
+  }, [form.unit, form.tipeItem]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -398,7 +464,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
           </div>
 
           <div>
-            <label className="label-text">L (Lebar cm) - Nullable {form.widthBuyLock === 'lock' ? '(Locked - Beli)' : ''}</label>
+            <label className="label-text">L (Lebar m) - Nullable {form.widthBuyLock === 'lock' ? '(Locked - Beli)' : ''}</label>
             <input
               type="number"
               step="0.01"
@@ -411,7 +477,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
           </div>
 
           <div>
-            <label className="label-text">P (Panjang cm) - Nullable {form.lengthBuyLock === 'lock' ? '(Locked - Beli)' : ''}</label>
+            <label className="label-text">P (Panjang m) - Nullable {form.lengthBuyLock === 'lock' ? '(Locked - Beli)' : ''}</label>
             <input
               type="number"
               step="0.01"
@@ -434,20 +500,36 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
             />
           </div>
 
-          <div>
-            <label className="label-text">Harga Jual</label>
-            <input
-              type="number"
-              required
-              value={form.price}
-              onChange={e => setForm({...form, price: e.target.value})}
-              className="input-field"
-              placeholder="0"
-            />
-          </div>
+          {/* Harga Jual - muncul untuk Jual dan Jual dan Beli */}
+          {(form.tipeItem === 'Jual' || form.tipeItem === 'Jual dan Beli') && (
+            <div>
+              <label className="label-text">Harga Jual</label>
+              <input
+                type="number"
+                required
+                value={form.price}
+                onChange={e => setForm({...form, price: e.target.value})}
+                className="input-field"
+                placeholder="0"
+              />
+            </div>
+          )}
 
-          <div className="col-span-2">
-            <label className="label-text mb-2 block">Harga Beli per Vendor</label>
+          {/* Lot - muncul untuk Jual dan Beli dan Beli */}
+          {(form.tipeItem === 'Jual dan Beli' || form.tipeItem === 'Beli') && (
+            <div>
+              <label className="label-text">Lot</label>
+              <select value={form.lot} onChange={e => setForm({...form, lot: e.target.value})} className="input-field">
+                <option value="Roll">Roll</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+          )}
+
+          {/* Harga Beli per Vendor - muncul untuk Jual dan Beli dan Beli */}
+          {(form.tipeItem === 'Jual dan Beli' || form.tipeItem === 'Beli') && (
+            <div className="col-span-2">
+              <label className="label-text mb-2 block">Harga Beli per Vendor</label>
             <div className="space-y-2 max-h-32 overflow-y-auto border border-slate-200 rounded-lg p-2">
               {form.vendorPrices.length === 0 ? (
                 <p className="text-sm text-slate-500 text-center py-2">Belum ada vendor ditambahkan</p>
@@ -498,6 +580,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
               </button>
             </div>
           </div>
+          )}
 
           <div className="col-span-2 space-y-3">
             <h5 className="text-xs font-black text-slate-600 uppercase tracking-widest">Status Lock</h5>
@@ -506,8 +589,19 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                 <label className="text-xs font-bold text-slate-600">L Jual:</label>
                 <select
                   value={form.widthSellLock}
-                  onChange={e => setForm({...form, widthSellLock: e.target.value})}
+                  onChange={e => {
+                    const isMeterUnit = form.unit === 'METER' || form.unit === 'M. LARI';
+                    const isOtherUnit = !isMeterUnit;
+                    const isBeliType = form.tipeItem === 'Beli';
+
+                    if (isOtherUnit || isBeliType) {
+                      // Disabled, hanya bisa rejected
+                      if (e.target.value !== 'rejected') return;
+                    }
+                    setForm({...form, widthSellLock: e.target.value});
+                  }}
                   className="text-xs px-2 py-1 rounded border border-slate-300"
+                  disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Beli'}
                 >
                   <option value="unlock">Unlock</option>
                   <option value="lock">Lock</option>
@@ -518,8 +612,16 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                 <label className="text-xs font-bold text-slate-600">L Beli:</label>
                 <select
                   value={form.widthBuyLock}
-                  onChange={e => setForm({...form, widthBuyLock: e.target.value})}
+                  onChange={e => {
+                    const isOtherUnit = form.unit !== 'METER' && form.unit !== 'M. LARI';
+                    if (isOtherUnit) {
+                      // Disabled, hanya bisa rejected
+                      if (e.target.value !== 'rejected') return;
+                    }
+                    setForm({...form, widthBuyLock: e.target.value});
+                  }}
                   className="text-xs px-2 py-1 rounded border border-slate-300"
+                  disabled={form.unit !== 'METER' && form.unit !== 'M. LARI'}
                 >
                   <option value="unlock">Unlock</option>
                   <option value="lock">Lock</option>
@@ -530,8 +632,19 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                 <label className="text-xs font-bold text-slate-600">P Jual:</label>
                 <select
                   value={form.lengthSellLock}
-                  onChange={e => setForm({...form, lengthSellLock: e.target.value})}
+                  onChange={e => {
+                    const isMeterUnit = form.unit === 'METER' || form.unit === 'M. LARI';
+                    const isOtherUnit = !isMeterUnit;
+                    const isBeliType = form.tipeItem === 'Beli';
+
+                    if (isOtherUnit || isBeliType) {
+                      // Disabled, hanya bisa rejected
+                      if (e.target.value !== 'rejected') return;
+                    }
+                    setForm({...form, lengthSellLock: e.target.value});
+                  }}
                   className="text-xs px-2 py-1 rounded border border-slate-300"
+                  disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Beli'}
                 >
                   <option value="unlock">Unlock</option>
                   <option value="lock">Lock</option>
@@ -542,8 +655,39 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                 <label className="text-xs font-bold text-slate-600">P Beli:</label>
                 <select
                   value={form.lengthBuyLock}
-                  onChange={e => setForm({...form, lengthBuyLock: e.target.value})}
+                  onChange={e => {
+                    const isOtherUnit = form.unit !== 'METER' && form.unit !== 'M. LARI';
+                    if (isOtherUnit) {
+                      // Disabled, hanya bisa rejected
+                      if (e.target.value !== 'rejected') return;
+                    }
+                    setForm({...form, lengthBuyLock: e.target.value});
+                  }}
                   className="text-xs px-2 py-1 rounded border border-slate-300"
+                  disabled={form.unit !== 'METER' && form.unit !== 'M. LARI'}
+                >
+                  <option value="unlock">Unlock</option>
+                  <option value="lock">Lock</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                <label className="text-xs font-bold text-slate-600">Lot:</label>
+                <select
+                  value={form.lotLock}
+                  onChange={e => {
+                    const isMeterUnit = form.unit === 'METER' || form.unit === 'M. LARI';
+                    const isOtherUnit = !isMeterUnit;
+                    const isJualType = form.tipeItem === 'Jual';
+
+                    if (isOtherUnit || isJualType) {
+                      // Disabled, hanya bisa rejected
+                      if (e.target.value !== 'rejected') return;
+                    }
+                    setForm({...form, lotLock: e.target.value});
+                  }}
+                  className="text-xs px-2 py-1 rounded border border-slate-300"
+                  disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Jual'}
                 >
                   <option value="unlock">Unlock</option>
                   <option value="lock">Lock</option>
@@ -565,6 +709,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors }) =>
                     <li><strong>L Beli Lock:</strong> Jika aktif, lebar terkunci untuk pembelian (tidak bisa edit di form produk & invoice beli)</li>
                     <li><strong>P Jual Lock:</strong> Jika aktif, panjang pada invoice jual terkunci sesuai database</li>
                     <li><strong>P Beli Lock:</strong> Jika aktif, panjang terkunci untuk pembelian (tidak bisa edit di form produk & invoice beli)</li>
+                    <li><strong>Lot Lock:</strong> Jika aktif, lot pada invoice jual dan beli terkunci sesuai database</li>
                   </ul>
                 </div>
               </div>
@@ -785,25 +930,25 @@ const App = () => {
   
   // --- STATE DATA ---
   const [products, setProducts] = useState([
-    { id: 1, name: 'MMT BANNER 280 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 2240, price: 25000, vendorPrices: [{ vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', costPrice: 18000 }], tipeItem: 'Jual dan Beli', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 2, name: 'MMT BANNER 480 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 420, price: 35000, costPrice: 25000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 3, name: 'STICKER ORAJET - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 45000, costPrice: 32000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 4, name: 'STICKER MASTER - 1,26', unit: 'METER', width: 126, length: 0, area: 0, qty: 63, price: 55000, costPrice: 40000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 5, name: 'STICKER CINA - 1,56', unit: 'METER', width: 156, length: 0, area: 0, qty: 78, price: 40000, costPrice: 28000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 15000, costPrice: 10000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 18000, costPrice: 12000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 8, name: 'LAMINASI DOFF 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 16000, costPrice: 11000, vendorId: 1, vendorName: 'Toko Warna Abadi', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 9, name: 'LAMINASI DOFF 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 19000, costPrice: 13000, vendorId: 1, vendorName: 'Toko Warna Abadi', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 10, name: 'JASA CUTTING STICKER - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: -200, price: 8000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 20, price: 150000, costPrice: 120000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 12, name: 'ALBATROS 0,63', unit: 'METER', width: 63, length: 0, area: 0, qty: 63, price: 25000, costPrice: 18000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 13, name: 'ALAT X BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 10, price: 200000, costPrice: 160000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 14, name: 'RING KELING BANNER', unit: 'PACK', width: 0, length: 0, area: 0, qty: 5, price: 25000, costPrice: 15000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 15, name: 'DTF FILM', unit: 'M. LARI', width: 0, length: 0, area: 0, qty: 100, price: 50000, costPrice: 35000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 16, name: 'TINTA INDOOR', unit: 'PCS', width: 0, length: 0, area: 0, qty: 4, price: 500000, costPrice: 350000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 17, name: 'POWDER DTF 1 KG', unit: 'PCS', width: 0, length: 0, area: 0, qty: 5, price: 250000, costPrice: 180000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 18, name: 'JAHIT KELILING', unit: 'M. KEL', width: 0, length: 0, area: 0, qty: -20, price: 5000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
-    { id: 19, name: 'JASA DESAIN', unit: 'LEVEL', width: 0, length: 0, area: 0, qty: -20, price: 50000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock' },
+    { id: 1, name: 'MMT BANNER 280 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 2240, price: 25000, lot: 'Roll', vendorPrices: [{ vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', costPrice: 18000 }], tipeItem: 'Jual dan Beli', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock', lotLock: 'unlock' },
+    { id: 2, name: 'MMT BANNER 480 GR', unit: 'METER', width: 0, length: 0, area: 0, qty: 420, price: 35000, costPrice: 25000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 3, name: 'STICKER ORAJET - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 45000, costPrice: 32000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 4, name: 'STICKER MASTER - 1,26', unit: 'METER', width: 126, length: 0, area: 0, qty: 63, price: 55000, costPrice: 40000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 5, name: 'STICKER CINA - 1,56', unit: 'METER', width: 156, length: 0, area: 0, qty: 78, price: 40000, costPrice: 28000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 15000, costPrice: 10000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 18000, costPrice: 12000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 8, name: 'LAMINASI DOFF 100 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 16000, costPrice: 11000, vendorId: 1, vendorName: 'Toko Warna Abadi', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 9, name: 'LAMINASI DOFF 120 GR - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: 53, price: 19000, costPrice: 13000, vendorId: 1, vendorName: 'Toko Warna Abadi', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 10, name: 'JASA CUTTING STICKER - 1,06', unit: 'METER', width: 106, length: 0, area: 0, qty: -200, price: 8000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 20, price: 150000, costPrice: 120000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 12, name: 'ALBATROS 0,63', unit: 'METER', width: 63, length: 0, area: 0, qty: 63, price: 25000, lot: 'Roll', costPrice: 18000, vendorId: 2, vendorName: 'PT. Grafika Indonesia', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 13, name: 'ALAT X BANNER 60 X 160 CM', unit: 'PCS', width: 60, length: 160, area: 0, qty: 10, price: 200000, costPrice: 160000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 14, name: 'RING KELING BANNER', unit: 'PACK', width: 0, length: 0, area: 0, qty: 5, price: 25000, lot: 'Roll', costPrice: 15000, vendorId: 4, vendorName: 'Toko Alat Tulis & Printing', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 15, name: 'DTF FILM', unit: 'M. LARI', width: 0, length: 0, area: 0, qty: 100, price: 50000, costPrice: 35000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 16, name: 'TINTA INDOOR', unit: 'PCS', width: 0, length: 0, area: 0, qty: 4, price: 500000, costPrice: 350000, vendorId: 5, vendorName: 'MPS (Modern Printing Supplies)', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 17, name: 'POWDER DTF 1 KG', unit: 'PCS', width: 0, length: 0, area: 0, qty: 5, price: 250000, costPrice: 180000, vendorId: 3, vendorName: 'CV. Digital Print Supplies', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 18, name: 'JAHIT KELILING', unit: 'M. KEL', width: 0, length: 0, area: 0, qty: -20, price: 5000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
+    { id: 19, name: 'JASA DESAIN', unit: 'LEVEL', width: 0, length: 0, area: 0, qty: -20, price: 50000, costPrice: 0, vendorId: 0, vendorName: 'Internal', priceLock: 'unlock', widthSellLock: 'unlock', widthBuyLock: 'unlock', lengthSellLock: 'unlock', lengthBuyLock: 'unlock', lotLock: 'unlock' },
   ]);
 
 
@@ -859,12 +1004,12 @@ const App = () => {
     { id: 'INV-20250106-1111', date: `${currentMonthPrefix}-06`, buyer: 'Dewi Lestari', items: [{ productId: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', width: 106, length: 150, area: 1.59, unit: 'METER', price: 15000, qty: 3, discount: 0, subtotal: 45000 }], total: 45000, paid: 45000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
     { id: 'INV-20250107-2222', date: `${currentMonthPrefix}-07`, buyer: 'Joko Widodo', items: [{ productId: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', width: 106, length: 180, area: 1.908, unit: 'METER', price: 18000, qty: 2, discount: 0, subtotal: 36000 }], total: 36000, paid: 36000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
     { id: 'INV-20250108-3333', date: `${currentMonthPrefix}-08`, buyer: 'Nina Kartika', items: [{ productId: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 150000, qty: 8, discount: 0, subtotal: 1200000 }], total: 1200000, paid: 1200000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250109-4444', date: `${currentMonthPrefix}-09`, buyer: 'Bayu Prasetyo', items: [{ productId: 12, name: 'ALBATROS 0,63', width: 63, length: 120, area: 0.756, unit: 'METER', price: 25000, qty: 6, discount: 0, subtotal: 150000 }], total: 150000, paid: 150000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250109-4444', date: `${currentMonthPrefix}-09`, buyer: 'Bayu Prasetyo', items: [{ productId: 12, name: 'ALBATROS 0,63', width: 63, length: 120, area: 0.756, unit: 'METER', price: 25000, lot: 'Roll', qty: 6, discount: 0, subtotal: 150000 }], total: 150000, paid: 150000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
     { id: 'INV-20250110-5555', date: `${currentMonthPrefix}-10`, buyer: 'Rina Amelia', items: [{ productId: 13, name: 'ALAT X BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 200000, qty: 7, discount: 0, subtotal: 1400000 }], total: 1400000, paid: 1400000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
     { id: 'INV-20250111-6666', date: `${currentMonthPrefix}-11`, buyer: 'Fajar Nugroho', items: [{ productId: 8, name: 'LAMINASI DOFF 100 GR - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 16000, qty: 4, discount: 0, subtotal: 64000 }], total: 64000, paid: 64000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
     { id: 'INV-20250112-7777', date: `${currentMonthPrefix}-12`, buyer: 'Linda Sari', items: [{ productId: 9, name: 'LAMINASI DOFF 120 GR - 1,06', width: 106, length: 140, area: 1.484, unit: 'METER', price: 19000, qty: 3, discount: 0, subtotal: 57000 }], total: 57000, paid: 57000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
     { id: 'INV-20250113-8888', date: `${currentMonthPrefix}-13`, buyer: 'Doni Setiawan', items: [{ productId: 10, name: 'JASA CUTTING STICKER - 1,06', width: 106, length: 80, area: 0.848, unit: 'METER', price: 8000, qty: 2, discount: 0, subtotal: 16000 }], total: 16000, paid: 16000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250114-9999', date: `${currentMonthPrefix}-14`, buyer: 'Sari Indah', items: [{ productId: 14, name: 'RING KELING BANNER', width: 0, length: 0, area: 0, unit: 'PACK', price: 25000, qty: 3, discount: 0, subtotal: 75000 }], total: 75000, paid: 75000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250114-9999', date: `${currentMonthPrefix}-14`, buyer: 'Sari Indah', items: [{ productId: 14, name: 'RING KELING BANNER', width: 0, length: 0, area: 0, unit: 'PACK', price: 25000, lot: 'Roll', qty: 3, discount: 0, subtotal: 75000 }], total: 75000, paid: 75000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
     { id: 'INV-20250115-0001', date: `${currentMonthPrefix}-15`, buyer: 'Eko Prabowo', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 250, length: 120, area: 3, unit: 'METER', price: 20000, qty: 2, discount: 0, subtotal: 60000 }, { productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 45000, qty: 1, discount: 0, subtotal: 45000 }], total: 105000, paid: 105000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
   ]);
 
@@ -896,7 +1041,7 @@ const App = () => {
   ]);
 
   const [expenses, setExpenses] = useState([
-    { id: 'EXP-20250105-1111', date: `${currentMonthPrefix}-05`, vendor: 'PLN', item: 'Listrik Bulan Ini', price: 1500000, paymentMethod: 'Transfer' },
+    { id: 'EXP-20250105-1111', date: `${currentMonthPrefix}-05`, vendor: 'PLN', item: 'Listrik Bulan Ini', price: 1500000, paid: 1500000, paymentMethod: 'Transfer' },
   ]);
 
   const [wallet, setWallet] = useState({ cash: 8500000, bank: 25000000 });
@@ -1057,14 +1202,10 @@ const App = () => {
               <tr>
                 <th className="p-4">Nama Produk</th>
                 <th className="p-4 text-center">Tipe Item</th>
-                <th className="p-4 text-center">Vendor</th>
-                <th className="p-4 text-center">L (Lebar)</th>
-                <th className="p-4 text-center">P (Panjang)</th>
-                <th className="p-4 text-center">Stok (Qty)</th>
-                <th className="p-4 text-center">Satuan</th>
-                <th className="p-4 text-center">Luas (m²)</th>
-                <th className="p-4 text-right">Harga Jual</th>
-                <th className="p-4 text-right">Harga Beli</th>
+                <th className="p-4 text-center">L</th>
+                <th className="p-4 text-center">P</th>
+                <th className="p-4 text-center">Luas</th>
+                <th className="p-4 text-center">QTY</th>
                 <th className="p-4 text-center">Status Lock</th>
                 <th className="p-4 text-center">Aksi</th>
               </tr>
@@ -1076,31 +1217,14 @@ const App = () => {
                       {p.name}
                   </td>
                   <td className="p-4 text-center text-xs font-black bg-blue-50 text-blue-700 rounded px-2 py-1">{p.tipeItem || 'Jual dan Beli'}</td>
-                  <td className="p-4 text-center text-sm text-slate-600">{p.vendorName || '-'}</td>
                   <td className="p-4 text-center font-mono">{p.width || '-'}</td>
                   <td className="p-4 text-center font-mono">{p.length || '-'}</td>
-                  <td className="p-4 text-center font-bold text-slate-700">{p.qty}</td>
-                  <td className="p-4 text-center text-xs font-black bg-slate-50 text-slate-600 rounded">{p.unit}</td>
                   <td className="p-4 text-center text-slate-500 text-xs font-mono">
-                    {p.width > 0 && p.length > 0 
+                    {p.width > 0 && p.length > 0
                       ? ((p.width * p.length) / 10000).toLocaleString('id-ID')
                       : '-'}
                   </td>
-                  <td className="p-4 text-right font-bold text-emerald-600">{formatCurrency(p.price)}</td>
-                  <td className="p-4 text-right text-xs">
-                    <div className="space-y-1">
-                      {p.vendorPrices && p.vendorPrices.length > 0 ? (
-                        p.vendorPrices.map((vp, index) => (
-                          <div key={index} className="flex justify-between items-center">
-                            <span className="text-slate-600 truncate max-w-20" title={vp.vendorName}>{vp.vendorName}</span>
-                            <span className="font-bold text-blue-600 ml-1">{formatCurrency(vp.costPrice)}</span>
-                          </div>
-                        ))
-                      ) : (
-                        <span className="text-slate-400">-</span>
-                      )}
-                    </div>
-                  </td>
+                  <td className="p-4 text-center font-bold text-slate-700">{p.qty}</td>
                   <td className="p-4 text-center text-xs">
                     <div className="flex flex-col gap-1">
                       <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
@@ -1158,14 +1282,13 @@ const App = () => {
     const [itemEntry, setItemEntry] = useState({
       targetType: 'product',
       itemId: '',
-      width: 0, 
-      length: 0, 
-      qty: 1, 
-      lot: 'Lock', // Default Lock
+      width: 0,
+      length: 0,
+      qty: 1,
       price: 0,
       discount: 0,
       purchaseUnit: '',
-      conversionValue: 0, 
+      conversionValue: 0,
     });
 
     const [cart, setCart] = useState([]);
@@ -1194,7 +1317,7 @@ const App = () => {
                 price: selectedProduct.priceLock === 'lock' ? (selectedProduct.price || 0) : (prev.price || selectedProduct.price || 0),
             }));
         }
-    }, [itemEntry.itemId, itemEntry.lot]);
+    }, [itemEntry.itemId]);
 
     // Load data for editing
     useEffect(() => {
@@ -1255,13 +1378,13 @@ const App = () => {
 
         // Logic Konversi: Jika DB = METER dan Lot = ROLL
         // "P" acts as "Panjang per Roll" in this context if Lot=Roll
-        if (selectedProduct.unit === 'METER' && itemEntry.lot === 'Roll') {
+        if (selectedProduct.unit === 'METER' && selectedProduct.lot === 'Roll') {
             const rollLength = parseFloat(itemEntry.length) || 0; // Using P as roll length
             addedQty = qty * rollLength;
         }
 
         // Hitung Luas & Subtotal
-        if (selectedProduct.unit === 'METER' && width > 0 && length > 0 && itemEntry.lot !== 'Roll') {
+        if (selectedProduct.unit === 'METER' && width > 0 && length > 0 && selectedProduct.lot !== 'Roll') {
            // Standard Meter calculation if dimensions exist
            area = (width * length) / 10000;
         }
@@ -1272,16 +1395,16 @@ const App = () => {
             id: Date.now(),
             itemId: itemEntry.itemId,
             name: selectedProduct.name,
-            width, length, qty, lot: itemEntry.lot,
-            area, 
+            width, length, qty, lot: selectedProduct.lot,
+            area,
             unit: selectedProduct.unit, // Satuan Stok
             purchaseUnit: itemEntry.purchaseUnit, // Satuan Beli
             price, discount, subtotal,
-            addedQty 
+            addedQty
         };
 
         setCart([...cart, newItem]);
-        setItemEntry({ ...itemEntry, itemId: '', width: 0, length: 0, qty: 1, lot: 'Lock', price: 0, discount: 0 });
+        setItemEntry({ ...itemEntry, itemId: '', width: 0, length: 0, qty: 1, price: 0, discount: 0 });
     };
 
     const removeFromCart = (index) => {
@@ -1412,13 +1535,6 @@ const App = () => {
                            />
                        </div>
                        
-                       <div className="col-span-2">
-                           <label className="label-text">Lot</label>
-                           <select className="input-field" value={itemEntry.lot} onChange={e => setItemEntry({...itemEntry, lot: e.target.value})}>
-                               <option value="Lock">Lock</option>
-                               <option value="Roll">Roll</option>
-                           </select>
-                       </div>
 
                        <div className="col-span-2">
                            <label className="label-text">Satuan</label>
@@ -1426,7 +1542,7 @@ const App = () => {
                        </div>
 
                        <div className="col-span-2">
-                           <label className="label-text">L (cm) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                           <label className="label-text">L (m) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
                            <input
                                 type="number"
                                 className="input-field bg-slate-100 text-slate-500 cursor-not-allowed"
@@ -1436,7 +1552,7 @@ const App = () => {
                            />
                        </div>
                        <div className="col-span-2">
-                           <label className="label-text">P (cm) {itemEntry.lot === 'Roll' ? '(Pjg/Roll)' : ''} {selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                           <label className="label-text">P (m) {selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
                            <input
                                 type="number"
                                 className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
@@ -1448,6 +1564,10 @@ const App = () => {
                            />
                        </div>
                        <div className="col-span-2"><label className="label-text">Qty</label><input type="number" className="input-field" value={itemEntry.qty} onChange={e => setItemEntry({...itemEntry, qty: e.target.value})} placeholder="1" /></div>
+                       <div className="col-span-2">
+                           <label className="label-text">Lot</label>
+                           <input type="text" value={selectedProduct?.lot || 'Lock'} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
+                       </div>
                        <div className="col-span-3"><label className="label-text">Harga {selectedProduct?.priceLock === 'lock' ? '(Locked)' : ''}</label><input type="number" className="input-field" value={itemEntry.price} onChange={e => selectedProduct?.priceLock !== 'lock' && setItemEntry({...itemEntry, price: e.target.value})} placeholder="0" disabled={selectedProduct?.priceLock === 'lock'} /></div>
                        <div className="col-span-3"><label className="label-text">Disc</label><input type="number" className="input-field" value={itemEntry.discount} onChange={e => setItemEntry({...itemEntry, discount: e.target.value})} placeholder="0" /></div>
                        
@@ -1518,7 +1638,7 @@ const App = () => {
                             <div>
                                 <label className="text-[10px] font-bold uppercase text-slate-400 mb-1 block">Metode Bayar</label>
                                 <select value={header.paymentMethod} onChange={e => setHeader({...header, paymentMethod: e.target.value})} className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl font-bold text-sm">
-                                    <option value="Cash">Cash</option>
+                                    <option value="Cash">Uang Tunai</option>
                                     <option value="Transfer">Transfer</option>
                                 </select>
                             </div>
@@ -1742,7 +1862,7 @@ const App = () => {
                         />
                      </div>
                      <div className="md:col-span-2">
-                        <label className="label-text">L (cm) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                        <label className="label-text">L (m) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
                         <input
                             type="number"
                             value={itemEntry.width}
@@ -1753,7 +1873,7 @@ const App = () => {
                         />
                      </div>
                      <div className="md:col-span-2">
-                        <label className="label-text">P (cm) {selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                        <label className="label-text">P (m) {selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
                         <input
                             type="number"
                             value={itemEntry.length}
@@ -1766,6 +1886,14 @@ const App = () => {
                      <div className="md:col-span-2">
                         <label className="label-text">Qty</label>
                         <input type="number" value={itemEntry.qty} onChange={e => setItemEntry({...itemEntry, qty: e.target.value})} className="input-field" placeholder="1" />
+                     </div>
+                     <div className="md:col-span-2">
+                        <label className="label-text">Harga</label>
+                        <input type="text" value={selectedProduct ? formatCurrency(selectedProduct.price) : ''} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
+                     </div>
+                     <div className="md:col-span-2">
+                        <label className="label-text">Satuan</label>
+                        <input type="text" value={selectedProduct?.unit || ''} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
                      </div>
                      <div className="md:col-span-4">
                         <label className="label-text">Discount (Rp)</label>
@@ -1983,11 +2111,9 @@ const App = () => {
             <thead className="bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest">
               <tr>
                 <th className="p-4">Nama Vendor</th>
-                <th className="p-4">Kontak</th>
                 <th className="p-4">Email</th>
                 <th className="p-4">Sales</th>
                 <th className="p-4">Alamat</th>
-                <th className="p-4 text-center">Kategori</th>
                 <th className="p-4 text-center">Status</th>
                 <th className="p-4 text-center">Aksi</th>
               </tr>
@@ -1996,19 +2122,9 @@ const App = () => {
               {filteredVendors.map(v => (
                 <tr key={v.id} className="hover:bg-slate-50">
                   <td className="p-4 font-bold">{v.name}</td>
-                  <td className="p-4 font-mono text-sm">{v.contact}</td>
                   <td className="p-4 text-slate-600">{v.email}</td>
                   <td className="p-4 text-slate-600">{v.sales || '-'}</td>
                   <td className="p-4 text-slate-600 max-w-xs truncate" title={v.address}>{v.address}</td>
-                  <td className="p-4 text-center">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
-                      v.category === 'Bahan Baku' ? 'bg-blue-100 text-blue-700' :
-                      v.category === 'Peralatan' ? 'bg-green-100 text-green-700' :
-                      'bg-purple-100 text-purple-700'
-                    }`}>
-                      {v.category}
-                    </span>
-                  </td>
                   <td className="p-4 text-center">
                     <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
                       v.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
@@ -2189,17 +2305,17 @@ const App = () => {
 
 
   const PengeluaranLain = () => {
-    const [form, setForm] = useState({ vendor: '', item: '', price: 0, paymentMethod: 'Cash' });
+    const [form, setForm] = useState({ vendor: '', item: '', price: 0, paid: 0, paymentMethod: 'Cash' });
     
     const handleSave = () => {
        if(editItem) {
           setExpenses(expenses.map(e => e.id === editItem.id ? { ...form, id: editItem.id } : e));
        } else {
           const newItem = { id: generateInvoiceCode('EXP'), date: new Date().toISOString().slice(0, 10), ...form };
-          if (form.paymentMethod === 'Cash') setWallet(prev => ({...prev, cash: prev.cash - parseInt(form.price)})); else setWallet(prev => ({...prev, bank: prev.bank - parseInt(form.price)}));
+          if (form.paymentMethod === 'Cash') setWallet(prev => ({...prev, cash: prev.cash - parseInt(form.paid || form.price)})); else setWallet(prev => ({...prev, bank: prev.bank - parseInt(form.paid || form.price)}));
           setExpenses([newItem, ...expenses]);
        }
-       setForm({ vendor: '', item: '', price: 0, paymentMethod: 'Cash' });
+       setForm({ vendor: '', item: '', price: 0, paid: 0, paymentMethod: 'Cash' });
        setEditItem(null);
        setShowModal(null);
     };
@@ -2220,11 +2336,11 @@ const App = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
            <div><h3 className="text-lg font-black text-slate-800 uppercase italic">Pengeluaran Operasional</h3><p className="text-xs text-slate-500 font-medium">Listrik, Air, Gaji, ATK, dll.</p></div>
-           <button onClick={() => { setEditItem(null); setForm({ vendor: '', item: '', price: 0, paymentMethod: 'Cash' }); setShowModal('add-expense'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Catat Pengeluaran</button>
+            <button onClick={() => { setEditItem(null); setForm({ vendor: '', item: '', price: 0, paid: 0, paymentMethod: 'Cash' }); setShowModal('add-expense'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Catat Pengeluaran</button>
         </div>
         <FilterBar startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} dateFilterMode={dateFilterMode} setDateFilterMode={setDateFilterMode} showStatus={false} statusFilter={null} setStatusFilter={null} />
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-           <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">Tanggal</th><th className="p-4">Penerima</th><th className="p-4">Keperluan</th><th className="p-4">Nominal</th><th className="p-4 text-center">Aksi</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredExpenses.map(e => (<tr key={e.id} className="hover:bg-slate-50"><td className="p-4 text-xs font-mono">{e.date}</td><td className="p-4 font-bold">{e.vendor}</td><td className="p-4">{e.item}</td><td className="p-4 font-black text-red-600">{formatCurrency(e.price)}</td><td className="p-4 text-center"><div className="flex justify-center gap-2"><button onClick={() => handleEdit(e)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit3 className="w-4 h-4" /></button><button onClick={() => handleDelete(e.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button></div></td></tr>))}</tbody></table>
+           <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">TGL</th><th className="p-4">KETERANGAN</th><th className="p-4">SUBJEK</th><th className="p-4">METODE BAYAR</th><th className="p-4 text-right">TAGIHAN</th><th className="p-4 text-right">TERBAYAR</th><th className="p-4 text-right">KURANG</th><th className="p-4 text-center">AKSI</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredExpenses.map(e => (<tr key={e.id} className="hover:bg-slate-50"><td className="p-4 text-xs font-mono">{e.date}</td><td className="p-4">{e.item}</td><td className="p-4 font-bold">{e.vendor}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${e.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>{e.paymentMethod}</span></td><td className="p-4 text-right font-black">{formatCurrency(e.price || 0)}</td><td className="p-4 text-right font-bold text-emerald-600">{formatCurrency(e.paid || 0)}</td><td className="p-4 text-right font-bold text-red-600">{formatCurrency((e.price || 0) - (e.paid || 0))}</td><td className="p-4 text-center"><div className="flex justify-center gap-2"><button onClick={() => handleEdit(e)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit3 className="w-4 h-4" /></button><button onClick={() => handleDelete(e.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button></div></td></tr>))}</tbody></table>
         </div>
         {/* Modal */}
         {showModal === 'add-expense' && (
@@ -2232,10 +2348,12 @@ const App = () => {
              <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6">
                 <div className="flex justify-between items-center mb-6"><h3 className="text-lg font-black text-slate-800 uppercase italic">{editItem ? 'Edit Pengeluaran' : 'Input Pengeluaran'}</h3><button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button></div>
                 <div className="space-y-4">
-                   <div><label className="label-text">Penerima / Vendor</label><input type="text" value={form.vendor} onChange={e => setForm({...form, vendor: e.target.value})} className="input-field" placeholder="Contoh: PLN" /></div>
-                   <div><label className="label-text">Keperluan</label><input type="text" value={form.item} onChange={e => setForm({...form, item: e.target.value})} className="input-field" placeholder="Bayar Listrik" /></div>
-                   <div><label className="label-text">Nominal (Rp)</label><input type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="input-field" /></div>
-                   <div><label className="label-text">Sumber Dana</label><select className="input-field" value={form.paymentMethod} onChange={e => setForm({...form, paymentMethod: e.target.value})}><option value="Cash">Cash (Kasir)</option><option value="Transfer">Transfer (Bank)</option></select></div>
+                   <div><label className="label-text">KETERANGAN</label><input type="text" value={form.item} onChange={e => setForm({...form, item: e.target.value})} className="input-field" placeholder="Bayar Listrik" /></div>
+                   <div><label className="label-text">SUBJEK</label><input type="text" value={form.vendor} onChange={e => setForm({...form, vendor: e.target.value})} className="input-field" placeholder="Contoh: PLN" /></div>
+                   <div><label className="label-text">METODE BAYAR</label><select className="input-field" value={form.paymentMethod} onChange={e => setForm({...form, paymentMethod: e.target.value})}><option value="Cash">Cash (Kasir)</option><option value="Transfer">Transfer (Bank)</option></select></div>
+                   <div><label className="label-text">TAGIHAN</label><input type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="input-field" /></div>
+                   <div><label className="label-text">TERBAYAR</label><input type="number" value={form.paid} onChange={e => setForm({...form, paid: e.target.value})} className="input-field" /></div>
+                   <div><label className="label-text">KURANG</label><input type="text" value={formatCurrency((form.price || 0) - (form.paid || 0))} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled /></div>
                    <button onClick={handleSave} className="btn-primary w-full mt-4">{editItem ? 'Simpan Perubahan' : 'Simpan'}</button>
                 </div>
              </div>
@@ -2350,11 +2468,13 @@ const App = () => {
 
     const exportBelanjaLainnyaToExcel = () => {
       const data = filteredExpenses.map((expense, idx) => ({
-        'No': idx + 1,
-        'Hari': getDayName(expense.date),
         'Tanggal': expense.date,
-        'Keterangan': expense.description,
-        'Jumlah': expense.amount
+        'Keterangan': expense.item,
+        'Subjek': expense.vendor,
+        'Metode Bayar': expense.paymentMethod,
+        'Tagihan': expense.price,
+        'Terbayar': expense.paid,
+        'Kurang': (expense.price || 0) - (expense.paid || 0)
       }));
 
       const ws = XLSX.utils.json_to_sheet(data);
@@ -2516,12 +2636,10 @@ const App = () => {
         <table className="w-full text-left whitespace-nowrap">
           <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
             <tr>
-              <th className="p-4">HARI</th>
               <th className="p-4">TGL</th>
               <th className="p-4">KETERANGAN</th>
               <th className="p-4">SUBJEK</th>
               <th className="p-4">METODE BAYAR</th>
-              <th className="p-4">#</th>
               <th className="p-4 text-right">TAGIHAN</th>
               <th className="p-4 text-right">TERBAYAR</th>
               <th className="p-4 text-right">KURANG</th>
@@ -2530,7 +2648,6 @@ const App = () => {
           <tbody className="divide-y divide-slate-50 text-sm">
             {filteredExpenses.map((expense, idx) => (
               <tr key={expense.id} className="hover:bg-slate-50">
-                <td className="p-4 font-mono text-xs font-bold text-slate-600">{getDayName(expense.date)}</td>
                 <td className="p-4 font-mono text-xs font-bold">{expense.date}</td>
                 <td className="p-4 font-bold">{expense.item}</td>
                 <td className="p-4">{expense.vendor}</td>
@@ -2543,7 +2660,6 @@ const App = () => {
                     {expense.paymentMethod}
                   </span>
                 </td>
-                <td className="p-4 text-center font-bold">{idx + 1}</td>
                 <td className="p-4 text-right font-mono font-bold">{formatCurrency(expense.price)}</td>
                 <td className="p-4 text-right font-mono font-bold text-emerald-600">{formatCurrency(expense.paid)}</td>
                 <td className="p-4 text-right font-mono font-bold text-red-600">{formatCurrency(expense.remaining)}</td>
@@ -2634,7 +2750,7 @@ const App = () => {
                             <div className="text-right">
                                 <h2 className="text-2xl font-black text-slate-800 uppercase tracking-wide">{isPurchase ? 'PURCHASE ORDER' : 'INVOICE'}</h2>
                                 <p className="text-sm font-mono font-bold text-red-600 mt-1">#{isPurchase ? editItem.noTagihan : editItem.id}</p>
-                                <p className="text-xs text-slate-500 font-bold mt-1">{editItem.date}</p>
+                                <p className="text-xs text-slate-500 font-bold mt-1">{formatDate(editItem.date)}</p>
                             </div>
                         </div>
 
@@ -2659,13 +2775,13 @@ const App = () => {
                                     <th className="py-2 px-1">NAMA ITEM</th>
                                     {isPurchase && <th className="py-2 px-1 text-center">LOT</th>}
                                     {!isPurchase && <th className="py-2 px-1">ITEM</th>}
-                                    <th className="py-2 px-1 text-center">L</th>
-                                    <th className="py-2 px-1 text-center">P</th>
+                                    <th className="py-2 px-1 text-center">Lebar (M)</th>
+                                    <th className="py-2 px-1 text-center">Panjang (M)</th>
                                     <th className="py-2 px-1 text-center">QTY</th>
                                     <th className="py-2 px-1 text-center">LUAS</th>
                                     <th className="py-2 px-1 text-center">SAT</th>
                                     <th className="py-2 px-1 text-right">HARGA</th>
-                                    <th className="py-2 px-1 text-right">DISC</th>
+                                    <th className="py-2 px-1 text-right">DISKON</th>
                                     <th className="py-2 px-1 text-right">SUB TOTAL</th>
                                 </tr>
                             </thead>
@@ -2674,10 +2790,27 @@ const App = () => {
                                     <tr key={i}>
                                         <td className="py-2 px-1 text-center font-medium">{i + 1}</td>
                                         <td className="py-2 px-1 font-bold">{item.name}</td>
-                                        {isPurchase && <td className="py-2 px-1 text-center text-slate-500">{item.lot || '-'}</td>}
+                                        {isPurchase && <td className="py-2 px-1 text-center text-slate-500">{(() => {
+                                          const product = products.find(p => p.id === item.productId);
+                                          return product?.lot || '-';
+                                        })()}</td>}
                                         {!isPurchase && <td className="py-2 px-1 text-slate-600">{item.itemDesc}</td>}
-                                        <td className="py-2 px-1 text-center">{item.width || '-'}</td>
-                                        <td className="py-2 px-1 text-center">{item.length || '-'}</td>
+                                        <td className="py-2 px-1 text-center">
+                                          {(() => {
+                                            const product = products.find(p => p.id === item.productId);
+                                            const lockField = isPurchase ? 'widthBuyLock' : 'widthSellLock';
+                                            if (!product || product[lockField] === 'rejected' || !product[lockField]) return '-';
+                                            return item.width || '-';
+                                          })()}
+                                        </td>
+                                        <td className="py-2 px-1 text-center">
+                                          {(() => {
+                                            const product = products.find(p => p.id === item.productId);
+                                            const lockField = isPurchase ? 'lengthBuyLock' : 'lengthSellLock';
+                                            if (!product || product[lockField] === 'rejected' || !product[lockField]) return '-';
+                                            return item.length || '-';
+                                          })()}
+                                        </td>
                                         <td className="py-2 px-1 text-center font-bold">{item.qty}</td>
                                         <td className="py-2 px-1 text-center">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
                                         <td className="py-2 px-1 text-center">{item.purchaseUnit || item.unit}</td>
