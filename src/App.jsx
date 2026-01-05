@@ -348,13 +348,13 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
         updates.widthSellLock = baseRules.widthSellLock;
         updates.lengthSellLock = baseRules.lengthSellLock;
       } else if (form.tipeItem === 'Beli') {
-        // For "Beli" items, disable sell dimensions
+        // For "Beli" items, disable sell dimensions and lot
         updates.widthSellLock = 'rejected';
         updates.lengthSellLock = 'rejected';
-        // Keep buy dimensions and lot as per master unit
+        updates.lotLock = 'rejected';
+        // Keep buy dimensions as per master unit
         updates.widthBuyLock = baseRules.widthBuyLock;
         updates.lengthBuyLock = baseRules.lengthBuyLock;
-        updates.lotLock = baseRules.lotLock;
       } else {
         // For "Jual dan Beli" items, use master unit rules directly
         updates.widthSellLock = baseRules.widthSellLock;
@@ -691,15 +691,16 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
                     const isMeterUnit = form.unit === 'METER' || form.unit === 'M. LARI';
                     const isOtherUnit = !isMeterUnit;
                     const isJualType = form.tipeItem === 'Jual';
+                    const isBeliType = form.tipeItem === 'Beli';
 
-                    if (isOtherUnit || isJualType) {
+                    if (isOtherUnit || isJualType || isBeliType) {
                       // Disabled, hanya bisa rejected
                       if (e.target.value !== 'rejected') return;
                     }
                     setForm({...form, lotLock: e.target.value});
                   }}
                   className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.lotLock)}`}
-                  disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Jual'}
+                  disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Jual' || form.tipeItem === 'Beli'}
                 >
                   <option value="unlock">Unlock</option>
                   <option value="lock">Lock</option>
@@ -1291,7 +1292,6 @@ const App = () => {
   const NotaSupplier = () => {
     // Header State
     const [header, setHeader] = useState({
-      noTagihan: 'SUP-002',
       nomorInternal: generateInvoiceCode('BUY'),
       date: new Date().toISOString().slice(0, 10),
       vendorId: '', // ID vendor dari dropdown
@@ -1347,7 +1347,6 @@ const App = () => {
         if (editItem && isCreatingPurchase) {
             const vendorData = vendors.find(v => v.name === editItem.vendor);
             setHeader({
-                noTagihan: editItem.noTagihan,
                 nomorInternal: editItem.id,
                 date: editItem.date,
                 vendorId: vendorData?.id || '',
@@ -1445,9 +1444,9 @@ const App = () => {
            setProducts(prev => prev.map(p => p.id == item.itemId ? {...p, qty: parseInt(p.qty) + item.addedQty} : p));
        });
 
-       const newInvoice = { 
+       const newInvoice = {
            id: header.nomorInternal,
-           noTagihan: header.noTagihan,
+           noTagihan: header.nomorInternal, // Menggunakan nomor internal sebagai noTagihan
            date: header.date,
            vendor: header.vendor,
            salesName: header.salesName,
@@ -1457,7 +1456,7 @@ const App = () => {
            paid: parseInt(paidAmount),
            remaining: sisaTagihan < 0 ? 0 : sisaTagihan,
            paymentMethod: header.paymentMethod,
-           status: sisaTagihan <= 0 ? 'lunas' : 'belum_lunas' 
+           status: sisaTagihan <= 0 ? 'lunas' : 'belum_lunas'
        };
 
        if (editItem) {
@@ -1490,7 +1489,7 @@ const App = () => {
             <FilterBar startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} dateFilterMode={dateFilterMode} setDateFilterMode={setDateFilterMode} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
             
             <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-               <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">Tanggal</th><th className="p-4">No. Tagihan</th><th className="p-4">Vendor</th><th className="p-4">Total</th><th className="p-4">Status</th><th className="p-4 text-center">Aksi</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredPurchases.map(p => (<tr key={p.id} className="hover:bg-slate-50"><td className="p-4 text-xs text-slate-500 font-mono">{p.date}</td><td className="p-4 font-mono text-xs">{p.noTagihan}</td><td className="p-4 font-bold">{p.vendor}</td><td className="p-4 font-black text-red-600">{formatCurrency(p.total)}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${p.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.status.replace('_', ' ')}</span></td>               <td className="p-4 text-center">
+               <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">Tanggal</th><th className="p-4">No. Nota</th><th className="p-4">Vendor</th><th className="p-4">Sales</th><th className="p-4">Total</th><th className="p-4">Status</th><th className="p-4 text-center">Aksi</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredPurchases.map(p => (<tr key={p.id} className="hover:bg-slate-50"><td className="p-4 text-xs text-slate-500 font-mono">{p.date}</td><td className="p-4 font-mono text-xs">{p.id}</td><td className="p-4 font-bold">{p.vendor}</td><td className="p-4 text-sm">{p.salesName || '-'}</td><td className="p-4 font-black text-red-600">{formatCurrency(p.total)}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${p.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.status.replace('_', ' ')}</span></td>               <td className="p-4 text-center">
                    <div className="flex justify-center gap-2">
                         <button onClick={() => { setEditItem(p); setShowModal('invoice-detail-purchase'); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600"><Eye className="w-4 h-4" /></button>
                         <button onClick={() => { setIsCreatingPurchase(true); setEditItem(p); }} className="p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600"><Edit3 className="w-4 h-4" /></button>
@@ -1519,12 +1518,11 @@ const App = () => {
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><FileText className="w-4 h-4 mr-2"/> Informasi Supplier</h4>
                    <div className="grid grid-cols-2 gap-4">
-                      <div><label className="label-text">No. Tagihan (Supplier)</label><input type="text" value={header.noTagihan} onChange={e => setHeader({...header, noTagihan: e.target.value})} className="input-field" placeholder="INV-SUP-..." /></div>
                       <div><label className="label-text">No. Internal (Auto)</label><input type="text" value={header.nomorInternal} disabled className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" /></div>
                       <div><label className="label-text">Hari - Tanggal</label><input type="date" value={header.date} onChange={e => setHeader({...header, date: e.target.value})} className="input-field" /></div>
                       <div><label className="label-text">Nama Supplier</label><select value={header.vendorId} onChange={e => setHeader({...header, vendorId: e.target.value})} className="input-field"><option value="">-- Pilih Supplier --</option>{vendors.filter(v => v.status === 'Aktif').map(v => (<option key={v.id} value={v.id}>{v.name}</option>))}</select></div>
-                      <div><label className="label-text">Sales</label><input type="text" value={header.salesName} onChange={e => setHeader({...header, salesName: e.target.value})} className="input-field" /></div>
-                      <div><label className="label-text">Alamat</label><input type="text" value={header.address} onChange={e => setHeader({...header, address: e.target.value})} className="input-field" /></div>
+                      <div><label className="label-text">Nama Sales</label><input type="text" value={header.salesName} onChange={e => setHeader({...header, salesName: e.target.value})} className="input-field" placeholder="Masukkan nama sales" /></div>
+                      <div className="col-span-2"><label className="label-text">Alamat Supplier</label><input type="text" value={header.address} disabled className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" title="Alamat dikunci dari database vendor" /></div>
                    </div>
                 </div>
 
