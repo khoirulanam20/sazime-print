@@ -1732,15 +1732,19 @@ const App = () => {
           return tipeItem === 'Jual' || tipeItem === 'Jual dan Beli';
       });
 
-      // Effect to handle "L" from database when product changes
+      // Effect to handle "L" and "P" from database when product changes
+      // Treat both 'lock' and 'rejected' as non-editable states
       useEffect(() => {
           if (selectedProduct) {
+              const widthLocked = selectedProduct.widthSellLock === 'lock' || selectedProduct.widthSellLock === 'rejected';
+              const lengthLocked = selectedProduct.lengthSellLock === 'lock' || selectedProduct.lengthSellLock === 'rejected';
+
               setItemEntry(prev => ({
                   ...prev,
-                  // "L" always takes from database produk, but can be edited unless locked
-                  width: selectedProduct.widthSellLock === 'lock' ? (selectedProduct.width || 0) : (prev.width || selectedProduct.width || 0),
-                  // "P" always takes from database produk, but can be edited unless locked
-                  length: selectedProduct.lengthSellLock === 'lock' ? (selectedProduct.length || 0) : (prev.length || selectedProduct.length || 0)
+                  // "L" - jika locked/rejected, paksa nilai dari database; jika tidak, pertahankan prev atau pakai DB jika kosong
+                  width: widthLocked ? (selectedProduct.width || 0) : (prev.width || selectedProduct.width || 0),
+                  // "P" - jika locked/rejected, paksa nilai dari database; jika tidak, pertahankan prev atau pakai DB jika kosong
+                  length: lengthLocked ? (selectedProduct.length || 0) : (prev.length || selectedProduct.length || 0)
               }));
           }
       }, [itemEntry.selectedProductId, selectedProduct]);
@@ -1883,25 +1887,25 @@ const App = () => {
                         />
                      </div>
                      <div className="md:col-span-2">
-                        <label className="label-text">L (m) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                        <label className="label-text">L (m) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : selectedProduct?.widthSellLock === 'rejected' ? '(Rejected)' : ''}</label>
                         <input
                             type="number"
                             value={itemEntry.width}
-                            onChange={e => selectedProduct?.widthSellLock !== 'lock' && setItemEntry({...itemEntry, width: e.target.value})}
-                            className={`input-field ${selectedProduct?.widthSellLock === 'lock' ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+                            onChange={e => (selectedProduct?.widthSellLock !== 'lock' && selectedProduct?.widthSellLock !== 'rejected') && setItemEntry({...itemEntry, width: e.target.value})}
+                            className={`input-field ${(selectedProduct?.widthSellLock === 'lock' || selectedProduct?.widthSellLock === 'rejected') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
                             placeholder="0"
-                            disabled={selectedProduct?.widthSellLock === 'lock'}
+                            disabled={selectedProduct?.widthSellLock === 'lock' || selectedProduct?.widthSellLock === 'rejected'}
                         />
                      </div>
                      <div className="md:col-span-2">
-                        <label className="label-text">P (m) {selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                        <label className="label-text">P (m) {selectedProduct?.unit !== 'METER' ? '(N/A)' : (selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected' ? '(Locked)' : '')}</label>
                         <input
                             type="number"
                             value={itemEntry.length}
-                            onChange={e => (selectedProduct?.unit === 'METER' && selectedProduct?.lengthSellLock !== 'lock') && setItemEntry({...itemEntry, length: e.target.value})}
-                            className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+                            onChange={e => (selectedProduct?.unit === 'METER' && selectedProduct?.lengthSellLock !== 'lock' && selectedProduct?.lengthSellLock !== 'rejected') && setItemEntry({...itemEntry, length: e.target.value})}
+                            className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
                             placeholder="0"
-                            disabled={selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock'}
+                            disabled={selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected'}
                         />
                      </div>
                      <div className="md:col-span-2">
