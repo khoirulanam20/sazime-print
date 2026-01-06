@@ -786,6 +786,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => (
         { id: 'database-produk', icon: Database, label: 'Database Produk' },
         { id: 'database-vendor', icon: Truck, label: 'Database Vendor' },
         { id: 'master-satuan', icon: Settings, label: 'Master Satuan' },
+        { id: 'tambah-user', icon: User, label: 'Tambah User' },
       ].map((item) => (
         <button
           key={item.id}
@@ -832,6 +833,7 @@ const BottomNavbar = ({ activeMenu, setActiveMenu }) => (
       { id: 'nota-supplier', icon: Truck, label: 'Beli' },
       { id: 'rekap-cashflow', icon: FileBarChart, label: 'Laporan' },
       { id: 'withdraw', icon: Wallet, label: 'Kas' },
+      { id: 'tambah-user', icon: User, label: 'User' },
     ].map((item) => (
       <button
         key={item.id}
@@ -1285,6 +1287,204 @@ const App = () => {
           </table>
         </div>
 
+      </div>
+    );
+  };
+
+  const TambahUser = () => {
+    const [formData, setFormData] = useState({
+      name: '',
+      email: '',
+      password: '',
+      role: '',
+      phone: '',
+      address: ''
+    });
+
+    const [users, setUsers] = useState([
+      { id: 1, name: 'Admin', email: 'admin@sazime.com', role: 'Owner', phone: '081234567890', address: 'Jakarta' },
+      { id: 2, name: 'Sales 1', email: 'sales1@sazime.com', role: 'Admin Sales', phone: '081234567891', address: 'Jakarta' },
+      { id: 3, name: 'Kasir 1', email: 'kasir1@sazime.com', role: 'Kasir', phone: '081234567892', address: 'Jakarta' }
+    ]);
+
+    const roles = ['Owner', 'Admin Sales', 'Kasir'];
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (!formData.name || !formData.email || !formData.password || !formData.role) {
+        alert('Mohon lengkapi semua field yang wajib!');
+        return;
+      }
+
+      const newUser = {
+        id: Date.now(),
+        ...formData
+      };
+
+      setUsers([...users, newUser]);
+      setFormData({
+        name: '',
+        email: '',
+        password: '',
+        role: '',
+        phone: '',
+        address: ''
+      });
+
+      alert('User berhasil ditambahkan!');
+    };
+
+    const handleDelete = (id) => {
+      if (window.confirm('Hapus user ini?')) {
+        setUsers(users.filter(u => u.id !== id));
+      }
+    };
+
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 className="text-lg font-black text-slate-800 uppercase italic mb-2">Tambah User Baru</h3>
+          <p className="text-xs text-slate-500 font-medium">Kelola pengguna sistem SAZIME Print</p>
+        </div>
+
+        {/* Form Tambah User */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h4 className="text-md font-black text-slate-800 mb-4">Form User Baru</h4>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Nama Lengkap *</label>
+                <input
+                  type="text"
+                  className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  placeholder="Masukkan nama lengkap"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Email *</label>
+                <input
+                  type="email"
+                  className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  placeholder="Masukkan email"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Password *</label>
+                <input
+                  type="password"
+                  className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  placeholder="Masukkan password"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Role *</label>
+                <select
+                  className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                  value={formData.role}
+                  onChange={(e) => setFormData({...formData, role: e.target.value})}
+                  required
+                >
+                  <option value="">Pilih Role</option>
+                  {roles.map(role => (
+                    <option key={role} value={role}>{role}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">No. Telepon</label>
+                <input
+                  type="tel"
+                  className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  placeholder="Masukkan nomor telepon"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Alamat</label>
+                <input
+                  type="text"
+                  className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                  value={formData.address}
+                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  placeholder="Masukkan alamat"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="btn-primary flex items-center"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Tambah User
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Daftar User */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <div className="p-4 border-b border-slate-200">
+            <h4 className="text-md font-black text-slate-800">Daftar User</h4>
+          </div>
+
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest">
+              <tr>
+                <th className="p-4">Nama</th>
+                <th className="p-4">Email</th>
+                <th className="p-4">Role</th>
+                <th className="p-4">No. Telepon</th>
+                <th className="p-4">Alamat</th>
+                <th className="p-4 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {users.map(user => (
+                <tr key={user.id} className="hover:bg-slate-50">
+                  <td className="p-4 font-bold">{user.name}</td>
+                  <td className="p-4 text-slate-600">{user.email}</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded text-xs font-bold ${
+                      user.role === 'Owner' ? 'bg-purple-100 text-purple-700' :
+                      user.role === 'Admin Sales' ? 'bg-blue-100 text-blue-700' :
+                      'bg-green-100 text-green-700'
+                    }`}>
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="p-4 text-slate-600">{user.phone || '-'}</td>
+                  <td className="p-4 text-slate-600">{user.address || '-'}</td>
+                  <td className="p-4 text-center">
+                    <button
+                      onClick={() => handleDelete(user.id)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   };
@@ -3227,6 +3427,7 @@ const App = () => {
                   {activeMenu === 'database-produk' && <DatabaseProduk />}
                   {activeMenu === 'database-vendor' && <DatabaseVendor />}
                   {activeMenu === 'master-satuan' && <MasterSatuan />}
+                  {activeMenu === 'tambah-user' && <TambahUser />}
                   {activeMenu === 'nota-pelanggan' && <NotaPelanggan />}
                   {activeMenu === 'rekap-cashflow' && <RekapCashflow />}
                   {activeMenu === 'nota-supplier' && <NotaSupplier />}
