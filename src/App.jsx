@@ -1022,21 +1022,21 @@ const App = () => {
   const currentMonthPrefix = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '0')}`;
 
   const [salesInvoices, setSalesInvoices] = useState([
-    { id: 'INV-20250101-1234', date: `${currentMonthPrefix}-01`, buyer: 'Budi Santoso', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 200, length: 100, area: 2, unit: 'METER', price: 20000, qty: 1, discount: 0, subtotal: 40000 }], total: 40000, paid: 40000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250102-5678', date: `${currentMonthPrefix}-02`, buyer: 'Siti Aminah', items: [{ productId: 2, name: 'MMT BANNER 480 GR', width: 300, length: 150, area: 4.5, unit: 'METER', price: 35000, qty: 3, discount: 0, subtotal: 157500 }], total: 157500, paid: 157500, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250103-9012', date: `${currentMonthPrefix}-03`, buyer: 'Ahmad Rahman', items: [{ productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 200, area: 2.12, unit: 'METER', price: 45000, qty: 2, discount: 0, subtotal: 90000 }], total: 90000, paid: 90000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250104-3456', date: `${currentMonthPrefix}-04`, buyer: 'Maya Sari', items: [{ productId: 4, name: 'STICKER MASTER - 1,26', width: 126, length: 180, area: 2.268, unit: 'METER', price: 55000, qty: 4, discount: 0, subtotal: 220000 }], total: 220000, paid: 220000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250105-7890', date: `${currentMonthPrefix}-05`, buyer: 'Rudi Hartono', items: [{ productId: 5, name: 'STICKER CINA - 1,56', width: 156, length: 220, area: 3.432, unit: 'METER', price: 40000, qty: 5, discount: 0, subtotal: 200000 }], total: 200000, paid: 200000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250106-1111', date: `${currentMonthPrefix}-06`, buyer: 'Dewi Lestari', items: [{ productId: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', width: 106, length: 150, area: 1.59, unit: 'METER', price: 15000, qty: 3, discount: 0, subtotal: 45000 }], total: 45000, paid: 45000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250107-2222', date: `${currentMonthPrefix}-07`, buyer: 'Joko Widodo', items: [{ productId: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', width: 106, length: 180, area: 1.908, unit: 'METER', price: 18000, qty: 2, discount: 0, subtotal: 36000 }], total: 36000, paid: 36000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250108-3333', date: `${currentMonthPrefix}-08`, buyer: 'Nina Kartika', items: [{ productId: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 150000, qty: 8, discount: 0, subtotal: 1200000 }], total: 1200000, paid: 1200000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250109-4444', date: `${currentMonthPrefix}-09`, buyer: 'Bayu Prasetyo', items: [{ productId: 12, name: 'ALBATROS 0,63', width: 63, length: 120, area: 0.756, unit: 'METER', price: 25000, lot: 'Roll', qty: 6, discount: 0, subtotal: 150000 }], total: 150000, paid: 150000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250110-5555', date: `${currentMonthPrefix}-10`, buyer: 'Rina Amelia', items: [{ productId: 13, name: 'ALAT X BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 200000, qty: 7, discount: 0, subtotal: 1400000 }], total: 1400000, paid: 1400000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250111-6666', date: `${currentMonthPrefix}-11`, buyer: 'Fajar Nugroho', items: [{ productId: 8, name: 'LAMINASI DOFF 100 GR - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 16000, qty: 4, discount: 0, subtotal: 64000 }], total: 64000, paid: 64000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250112-7777', date: `${currentMonthPrefix}-12`, buyer: 'Linda Sari', items: [{ productId: 9, name: 'LAMINASI DOFF 120 GR - 1,06', width: 106, length: 140, area: 1.484, unit: 'METER', price: 19000, qty: 3, discount: 0, subtotal: 57000 }], total: 57000, paid: 57000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250113-8888', date: `${currentMonthPrefix}-13`, buyer: 'Doni Setiawan', items: [{ productId: 10, name: 'JASA CUTTING STICKER - 1,06', width: 106, length: 80, area: 0.848, unit: 'METER', price: 8000, qty: 2, discount: 0, subtotal: 16000 }], total: 16000, paid: 16000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
-    { id: 'INV-20250114-9999', date: `${currentMonthPrefix}-14`, buyer: 'Sari Indah', items: [{ productId: 14, name: 'RING KELING BANNER', width: 0, length: 0, area: 0, unit: 'PACK', price: 25000, lot: 'Roll', qty: 3, discount: 0, subtotal: 75000 }], total: 75000, paid: 75000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
-    { id: 'INV-20250115-0001', date: `${currentMonthPrefix}-15`, buyer: 'Eko Prabowo', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 250, length: 120, area: 3, unit: 'METER', price: 20000, qty: 2, discount: 0, subtotal: 60000 }, { productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 45000, qty: 1, discount: 0, subtotal: 45000 }], total: 105000, paid: 105000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250101-1234', date: `${currentMonthPrefix}-01`, buyer: 'Budi Santoso', createdBy: 'Admin', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 200, length: 100, area: 2, unit: 'METER', price: 20000, qty: 1, discount: 0, subtotal: 40000 }], total: 40000, paid: 40000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250102-5678', date: `${currentMonthPrefix}-02`, buyer: 'Siti Aminah', createdBy: 'Sales 1', items: [{ productId: 2, name: 'MMT BANNER 480 GR', width: 300, length: 150, area: 4.5, unit: 'METER', price: 35000, qty: 3, discount: 0, subtotal: 157500 }], total: 157500, paid: 157500, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250103-9012', date: `${currentMonthPrefix}-03`, buyer: 'Ahmad Rahman', createdBy: 'Kasir 1', items: [{ productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 200, area: 2.12, unit: 'METER', price: 45000, qty: 2, discount: 0, subtotal: 90000 }], total: 90000, paid: 90000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250104-3456', date: `${currentMonthPrefix}-04`, buyer: 'Maya Sari', createdBy: 'Admin', items: [{ productId: 4, name: 'STICKER MASTER - 1,26', width: 126, length: 180, area: 2.268, unit: 'METER', price: 55000, qty: 4, discount: 0, subtotal: 220000 }], total: 220000, paid: 220000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250105-7890', date: `${currentMonthPrefix}-05`, buyer: 'Rudi Hartono', createdBy: 'Sales 1', items: [{ productId: 5, name: 'STICKER CINA - 1,56', width: 156, length: 220, area: 3.432, unit: 'METER', price: 40000, qty: 5, discount: 0, subtotal: 200000 }], total: 200000, paid: 200000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250106-1111', date: `${currentMonthPrefix}-06`, buyer: 'Dewi Lestari', createdBy: 'Kasir 1', items: [{ productId: 6, name: 'LAMINASI GLOSS 100 GR - 1,06', width: 106, length: 150, area: 1.59, unit: 'METER', price: 15000, qty: 3, discount: 0, subtotal: 45000 }], total: 45000, paid: 45000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250107-2222', date: `${currentMonthPrefix}-07`, buyer: 'Joko Widodo', createdBy: 'Admin', items: [{ productId: 7, name: 'LAMINASI GLOSS 120 GR - 1,06', width: 106, length: 180, area: 1.908, unit: 'METER', price: 18000, qty: 2, discount: 0, subtotal: 36000 }], total: 36000, paid: 36000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250108-3333', date: `${currentMonthPrefix}-08`, buyer: 'Nina Kartika', createdBy: 'Sales 1', items: [{ productId: 11, name: 'ALAT ROLL UP BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 150000, qty: 8, discount: 0, subtotal: 1200000 }], total: 1200000, paid: 1200000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250109-4444', date: `${currentMonthPrefix}-09`, buyer: 'Bayu Prasetyo', createdBy: 'Kasir 1', items: [{ productId: 12, name: 'ALBATROS 0,63', width: 63, length: 120, area: 0.756, unit: 'METER', price: 25000, lot: 'Roll', qty: 6, discount: 0, subtotal: 150000 }], total: 150000, paid: 150000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250110-5555', date: `${currentMonthPrefix}-10`, buyer: 'Rina Amelia', createdBy: 'Admin', items: [{ productId: 13, name: 'ALAT X BANNER 60 X 160 CM', width: 60, length: 160, area: 0, unit: 'PCS', price: 200000, qty: 7, discount: 0, subtotal: 1400000 }], total: 1400000, paid: 1400000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250111-6666', date: `${currentMonthPrefix}-11`, buyer: 'Fajar Nugroho', createdBy: 'Sales 1', items: [{ productId: 8, name: 'LAMINASI DOFF 100 GR - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 16000, qty: 4, discount: 0, subtotal: 64000 }], total: 64000, paid: 64000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250112-7777', date: `${currentMonthPrefix}-12`, buyer: 'Linda Sari', createdBy: 'Kasir 1', items: [{ productId: 9, name: 'LAMINASI DOFF 120 GR - 1,06', width: 106, length: 140, area: 1.484, unit: 'METER', price: 19000, qty: 3, discount: 0, subtotal: 57000 }], total: 57000, paid: 57000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250113-8888', date: `${currentMonthPrefix}-13`, buyer: 'Doni Setiawan', createdBy: 'Admin', items: [{ productId: 10, name: 'JASA CUTTING STICKER - 1,06', width: 106, length: 80, area: 0.848, unit: 'METER', price: 8000, qty: 2, discount: 0, subtotal: 16000 }], total: 16000, paid: 16000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
+    { id: 'INV-20250114-9999', date: `${currentMonthPrefix}-14`, buyer: 'Sari Indah', createdBy: 'Sales 1', items: [{ productId: 14, name: 'RING KELING BANNER', width: 0, length: 0, area: 0, unit: 'PACK', price: 25000, lot: 'Roll', qty: 3, discount: 0, subtotal: 75000 }], total: 75000, paid: 75000, remaining: 0, paymentMethod: 'Transfer', status: 'lunas' },
+    { id: 'INV-20250115-0001', date: `${currentMonthPrefix}-15`, buyer: 'Eko Prabowo', createdBy: 'Kasir 1', items: [{ productId: 1, name: 'MMT BANNER 280 GR', width: 250, length: 120, area: 3, unit: 'METER', price: 20000, qty: 2, discount: 0, subtotal: 60000 }, { productId: 3, name: 'STICKER ORAJET - 1,06', width: 106, length: 100, area: 1.06, unit: 'METER', price: 45000, qty: 1, discount: 0, subtotal: 45000 }], total: 105000, paid: 105000, remaining: 0, paymentMethod: 'Cash', status: 'lunas' },
   ]);
 
   const [purchaseInvoices, setPurchaseInvoices] = useState([
@@ -1895,6 +1895,7 @@ const App = () => {
         date: new Date().toISOString().slice(0, 10),
         buyer: '',
         paymentMethod: 'Cash',
+        createdBy: 'Admin',
       });
 
       // Item Entry State
@@ -1918,7 +1919,8 @@ const App = () => {
                 noTagihan: editItem.id,
                 date: editItem.date,
                 buyer: editItem.buyer,
-                paymentMethod: editItem.paymentMethod
+                paymentMethod: editItem.paymentMethod,
+                createdBy: editItem.createdBy || 'Admin'
             });
             setCart(editItem.items);
             setPaidAmount(editItem.paid);
@@ -2009,7 +2011,8 @@ const App = () => {
           paid: parseFloat(paidAmount),
           remaining: sisaTagihan < 0 ? 0 : sisaTagihan,
           paymentMethod: header.paymentMethod,
-          status: sisaTagihan <= 0 ? 'lunas' : 'belum_lunas'
+          status: sisaTagihan <= 0 ? 'lunas' : 'belum_lunas',
+          createdBy: header.createdBy || 'Admin'
         };
 
         if (editItem) {
@@ -2238,9 +2241,9 @@ const App = () => {
             <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
               <table className="w-full text-left whitespace-nowrap">
                  <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b">
-                   <tr><th className="p-4">No Nota</th><th className="p-4">Tanggal</th><th className="p-4">Nama Pelanggan</th><th className="p-4">Total</th><th className="p-4">Sisa</th><th className="p-4 text-center">Status</th><th className="p-4 text-center">Aksi</th></tr>
+                   <tr><th className="p-4">No Nota</th><th className="p-4">Tanggal</th><th className="p-4">Nama Pelanggan</th><th className="p-4">Created By</th><th className="p-4">Total</th><th className="p-4">Sisa</th><th className="p-4 text-center">Status</th><th className="p-4 text-center">Aksi</th></tr>
                  </thead>
-                 <tbody className="divide-y divide-slate-50 text-sm">{filteredList.map(inv => (<tr key={inv.id} className="hover:bg-slate-50"><td className="p-4 font-mono text-xs font-bold">{inv.id}</td><td className="p-4 text-xs text-slate-500">{inv.date}</td><td className="p-4 font-bold">{inv.buyer}</td><td className="p-4 font-black">{formatCurrency(inv.total)}</td><td className="p-4 font-bold text-red-500">{formatCurrency(inv.remaining)}</td><td className="p-4 text-center"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${inv.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{inv.status.replace('_', ' ')}</span></td><td className="p-4 text-center">
+                 <tbody className="divide-y divide-slate-50 text-sm">{filteredList.map(inv => (<tr key={inv.id} className="hover:bg-slate-50"><td className="p-4 font-mono text-xs font-bold">{inv.id}</td><td className="p-4 text-xs text-slate-500">{inv.date}</td><td className="p-4 font-bold">{inv.buyer}</td><td className="p-4 text-xs text-slate-600">{inv.createdBy || '-'}</td><td className="p-4 font-black">{formatCurrency(inv.total)}</td><td className="p-4 font-bold text-red-500">{formatCurrency(inv.remaining)}</td><td className="p-4 text-center"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${inv.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{inv.status.replace('_', ' ')}</span></td><td className="p-4 text-center">
                     <div className="flex justify-center gap-2">
                         <button onClick={() => { setEditItem(inv); setShowModal('invoice-detail'); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition" title="Lihat Detail"><Eye className="w-4 h-4" /></button>
                         <button onClick={() => { setEditItem(inv); setIsCreatingInvoice(true); }} className="p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600 transition" title="Edit Transaksi"><Edit3 className="w-4 h-4" /></button>
