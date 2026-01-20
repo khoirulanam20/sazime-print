@@ -451,7 +451,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
               type="text"
               required
               value={form.name}
-              onChange={e => setForm({...form, name: e.target.value})}
+              onChange={e => setForm({ ...form, name: e.target.value })}
               className="input-field"
               placeholder="Contoh: Banner Flexi"
             />
@@ -459,7 +459,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
 
           <div>
             <label className="label-text">Satuan</label>
-            <select value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="input-field">
+            <select value={form.unit} onChange={e => setForm({ ...form, unit: e.target.value })} className="input-field">
               {masterUnits.map(unit => (
                 <option key={unit.id} value={unit.name}>{unit.name}</option>
               ))}
@@ -468,7 +468,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
 
           <div>
             <label className="label-text">Tipe Item</label>
-            <select value={form.tipeItem} onChange={e => setForm({...form, tipeItem: e.target.value})} className="input-field">
+            <select value={form.tipeItem} onChange={e => setForm({ ...form, tipeItem: e.target.value })} className="input-field">
               <option value="Jual">Jual</option>
               <option value="Beli">Beli</option>
               <option value="Jual dan Beli">Jual dan Beli</option>
@@ -481,7 +481,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
               type="number"
               step="0.01"
               value={form.width}
-              onChange={e => form.widthBuyLock !== 'lock' && setForm({...form, width: e.target.value})}
+              onChange={e => form.widthBuyLock !== 'lock' && setForm({ ...form, width: e.target.value })}
               className={`input-field ${form.widthBuyLock === 'lock' ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
               placeholder="0"
               disabled={form.widthBuyLock === 'lock'}
@@ -494,7 +494,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
               type="number"
               step="0.01"
               value={form.length}
-              onChange={e => form.lengthBuyLock !== 'lock' && setForm({...form, length: e.target.value})}
+              onChange={e => form.lengthBuyLock !== 'lock' && setForm({ ...form, length: e.target.value })}
               className={`input-field ${form.lengthBuyLock === 'lock' ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
               placeholder="0"
               disabled={form.lengthBuyLock === 'lock'}
@@ -506,7 +506,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
             <input
               type="number"
               value={form.qty}
-              onChange={e => setForm({...form, qty: e.target.value})}
+              onChange={e => setForm({ ...form, qty: e.target.value })}
               className="input-field"
               placeholder="0"
             />
@@ -520,7 +520,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
                 type="number"
                 required
                 value={form.price}
-                onChange={e => setForm({...form, price: e.target.value})}
+                onChange={e => setForm({ ...form, price: e.target.value })}
                 className="input-field"
                 placeholder="0"
               />
@@ -531,7 +531,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
           {(form.tipeItem === 'Jual dan Beli' || form.tipeItem === 'Beli') && (
             <div>
               <label className="label-text">Lot</label>
-              <select value={form.lot} onChange={e => setForm({...form, lot: e.target.value})} className="input-field">
+              <select value={form.lot} onChange={e => setForm({ ...form, lot: e.target.value })} className="input-field">
                 <option value="Roll">Roll</option>
                 <option value="Rejected">Rejected</option>
               </select>
@@ -542,56 +542,56 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
           {(form.tipeItem === 'Jual dan Beli' || form.tipeItem === 'Beli') && (
             <div className="col-span-2">
               <label className="label-text mb-2 block">Harga Beli per Vendor</label>
-            <div className="space-y-2 max-h-32 overflow-y-auto border border-slate-200 rounded-lg p-2">
-              {form.vendorPrices.length === 0 ? (
-                <p className="text-sm text-slate-500 text-center py-2">Belum ada vendor ditambahkan</p>
-              ) : (
-                form.vendorPrices.map((vp, index) => (
-                  <div key={index} className="flex items-center justify-between bg-slate-50 p-2 rounded">
-                    <span className="text-sm font-medium">{vp.vendorName}</span>
-                    <span className="text-sm text-blue-600 font-bold">{formatCurrency(vp.costPrice)}</span>
-                    <button
-                      type="button"
-                      onClick={() => setForm(prev => ({
-                        ...prev,
-                        vendorPrices: prev.vendorPrices.filter((_, i) => i !== index)
-                      }))}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))
-              )}
+              <div className="space-y-2 max-h-32 overflow-y-auto border border-slate-200 rounded-lg p-2">
+                {form.vendorPrices.length === 0 ? (
+                  <p className="text-sm text-slate-500 text-center py-2">Belum ada vendor ditambahkan</p>
+                ) : (
+                  form.vendorPrices.map((vp, index) => (
+                    <div key={index} className="flex items-center justify-between bg-slate-50 p-2 rounded">
+                      <span className="text-sm font-medium">{vp.vendorName}</span>
+                      <span className="text-sm text-blue-600 font-bold">{formatCurrency(vp.costPrice)}</span>
+                      <button
+                        type="button"
+                        onClick={() => setForm(prev => ({
+                          ...prev,
+                          vendorPrices: prev.vendorPrices.filter((_, i) => i !== index)
+                        }))}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="flex gap-2 mt-2">
+                <select
+                  id="newVendorSelect"
+                  className="flex-1 input-field text-sm"
+                  defaultValue=""
+                >
+                  <option value="">-- Pilih Vendor --</option>
+                  {vendors.filter(v => v.status === 'Aktif' && !form.vendorPrices.some(vp => vp.vendorId == v.id)).map(v => (
+                    <option key={v.id} value={v.id}>{v.name}</option>
+                  ))}
+                  {!form.vendorPrices.some(vp => vp.vendorId == 0) && <option value="0">Internal</option>}
+                </select>
+                <input
+                  type="number"
+                  id="newVendorPrice"
+                  placeholder="Harga"
+                  className="flex-1 input-field text-sm"
+                  defaultValue=""
+                />
+                <button
+                  type="button"
+                  onClick={handleVendorPriceAdd}
+                  className="btn-primary text-sm px-3 py-2"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-            <div className="flex gap-2 mt-2">
-              <select
-                id="newVendorSelect"
-                className="flex-1 input-field text-sm"
-                defaultValue=""
-              >
-                <option value="">-- Pilih Vendor --</option>
-                {vendors.filter(v => v.status === 'Aktif' && !form.vendorPrices.some(vp => vp.vendorId == v.id)).map(v => (
-                  <option key={v.id} value={v.id}>{v.name}</option>
-                ))}
-                {!form.vendorPrices.some(vp => vp.vendorId == 0) && <option value="0">Internal</option>}
-              </select>
-              <input
-                type="number"
-                id="newVendorPrice"
-                placeholder="Harga"
-                className="flex-1 input-field text-sm"
-                defaultValue=""
-              />
-              <button
-                type="button"
-                onClick={handleVendorPriceAdd}
-                className="btn-primary text-sm px-3 py-2"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
           )}
 
           <div className="col-span-2 space-y-3">
@@ -610,7 +610,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
                       // Disabled, hanya bisa rejected
                       if (e.target.value !== 'rejected') return;
                     }
-                    setForm({...form, widthSellLock: e.target.value});
+                    setForm({ ...form, widthSellLock: e.target.value });
                   }}
                   className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.widthSellLock)}`}
                   disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Beli'}
@@ -630,7 +630,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
                       // Disabled, hanya bisa rejected
                       if (e.target.value !== 'rejected') return;
                     }
-                    setForm({...form, widthBuyLock: e.target.value});
+                    setForm({ ...form, widthBuyLock: e.target.value });
                   }}
                   className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.widthBuyLock)}`}
                   disabled={form.unit !== 'METER' && form.unit !== 'M. LARI'}
@@ -653,7 +653,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
                       // Disabled, hanya bisa rejected
                       if (e.target.value !== 'rejected') return;
                     }
-                    setForm({...form, lengthSellLock: e.target.value});
+                    setForm({ ...form, lengthSellLock: e.target.value });
                   }}
                   className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.lengthSellLock)}`}
                   disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Beli'}
@@ -673,7 +673,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
                       // Disabled, hanya bisa rejected
                       if (e.target.value !== 'rejected') return;
                     }
-                    setForm({...form, lengthBuyLock: e.target.value});
+                    setForm({ ...form, lengthBuyLock: e.target.value });
                   }}
                   className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.lengthBuyLock)}`}
                   disabled={form.unit !== 'METER' && form.unit !== 'M. LARI'}
@@ -697,7 +697,7 @@ const ProductFormPage = ({ mode, editingProduct, onSave, onCancel, vendors, mast
                       // Disabled, hanya bisa rejected
                       if (e.target.value !== 'rejected') return;
                     }
-                    setForm({...form, lotLock: e.target.value});
+                    setForm({ ...form, lotLock: e.target.value });
                   }}
                   className={`text-xs px-2 py-1 rounded border font-bold uppercase ${getLockStatusStyle(form.lotLock)}`}
                   disabled={(form.unit !== 'METER' && form.unit !== 'M. LARI') || form.tipeItem === 'Jual' || form.tipeItem === 'Beli'}
@@ -769,11 +769,10 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => (
         <button
           key={item.id}
           onClick={() => setActiveMenu(item.id)}
-          className={`flex items-center w-full p-3 rounded-xl transition-all duration-200 mb-1 group ${
-            activeMenu === item.id
-              ? `${THEME.primary} text-white shadow-lg shadow-red-900/20`
-              : 'hover:bg-white/10 text-slate-400 hover:text-white'
-          }`}
+          className={`flex items-center w-full p-3 rounded-xl transition-all duration-200 mb-1 group ${activeMenu === item.id
+            ? `${THEME.primary} text-white shadow-lg shadow-red-900/20`
+            : 'hover:bg-white/10 text-slate-400 hover:text-white'
+            }`}
         >
           <item.icon className={`w-4 h-4 mr-3 transition-transform ${activeMenu === item.id ? 'scale-110' : 'group-hover:scale-110'}`} />
           <span className="font-bold text-xs tracking-wide">{item.label}</span>
@@ -791,11 +790,10 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => (
         <button
           key={item.id}
           onClick={() => setActiveMenu(item.id)}
-          className={`flex items-center w-full p-3 rounded-xl transition-all duration-200 mb-1 group ${
-            activeMenu === item.id
-              ? `${THEME.primary} text-white shadow-lg shadow-red-900/20`
-              : 'hover:bg-white/10 text-slate-400 hover:text-white'
-          }`}
+          className={`flex items-center w-full p-3 rounded-xl transition-all duration-200 mb-1 group ${activeMenu === item.id
+            ? `${THEME.primary} text-white shadow-lg shadow-red-900/20`
+            : 'hover:bg-white/10 text-slate-400 hover:text-white'
+            }`}
         >
           <item.icon className={`w-4 h-4 mr-3 transition-transform ${activeMenu === item.id ? 'scale-110' : 'group-hover:scale-110'}`} />
           <span className="font-bold text-xs tracking-wide">{item.label}</span>
@@ -811,11 +809,10 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => (
         <button
           key={item.id}
           onClick={() => setActiveMenu(item.id)}
-          className={`flex items-center w-full p-3 rounded-xl transition-all duration-200 mb-1 group ${
-            activeMenu === item.id
-              ? `${THEME.primary} text-white shadow-lg shadow-red-900/20`
-              : 'hover:bg-white/10 text-slate-400 hover:text-white'
-          }`}
+          className={`flex items-center w-full p-3 rounded-xl transition-all duration-200 mb-1 group ${activeMenu === item.id
+            ? `${THEME.primary} text-white shadow-lg shadow-red-900/20`
+            : 'hover:bg-white/10 text-slate-400 hover:text-white'
+            }`}
         >
           <item.icon className={`w-4 h-4 mr-3 transition-transform ${activeMenu === item.id ? 'scale-110' : 'group-hover:scale-110'}`} />
           <span className="font-bold text-xs tracking-wide">{item.label}</span>
@@ -838,14 +835,13 @@ const BottomNavbar = ({ activeMenu, setActiveMenu }) => (
       <button
         key={item.id}
         onClick={() => setActiveMenu(item.id)}
-        className={`flex flex-col items-center p-2 rounded-xl transition-all duration-300 w-1/5 relative ${
-          activeMenu === item.id
-            ? 'opacity-100'
-            : 'opacity-60 hover:opacity-100'
-        }`}
+        className={`flex flex-col items-center p-2 rounded-xl transition-all duration-300 w-1/5 relative ${activeMenu === item.id
+          ? 'opacity-100'
+          : 'opacity-60 hover:opacity-100'
+          }`}
       >
         <div className={`transition-all duration-300 ${activeMenu === item.id ? '-translate-y-1' : ''}`}>
-           <item.icon className={`w-6 h-6 ${activeMenu === item.id ? 'scale-110 drop-shadow-md' : ''}`} />
+          <item.icon className={`w-6 h-6 ${activeMenu === item.id ? 'scale-110 drop-shadow-md' : ''}`} />
         </div>
         <span className={`text-[9px] font-bold mt-1 uppercase tracking-tight transition-all ${activeMenu === item.id ? 'opacity-100 font-black' : 'opacity-0 h-0 overflow-hidden'}`}>
           {item.label}
@@ -872,44 +868,43 @@ const FilterBar = ({
           <Calendar className="w-3 h-3 mr-1" /> Periode Laporan
         </label>
         <div className="flex flex-col sm:flex-row gap-2">
-           <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100">
-              {[{ k: 'day', l: 'Hari' }, { k: 'month', l: 'Bulan' }, { k: 'year', l: 'Tahun' }].map((m) => (
-                <button
-                  key={m.k}
-                  onClick={() => {
-                    setDateFilterMode(m.k);
-                    const now = new Date();
-                    if (m.k === 'day') {
-                      const d = now.toISOString().slice(0, 10);
-                      setStartDate(d); setEndDate(d);
-                    } else if (m.k === 'month') {
-                       const y = now.getFullYear();
-                       const mm = String(now.getMonth() + 1).padStart(2, '0');
-                       setStartDate(`${y}-${mm}-01`);
-                       setEndDate(`${y}-${mm}-${String(new Date(y, now.getMonth() + 1, 0).getDate()).padStart(2, '0')}`);
-                    } else {
-                       const y = now.getFullYear();
-                       setStartDate(`${y}-01-01`); setEndDate(`${y}-12-31`);
-                    }
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                    dateFilterMode === m.k ? 'bg-white shadow-sm text-red-600 ring-1 ring-slate-100' : 'text-slate-500 hover:text-slate-700'
+          <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100">
+            {[{ k: 'day', l: 'Hari' }, { k: 'month', l: 'Bulan' }, { k: 'year', l: 'Tahun' }].map((m) => (
+              <button
+                key={m.k}
+                onClick={() => {
+                  setDateFilterMode(m.k);
+                  const now = new Date();
+                  if (m.k === 'day') {
+                    const d = now.toISOString().slice(0, 10);
+                    setStartDate(d); setEndDate(d);
+                  } else if (m.k === 'month') {
+                    const y = now.getFullYear();
+                    const mm = String(now.getMonth() + 1).padStart(2, '0');
+                    setStartDate(`${y}-${mm}-01`);
+                    setEndDate(`${y}-${mm}-${String(new Date(y, now.getMonth() + 1, 0).getDate()).padStart(2, '0')}`);
+                  } else {
+                    const y = now.getFullYear();
+                    setStartDate(`${y}-01-01`); setEndDate(`${y}-12-31`);
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${dateFilterMode === m.k ? 'bg-white shadow-sm text-red-600 ring-1 ring-slate-100' : 'text-slate-500 hover:text-slate-700'
                   }`}
-                >
-                  {m.l}
-                </button>
-              ))}
-            </div>
-            {dateFilterMode === 'day' && <input type="date" value={startDate} onChange={(e) => { setStartDate(e.target.value); setEndDate(e.target.value); }} className="flex-1 bg-slate-50 rounded-xl text-xs font-bold py-2 px-3 border border-slate-100 outline-none focus:ring-2 focus:ring-red-500" />}
-            {dateFilterMode === 'month' && <input type="month" value={startDate.slice(0, 7)} onChange={(e) => { const [y, m] = e.target.value.split('-'); setStartDate(`${y}-${m}-01`); setEndDate(`${y}-${m}-${new Date(y, m, 0).getDate()}`); }} className="flex-1 bg-slate-50 rounded-xl text-xs font-bold py-2 px-3 border border-slate-100 outline-none focus:ring-2 focus:ring-red-500" />}
-            {dateFilterMode === 'year' && (
-               <select value={startDate.slice(0, 4)} onChange={(e) => {const y=e.target.value; setStartDate(`${y}-01-01`); setEndDate(`${y}-12-31`);}} className="flex-1 bg-slate-50 rounded-xl text-xs font-bold py-2 px-3 border border-slate-100 outline-none">
-                 {yearOptions.map(y => <option key={y} value={y}>{y}</option>)}
-               </select>
-            )}
+              >
+                {m.l}
+              </button>
+            ))}
+          </div>
+          {dateFilterMode === 'day' && <input type="date" value={startDate} onChange={(e) => { setStartDate(e.target.value); setEndDate(e.target.value); }} className="flex-1 bg-slate-50 rounded-xl text-xs font-bold py-2 px-3 border border-slate-100 outline-none focus:ring-2 focus:ring-red-500" />}
+          {dateFilterMode === 'month' && <input type="month" value={startDate.slice(0, 7)} onChange={(e) => { const [y, m] = e.target.value.split('-'); setStartDate(`${y}-${m}-01`); setEndDate(`${y}-${m}-${new Date(y, m, 0).getDate()}`); }} className="flex-1 bg-slate-50 rounded-xl text-xs font-bold py-2 px-3 border border-slate-100 outline-none focus:ring-2 focus:ring-red-500" />}
+          {dateFilterMode === 'year' && (
+            <select value={startDate.slice(0, 4)} onChange={(e) => { const y = e.target.value; setStartDate(`${y}-01-01`); setEndDate(`${y}-12-31`); }} className="flex-1 bg-slate-50 rounded-xl text-xs font-bold py-2 px-3 border border-slate-100 outline-none">
+              {yearOptions.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          )}
         </div>
       </div>
-      
+
       {showStatus && (
         <div className="space-y-1.5">
           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center">
@@ -929,11 +924,11 @@ const FilterBar = ({
 const SearchInput = ({ placeholder, value, onChange }) => (
   <div className="relative">
     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-    <input 
-      type="text" 
-      placeholder={placeholder} 
-      value={value} 
-      onChange={onChange} 
+    <input
+      type="text"
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
       className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-red-500 transition"
     />
   </div>
@@ -943,7 +938,7 @@ const SearchInput = ({ placeholder, value, onChange }) => (
 
 const App = () => {
   const [activeMenu, setActiveMenu] = useState('dashboard');
-  
+
   // --- STATE DATA ---
   // Master Units dengan rules setting untuk P, L, dan Lot
   const [masterUnits, setMasterUnits] = useState([
@@ -1040,29 +1035,29 @@ const App = () => {
   ]);
 
   const [purchaseInvoices, setPurchaseInvoices] = useState([
-    { 
-        id: 'BUY-20250101-9999',
-        noTagihan: 'SUP-001',
-        date: `${currentMonthPrefix}-01`, 
-        vendor: 'Toko Warna Abadi',
-        salesName: 'Andi',
-        address: 'Jl. Maju Mundur No. 1',
-        items: [{
-            name: 'Tinta Cyan',
-            unit: 'LITER',
-            purchaseUnit: 'LITER',
-            width: 0, length: 0, area: 0, lot: '-',
-            qty: 2,
-            price: 300000,
-            discount: 0,
-            subtotal: 600000,
-            conversion: 1
-        }],
-        total: 600000, 
-        paid: 600000, 
-        remaining: 0, 
-        paymentMethod: 'Transfer', 
-        status: 'lunas' 
+    {
+      id: 'BUY-20250101-9999',
+      noTagihan: 'SUP-001',
+      date: `${currentMonthPrefix}-01`,
+      vendor: 'Toko Warna Abadi',
+      salesName: 'Andi',
+      address: 'Jl. Maju Mundur No. 1',
+      items: [{
+        name: 'Tinta Cyan',
+        unit: 'LITER',
+        purchaseUnit: 'LITER',
+        width: 0, length: 0, area: 0, lot: '-',
+        qty: 2,
+        price: 300000,
+        discount: 0,
+        subtotal: 600000,
+        conversion: 1
+      }],
+      total: 600000,
+      paid: 600000,
+      remaining: 0,
+      paymentMethod: 'Transfer',
+      status: 'lunas'
     },
   ]);
 
@@ -1113,7 +1108,7 @@ const App = () => {
 
   const Dashboard = () => {
     const pieData = [
-      { name: 'Penjualan Lunas', value: stats.totalSalesPaid, color: '#059669' }, 
+      { name: 'Penjualan Lunas', value: stats.totalSalesPaid, color: '#059669' },
       { name: 'Penjualan Belum Lunas', value: stats.totalSalesUnpaid, color: '#f59e0b' },
       { name: 'Belanja Lunas', value: stats.totalPurchasePaid, color: '#3b82f6' },
       { name: 'Belanja Utang', value: stats.totalPurchaseUnpaid, color: '#ef4444' },
@@ -1127,7 +1122,7 @@ const App = () => {
         productSales[item.name] += item.qty;
       });
     });
-    
+
     let sortedProducts = Object.keys(productSales).map(key => ({ name: key, value: productSales[key] })).sort((a, b) => b.value - a.value);
     const COLORS = ['#dc2626', '#2563eb', '#16a34a', '#d97706', '#9333ea', '#0891b2', '#db2777', '#4b5563', '#84cc16', '#6366f1', '#9ca3af'];
 
@@ -1137,54 +1132,54 @@ const App = () => {
 
         {/* Profit Card */}
         <div className={`p-6 rounded-2xl border ${stats.profit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'} shadow-sm flex justify-between items-center`}>
-            <div>
-              <p className={`text-xs font-black uppercase tracking-widest ${stats.profit >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>Estimasi Profit Bersih</p>
-              <h2 className={`text-3xl font-black mt-2 ${stats.profit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>{formatCurrency(stats.profit)}</h2>
-              <p className="text-[10px] text-slate-500 mt-1 font-bold">Rumus: Penjualan - Belanja Bahan - Pengeluaran Lain</p>
-            </div>
-            <div className={`p-4 rounded-full ${stats.profit >= 0 ? 'bg-emerald-200/50 text-emerald-700' : 'bg-red-200/50 text-red-700'}`}>
-              <TrendingUp className="w-8 h-8" />
-            </div>
+          <div>
+            <p className={`text-xs font-black uppercase tracking-widest ${stats.profit >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>Estimasi Profit Bersih</p>
+            <h2 className={`text-3xl font-black mt-2 ${stats.profit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>{formatCurrency(stats.profit)}</h2>
+            <p className="text-[10px] text-slate-500 mt-1 font-bold">Rumus: Penjualan - Belanja Bahan - Pengeluaran Lain</p>
+          </div>
+          <div className={`p-4 rounded-full ${stats.profit >= 0 ? 'bg-emerald-200/50 text-emerald-700' : 'bg-red-200/50 text-red-700'}`}>
+            <TrendingUp className="w-8 h-8" />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-             <h3 className="text-lg font-black text-slate-800 mb-4 uppercase italic">Komposisi Keuangan</h3>
-             <div className="h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={5} dataKey="value">
-                      {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                    </Pie>
-                    <Tooltip formatter={(value) => formatCurrency(value)} contentStyle={{borderRadius:'12px', border:'none', boxShadow:'0 10px 15px -3px rgba(0,0,0,0.1)'}} />
-                    <Legend iconType="circle" wrapperStyle={{fontSize:'10px', fontWeight:'700'}} />
-                  </PieChart>
-                </ResponsiveContainer>
-             </div>
+            <h3 className="text-lg font-black text-slate-800 mb-4 uppercase italic">Komposisi Keuangan</h3>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={5} dataKey="value">
+                    {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                  </Pie>
+                  <Tooltip formatter={(value) => formatCurrency(value)} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: '700' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-             <h3 className="text-lg font-black text-slate-800 mb-4 uppercase italic">Produk Terlaris</h3>
-             <div className="h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    {(() => {
-                      const maxTop = 4;
-                      let top4 = sortedProducts.slice(0, maxTop);
-                      let others = sortedProducts.slice(maxTop);
-                      let chartData = top4;
-                      if (others.length > 0) {
-                        chartData = [...top4, { name: "Lainnya", value: others.reduce((sum, prod) => sum + prod.value, 0) }];
-                      }
-                      return (
-                        <Pie data={chartData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}>
-                          {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                        </Pie>
-                      );
-                    })()}
-                    <Tooltip contentStyle={{borderRadius:'12px', border:'none', boxShadow:'0 10px 15px -3px rgba(0,0,0,0.1)'}} />
-                  </PieChart>
-                </ResponsiveContainer>
-             </div>
+            <h3 className="text-lg font-black text-slate-800 mb-4 uppercase italic">Produk Terlaris</h3>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  {(() => {
+                    const maxTop = 4;
+                    let top4 = sortedProducts.slice(0, maxTop);
+                    let others = sortedProducts.slice(maxTop);
+                    let chartData = top4;
+                    if (others.length > 0) {
+                      chartData = [...top4, { name: "Lainnya", value: others.reduce((sum, prod) => sum + prod.value, 0) }];
+                    }
+                    return (
+                      <Pie data={chartData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                        {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                      </Pie>
+                    );
+                  })()}
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
@@ -1195,14 +1190,14 @@ const App = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleDelete = (id) => {
-        if(window.confirm('Hapus produk ini?')) {
-            setProducts(products.filter(p => p.id !== id));
-        }
+      if (window.confirm('Hapus produk ini?')) {
+        setProducts(products.filter(p => p.id !== id));
+      }
     }
 
     const handleEdit = (item) => {
-        setEditingProduct(item);
-        setProductFormMode('edit');
+      setEditingProduct(item);
+      setProductFormMode('edit');
     }
 
     const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -1210,16 +1205,16 @@ const App = () => {
     return (
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-           <div>
-              <h3 className="text-lg font-black text-slate-800 uppercase italic">Database Produk</h3>
-              <p className="text-xs text-slate-500 font-medium">Daftar item yang dijual ke pelanggan.</p>
-           </div>
-           <div className="flex w-full md:w-auto gap-2">
-             <div className="w-full md:w-64">
-               <SearchInput placeholder="Cari Produk..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-             </div>
-             <button onClick={() => { setEditingProduct(null); setProductFormMode('create'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Produk Baru</button>
-           </div>
+          <div>
+            <h3 className="text-lg font-black text-slate-800 uppercase italic">Database Produk</h3>
+            <p className="text-xs text-slate-500 font-medium">Daftar item yang dijual ke pelanggan.</p>
+          </div>
+          <div className="flex w-full md:w-auto gap-2">
+            <div className="w-full md:w-64">
+              <SearchInput placeholder="Cari Produk..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+            </div>
+            <button onClick={() => { setEditingProduct(null); setProductFormMode('create'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Produk Baru</button>
+          </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
@@ -1240,7 +1235,7 @@ const App = () => {
               {filteredProducts.map(p => (
                 <tr key={p.id} className="hover:bg-slate-50">
                   <td className="p-4 font-bold">
-                      {p.name}
+                    {p.name}
                   </td>
                   <td className="p-4 text-center text-xs font-black bg-blue-50 text-blue-700 rounded px-2 py-1">{p.tipeItem || 'Jual dan Beli'}</td>
                   <td className="p-4 text-center font-mono">{p.width ? `${p.width} (M)` : '-'}</td>
@@ -1253,32 +1248,28 @@ const App = () => {
                   <td className="p-4 text-center font-bold text-slate-700">{p.qty}</td>
                   <td className="p-4 text-center text-xs">
                     <div className="flex flex-col gap-1">
-                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.widthSellLock === 'lock' ? 'bg-red-100 text-red-700' :
+                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${p.widthSellLock === 'lock' ? 'bg-red-100 text-red-700' :
                         p.widthSellLock === 'rejected' ? 'bg-gray-100 text-black' :
-                        'bg-green-100 text-green-700'
-                      }`}>L-J: {p.widthSellLock}</span>
-                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.widthBuyLock === 'lock' ? 'bg-red-100 text-red-700' :
+                          'bg-green-100 text-green-700'
+                        }`}>L-J: {p.widthSellLock}</span>
+                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${p.widthBuyLock === 'lock' ? 'bg-red-100 text-red-700' :
                         p.widthBuyLock === 'rejected' ? 'bg-gray-100 text-black' :
-                        'bg-green-100 text-green-700'
-                      }`}>L-B: {p.widthBuyLock}</span>
-                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.lengthSellLock === 'lock' ? 'bg-red-100 text-red-700' :
+                          'bg-green-100 text-green-700'
+                        }`}>L-B: {p.widthBuyLock}</span>
+                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${p.lengthSellLock === 'lock' ? 'bg-red-100 text-red-700' :
                         p.lengthSellLock === 'rejected' ? 'bg-gray-100 text-black' :
-                        'bg-green-100 text-green-700'
-                      }`}>P-J: {p.lengthSellLock}</span>
-                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${
-                        p.lengthBuyLock === 'lock' ? 'bg-red-100 text-red-700' :
+                          'bg-green-100 text-green-700'
+                        }`}>P-J: {p.lengthSellLock}</span>
+                      <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${p.lengthBuyLock === 'lock' ? 'bg-red-100 text-red-700' :
                         p.lengthBuyLock === 'rejected' ? 'bg-gray-100 text-black' :
-                        'bg-green-100 text-green-700'
-                      }`}>P-B: {p.lengthBuyLock}</span>
+                          'bg-green-100 text-green-700'
+                        }`}>P-B: {p.lengthBuyLock}</span>
                     </div>
                   </td>
                   <td className="p-4 text-center">
                     <div className="flex justify-center gap-2">
-                        <button onClick={() => handleEdit(p)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit3 className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(p.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                      <button onClick={() => handleEdit(p)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit3 className="w-4 h-4" /></button>
+                      <button onClick={() => handleDelete(p.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -1359,7 +1350,7 @@ const App = () => {
                   type="text"
                   className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Masukkan nama lengkap"
                   required
                 />
@@ -1371,7 +1362,7 @@ const App = () => {
                   type="email"
                   className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="Masukkan email"
                   required
                 />
@@ -1383,7 +1374,7 @@ const App = () => {
                   type="password"
                   className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="Masukkan password"
                   required
                 />
@@ -1394,7 +1385,7 @@ const App = () => {
                 <select
                   className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                   value={formData.role}
-                  onChange={(e) => setFormData({...formData, role: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   required
                 >
                   <option value="">Pilih Role</option>
@@ -1410,7 +1401,7 @@ const App = () => {
                   type="tel"
                   className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                   value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="Masukkan nomor telepon"
                 />
               </div>
@@ -1421,7 +1412,7 @@ const App = () => {
                   type="text"
                   className="w-full p-3 border border-slate-200 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                   value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   placeholder="Masukkan alamat"
                 />
               </div>
@@ -1462,11 +1453,10 @@ const App = () => {
                   <td className="p-4 font-bold">{user.name}</td>
                   <td className="p-4 text-slate-600">{user.email}</td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${
-                      user.role === 'Owner' ? 'bg-purple-100 text-purple-700' :
+                    <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'Owner' ? 'bg-purple-100 text-purple-700' :
                       user.role === 'Admin Sales' ? 'bg-blue-100 text-blue-700' :
-                      'bg-green-100 text-green-700'
-                    }`}>
+                        'bg-green-100 text-green-700'
+                      }`}>
                       {user.role}
                     </span>
                   </td>
@@ -1526,355 +1516,355 @@ const App = () => {
     const selectedProduct = products.find(p => p.id == itemEntry.itemId);
 
     useEffect(() => {
-        if (selectedProduct) {
-            // Default rules:
-            // Purchase unit always from database regardless of Lot selection
-            const unit = selectedProduct.unit;
+      if (selectedProduct) {
+        // Default rules:
+        // Purchase unit always from database regardless of Lot selection
+        const unit = selectedProduct.unit;
 
-            setItemEntry(prev => ({
-                ...prev,
-                purchaseUnit: unit,
-                // If not METER, clear dimensions
-                width: selectedProduct.unit !== 'METER' ? 0 : (selectedProduct.widthSellLock === 'lock' ? (selectedProduct.width || 0) : (prev.width || selectedProduct.width || 0)),
-                length: selectedProduct.unit !== 'METER' ? 0 : (selectedProduct.lengthSellLock === 'lock' ? (selectedProduct.length || 0) : (prev.length || selectedProduct.length || 0)),
-                price: selectedProduct.priceLock === 'lock' ? (selectedProduct.price || 0) : (prev.price || selectedProduct.price || 0),
-            }));
-        }
+        setItemEntry(prev => ({
+          ...prev,
+          purchaseUnit: unit,
+          // If not METER, clear dimensions
+          width: selectedProduct.unit !== 'METER' ? 0 : (selectedProduct.widthSellLock === 'lock' ? (selectedProduct.width || 0) : (prev.width || selectedProduct.width || 0)),
+          length: selectedProduct.unit !== 'METER' ? 0 : (selectedProduct.lengthSellLock === 'lock' ? (selectedProduct.length || 0) : (prev.length || selectedProduct.length || 0)),
+          price: selectedProduct.priceLock === 'lock' ? (selectedProduct.price || 0) : (prev.price || selectedProduct.price || 0),
+        }));
+      }
     }, [itemEntry.itemId]);
 
     // Load data for editing
     useEffect(() => {
-        if (editItem && isCreatingPurchase) {
-            const vendorData = vendors.find(v => v.name === editItem.vendor);
-            setHeader({
-                nomorInternal: editItem.id,
-                date: editItem.date,
-                vendorId: vendorData?.id || '',
-                vendor: editItem.vendor,
-                salesName: editItem.salesName || '',
-                address: editItem.address || '',
-                paymentMethod: editItem.paymentMethod
-            });
-            setCart(editItem.items);
-            setPaidAmount(editItem.paid);
-        } else if (!editItem && isCreatingPurchase) {
-            setHeader(prev => ({...prev, nomorInternal: generateInvoiceCode('BUY')}));
-        }
+      if (editItem && isCreatingPurchase) {
+        const vendorData = vendors.find(v => v.name === editItem.vendor);
+        setHeader({
+          nomorInternal: editItem.id,
+          date: editItem.date,
+          vendorId: vendorData?.id || '',
+          vendor: editItem.vendor,
+          salesName: editItem.salesName || '',
+          address: editItem.address || '',
+          paymentMethod: editItem.paymentMethod
+        });
+        setCart(editItem.items);
+        setPaidAmount(editItem.paid);
+      } else if (!editItem && isCreatingPurchase) {
+        setHeader(prev => ({ ...prev, nomorInternal: generateInvoiceCode('BUY') }));
+      }
     }, [editItem, isCreatingPurchase, vendors]);
 
     // Update vendor name when vendorId changes
     useEffect(() => {
-        if (header.vendorId) {
-            const vendor = vendors.find(v => v.id == header.vendorId);
-            if (vendor) {
-                setHeader(prev => ({
-                    ...prev,
-                    vendor: vendor.name,
-                    address: vendor.address,
-                    salesName: vendor.sales || '-'
-                }));
-            }
+      if (header.vendorId) {
+        const vendor = vendors.find(v => v.id == header.vendorId);
+        if (vendor) {
+          setHeader(prev => ({
+            ...prev,
+            vendor: vendor.name,
+            address: vendor.address,
+            salesName: vendor.sales || '-'
+          }));
         }
+      }
     }, [header.vendorId, vendors]);
 
     const addToCart = () => {
-        if (!selectedProduct || !header.vendorId) return alert("Pilih Item dan Vendor");
+      if (!selectedProduct || !header.vendorId) return alert("Pilih Item dan Vendor");
 
-        const width = parseFloat(itemEntry.width) || 0;
-        const length = parseFloat(itemEntry.length) || 0;
-        const qty = parseInt(itemEntry.qty) || 1;
-        const discount = parseFloat(itemEntry.discount) || 0;
+      const width = parseFloat(itemEntry.width) || 0;
+      const length = parseFloat(itemEntry.length) || 0;
+      const qty = parseInt(itemEntry.qty) || 1;
+      const discount = parseFloat(itemEntry.discount) || 0;
 
-        // Get price from product's vendor prices
-        let price = 0;
-        if (header.vendorId) {
-            const vendorPrice = selectedProduct.vendorPrices?.find(vp => vp.vendorId == header.vendorId);
-            if (vendorPrice) {
-                price = vendorPrice.costPrice;
-            }
+      // Get price from product's vendor prices
+      let price = 0;
+      if (header.vendorId) {
+        const vendorPrice = selectedProduct.vendorPrices?.find(vp => vp.vendorId == header.vendorId);
+        if (vendorPrice) {
+          price = vendorPrice.costPrice;
         }
-        
-        let area = 0;
-        let subtotal = 0;
-        let addedQty = qty;
+      }
 
-        // Logic Konversi: Jika DB = METER dan Lot = ROLL
-        // "P" acts as "Panjang per Roll" in this context if Lot=Roll
-        if (selectedProduct.unit === 'METER' && selectedProduct.lot === 'Roll') {
-            const rollLength = parseFloat(itemEntry.length) || 0; // Using P as roll length
-            addedQty = qty * rollLength;
-        }
+      let area = 0;
+      let subtotal = 0;
+      let addedQty = qty;
 
-        // Hitung Luas & Subtotal
-        if (selectedProduct.unit === 'METER' && width > 0 && length > 0 && selectedProduct.lot !== 'Roll') {
-           // Standard Meter calculation if dimensions exist
-           area = (width * length) / 10000;
-        }
-        
-        subtotal = (price * qty) - discount;
+      // Logic Konversi: Jika DB = METER dan Lot = ROLL
+      // "P" acts as "Panjang per Roll" in this context if Lot=Roll
+      if (selectedProduct.unit === 'METER' && selectedProduct.lot === 'Roll') {
+        const rollLength = parseFloat(itemEntry.length) || 0; // Using P as roll length
+        addedQty = qty * rollLength;
+      }
 
-        const newItem = {
-            id: Date.now(),
-            itemId: itemEntry.itemId,
-            name: selectedProduct.name,
-            width, length, qty, lot: selectedProduct.lot,
-            area,
-            unit: selectedProduct.unit, // Satuan Stok
-            purchaseUnit: itemEntry.purchaseUnit, // Satuan Beli
-            price, discount, subtotal,
-            addedQty
-        };
+      // Hitung Luas & Subtotal
+      if (selectedProduct.unit === 'METER' && width > 0 && length > 0 && selectedProduct.lot !== 'Roll') {
+        // Standard Meter calculation if dimensions exist
+        area = (width * length) / 10000;
+      }
 
-        setCart([...cart, newItem]);
-        setItemEntry({ ...itemEntry, itemId: '', width: 0, length: 0, qty: 1, price: 0, discount: 0 });
+      subtotal = (price * qty) - discount;
+
+      const newItem = {
+        id: Date.now(),
+        itemId: itemEntry.itemId,
+        name: selectedProduct.name,
+        width, length, qty, lot: selectedProduct.lot,
+        area,
+        unit: selectedProduct.unit, // Satuan Stok
+        purchaseUnit: itemEntry.purchaseUnit, // Satuan Beli
+        price, discount, subtotal,
+        addedQty
+      };
+
+      setCart([...cart, newItem]);
+      setItemEntry({ ...itemEntry, itemId: '', width: 0, length: 0, qty: 1, price: 0, discount: 0 });
     };
 
     const removeFromCart = (index) => {
-        setCart(cart.filter((_, i) => i !== index));
+      setCart(cart.filter((_, i) => i !== index));
     };
 
     const totalTagihan = cart.reduce((acc, item) => acc + item.subtotal, 0);
     const sisaTagihan = totalTagihan - paidAmount;
 
     const handleSave = () => {
-       if (!header.vendor || cart.length === 0) return alert("Data belum lengkap");
+      if (!header.vendor || cart.length === 0) return alert("Data belum lengkap");
 
-       // Update Stocks
-       cart.forEach(item => {
-           setProducts(prev => prev.map(p => p.id == item.itemId ? {...p, qty: parseInt(p.qty) + item.addedQty} : p));
-       });
+      // Update Stocks
+      cart.forEach(item => {
+        setProducts(prev => prev.map(p => p.id == item.itemId ? { ...p, qty: parseInt(p.qty) + item.addedQty } : p));
+      });
 
-       const newInvoice = {
-           id: header.nomorInternal,
-           noTagihan: header.nomorInternal, // Menggunakan nomor internal sebagai noTagihan
-           date: header.date,
-           vendor: header.vendor,
-           salesName: header.salesName,
-           address: header.address,
-           items: cart,
-           total: totalTagihan,
-           paid: parseInt(paidAmount),
-           remaining: sisaTagihan < 0 ? 0 : sisaTagihan,
-           paymentMethod: header.paymentMethod,
-           status: sisaTagihan <= 0 ? 'lunas' : 'belum_lunas'
-       };
+      const newInvoice = {
+        id: header.nomorInternal,
+        noTagihan: header.nomorInternal, // Menggunakan nomor internal sebagai noTagihan
+        date: header.date,
+        vendor: header.vendor,
+        salesName: header.salesName,
+        address: header.address,
+        items: cart,
+        total: totalTagihan,
+        paid: parseInt(paidAmount),
+        remaining: sisaTagihan < 0 ? 0 : sisaTagihan,
+        paymentMethod: header.paymentMethod,
+        status: sisaTagihan <= 0 ? 'lunas' : 'belum_lunas'
+      };
 
-       if (editItem) {
-           setPurchaseInvoices(prev => prev.map(inv => inv.id === editItem.id ? newInvoice : inv));
-       } else {
-           setPurchaseInvoices([newInvoice, ...purchaseInvoices]);
-           if (header.paymentMethod === 'Cash') setWallet(prev => ({...prev, cash: prev.cash - parseInt(paidAmount)})); 
-           else setWallet(prev => ({...prev, bank: prev.bank - parseInt(paidAmount)}));
-       }
-       
-       setIsCreatingPurchase(false);
-       setEditItem(null);
+      if (editItem) {
+        setPurchaseInvoices(prev => prev.map(inv => inv.id === editItem.id ? newInvoice : inv));
+      } else {
+        setPurchaseInvoices([newInvoice, ...purchaseInvoices]);
+        if (header.paymentMethod === 'Cash') setWallet(prev => ({ ...prev, cash: prev.cash - parseInt(paidAmount) }));
+        else setWallet(prev => ({ ...prev, bank: prev.bank - parseInt(paidAmount) }));
+      }
+
+      setIsCreatingPurchase(false);
+      setEditItem(null);
     };
 
     const handleDeleteInvoice = (id) => {
-        if(window.confirm('Hapus nota supplier ini?')) {
-            setPurchaseInvoices(prev => prev.filter(i => i.id !== id));
-        }
+      if (window.confirm('Hapus nota supplier ini?')) {
+        setPurchaseInvoices(prev => prev.filter(i => i.id !== id));
+      }
     }
 
     // LIST VIEW
     if (!isCreatingPurchase) {
-        return (
-          <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-               <div><h3 className="text-lg font-black text-slate-800 uppercase italic">Nota Supplier (Belanja)</h3><p className="text-xs text-slate-500 font-medium">Rekap pembelian stok dari vendor.</p></div>
-               <button onClick={() => { setIsCreatingPurchase(true); setEditItem(null); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Catat Belanja</button>
-            </div>
-            
-            <FilterBar startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} dateFilterMode={dateFilterMode} setDateFilterMode={setDateFilterMode} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
-            
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-               <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">Tanggal</th><th className="p-4">No. Nota</th><th className="p-4">Vendor</th><th className="p-4">Sales</th><th className="p-4">Total</th><th className="p-4">Status</th><th className="p-4 text-center">Aksi</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredPurchases.map(p => (<tr key={p.id} className="hover:bg-slate-50"><td className="p-4 text-xs text-slate-500 font-mono">{p.date}</td><td className="p-4 font-mono text-xs">{p.id}</td><td className="p-4 font-bold">{p.vendor}</td><td className="p-4 text-sm">{p.salesName || '-'}</td><td className="p-4 font-black text-red-600">{formatCurrency(p.total)}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${p.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.status.replace('_', ' ')}</span></td>               <td className="p-4 text-center">
-                   <div className="flex justify-center gap-2">
-                        <button onClick={() => { setEditItem(p); setShowModal('invoice-detail-purchase'); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600"><Eye className="w-4 h-4" /></button>
-                        <button onClick={() => { setIsCreatingPurchase(true); setEditItem(p); }} className="p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600"><Edit3 className="w-4 h-4" /></button>
-                        <button onClick={() => { setEditItem(p); setShowModal('invoice-print-purchase'); }} className="p-2 bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-600"><Printer className="w-4 h-4" /></button>
-                        <button onClick={() => handleDeleteInvoice(p.id)} className="p-2 bg-red-50 hover:bg-red-100 rounded-lg text-red-600"><Trash2 className="w-4 h-4" /></button>
-                   </div>
-               </td></tr>))}</tbody></table>
-            </div>
+      return (
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div><h3 className="text-lg font-black text-slate-800 uppercase italic">Nota Supplier (Belanja)</h3><p className="text-xs text-slate-500 font-medium">Rekap pembelian stok dari vendor.</p></div>
+            <button onClick={() => { setIsCreatingPurchase(true); setEditItem(null); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Catat Belanja</button>
           </div>
-        );
+
+          <FilterBar startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} dateFilterMode={dateFilterMode} setDateFilterMode={setDateFilterMode} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
+
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">Tanggal</th><th className="p-4">No. Nota</th><th className="p-4">Vendor</th><th className="p-4">Sales</th><th className="p-4">Total</th><th className="p-4">Status</th><th className="p-4 text-center">Aksi</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredPurchases.map(p => (<tr key={p.id} className="hover:bg-slate-50"><td className="p-4 text-xs text-slate-500 font-mono">{p.date}</td><td className="p-4 font-mono text-xs">{p.id}</td><td className="p-4 font-bold">{p.vendor}</td><td className="p-4 text-sm">{p.salesName || '-'}</td><td className="p-4 font-black text-red-600">{formatCurrency(p.total)}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${p.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.status.replace('_', ' ')}</span></td>               <td className="p-4 text-center">
+              <div className="flex justify-center gap-2">
+                <button onClick={() => { setEditItem(p); setShowModal('invoice-detail-purchase'); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600"><Eye className="w-4 h-4" /></button>
+                <button onClick={() => { setIsCreatingPurchase(true); setEditItem(p); }} className="p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600"><Edit3 className="w-4 h-4" /></button>
+                <button onClick={() => { setEditItem(p); setShowModal('invoice-print-purchase'); }} className="p-2 bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-600"><Printer className="w-4 h-4" /></button>
+                <button onClick={() => handleDeleteInvoice(p.id)} className="p-2 bg-red-50 hover:bg-red-100 rounded-lg text-red-600"><Trash2 className="w-4 h-4" /></button>
+              </div>
+            </td></tr>))}</tbody></table>
+          </div>
+        </div>
+      );
     }
 
     // FORM VIEW
     return (
       <div className="space-y-6 animate-in slide-in-from-bottom-5 duration-300">
-          <div className="flex items-center justify-between mb-4">
-             <div className="flex items-center">
-                <button onClick={() => setIsCreatingPurchase(false)} className="mr-4 p-2 rounded-full hover:bg-slate-200 transition"><ArrowLeft className="w-5 h-5"/></button>
-                <h3 className="text-xl font-black text-slate-800 uppercase italic">{editItem ? 'Edit Nota Supplier' : 'Input Belanja (Nota Supplier)'}</h3>
-             </div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <button onClick={() => setIsCreatingPurchase(false)} className="mr-4 p-2 rounded-full hover:bg-slate-200 transition"><ArrowLeft className="w-5 h-5" /></button>
+            <h3 className="text-xl font-black text-slate-800 uppercase italic">{editItem ? 'Edit Nota Supplier' : 'Input Belanja (Nota Supplier)'}</h3>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            {/* Header */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><FileText className="w-4 h-4 mr-2" /> Informasi Supplier</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="label-text">No. Internal (Auto)</label><input type="text" value={header.nomorInternal} disabled className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" /></div>
+                <div><label className="label-text">Hari - Tanggal</label><input type="date" value={header.date} onChange={e => setHeader({ ...header, date: e.target.value })} className="input-field" /></div>
+                <div><label className="label-text">Nama Supplier</label><select value={header.vendorId} onChange={e => setHeader({ ...header, vendorId: e.target.value })} className="input-field"><option value="">-- Pilih Supplier --</option>{vendors.filter(v => v.status === 'Aktif').map(v => (<option key={v.id} value={v.id}>{v.name}</option>))}</select></div>
+                <div><label className="label-text">Nama Sales</label><input type="text" value={header.salesName} onChange={e => setHeader({ ...header, salesName: e.target.value })} className="input-field" placeholder="Masukkan nama sales" /></div>
+                <div className="col-span-2"><label className="label-text">Alamat Supplier</label><input type="text" value={header.address} disabled className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" title="Alamat dikunci dari database vendor" /></div>
+              </div>
+            </div>
+
+            {/* Item Entry */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><ShoppingCart className="w-4 h-4 mr-2" /> Input Item</h4>
+
+              <div className="grid grid-cols-12 gap-3 items-end">
+                <div className="col-span-8">
+                  <SearchableSelect
+                    items={header.vendorId && availableProducts.length > 0 ? availableProducts.map(p => {
+                      const product = products.find(prod => prod.id === p.productId);
+                      const vendorPrice = product?.vendorPrices?.find(vp => vp.vendorId == header.vendorId);
+                      return product ? {
+                        ...product,
+                        displayName: `${product.name} - Modal: Rp ${vendorPrice ? formatCurrency(vendorPrice.costPrice) : 'N/A'}`
+                      } : null;
+                    }).filter(Boolean) : []}
+                    label="Nama Item"
+                    placeholder="Ketik nama produk..."
+                    selectedValue={itemEntry.itemId}
+                    displayFormat={(item) => item.displayName || item.name}
+                    disabled={!header.vendorId}
+                    onSelect={(item) => {
+                      if (item) {
+                        setItemEntry({ ...itemEntry, itemId: item.id });
+                      } else {
+                        setItemEntry({ ...itemEntry, itemId: '' });
+                      }
+                    }}
+                  />
+                </div>
+
+
+                <div className="col-span-2">
+                  <label className="label-text">Satuan</label>
+                  <input type="text" value={itemEntry.purchaseUnit} disabled className="input-field bg-slate-100 text-slate-500" />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="label-text">L (m) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                  <input
+                    type="number"
+                    className="input-field bg-slate-100 text-slate-500 cursor-not-allowed"
+                    value={itemEntry.width}
+                    placeholder="0"
+                    disabled={true}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="label-text">P (m) {selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
+                  <input
+                    type="number"
+                    className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+                    value={itemEntry.length}
+                    onChange={e => (selectedProduct?.unit === 'METER' && selectedProduct?.lengthSellLock !== 'lock') && setItemEntry({ ...itemEntry, length: e.target.value })}
+                    placeholder="0"
+                    disabled={selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock'}
+                    readOnly={selectedProduct?.unit !== 'METER'}
+                  />
+                </div>
+                <div className="col-span-2"><label className="label-text">Qty</label><input type="number" className="input-field" value={itemEntry.qty} onChange={e => setItemEntry({ ...itemEntry, qty: e.target.value })} placeholder="1" /></div>
+                <div className="col-span-2">
+                  <label className="label-text">Lot</label>
+                  <input type="text" value={selectedProduct?.lot || 'Lock'} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
+                </div>
+                <div className="col-span-3"><label className="label-text">Harga {selectedProduct?.priceLock === 'lock' ? '(Locked)' : ''}</label><input type="number" className="input-field" value={itemEntry.price} onChange={e => selectedProduct?.priceLock !== 'lock' && setItemEntry({ ...itemEntry, price: e.target.value })} placeholder="0" disabled={selectedProduct?.priceLock === 'lock'} /></div>
+                <div className="col-span-3"><label className="label-text">Disc</label><input type="number" className="input-field" value={itemEntry.discount} onChange={e => setItemEntry({ ...itemEntry, discount: e.target.value })} placeholder="0" /></div>
+
+                <div className="col-span-4 mt-2 text-right">
+                  <button onClick={addToCart} className="btn-primary w-full h-[46px] flex items-center justify-center">
+                    <Plus className="w-4 h-4 mr-2" /> Tambah
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-100 text-slate-600 font-bold uppercase">
+                    <tr>
+                      <th className="p-3">No</th>
+                      <th className="p-3">Nama Item</th>
+                      <th className="p-3 text-center">L</th>
+                      <th className="p-3 text-center">P</th>
+                      <th className="p-3 text-center">Qty</th>
+                      <th className="p-3 text-center">Lot</th>
+                      <th className="p-3 text-center">Luas</th>
+                      <th className="p-3 text-center">Sat</th>
+                      <th className="p-3 text-right">Harga</th>
+                      <th className="p-3 text-right">Disc</th>
+                      <th className="p-3 text-right">Subtotal</th>
+                      <th className="p-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {cart.map((item, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50">
+                        <td className="p-3 text-center">{idx + 1}</td>
+                        <td className="p-3 font-bold">{item.name}</td>
+                        <td className="p-3 text-center">{item.width || '-'}</td>
+                        <td className="p-3 text-center">{item.lot === 'Lock' ? '-' : (item.length || '-')}</td>
+                        <td className="p-3 text-center font-bold">{item.qty}</td>
+                        <td className="p-3 text-center">{item.lot}</td>
+                        <td className="p-3 text-center">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
+                        <td className="p-3 text-center">{item.purchaseUnit}</td>
+                        <td className="p-3 text-right">{formatCurrency(item.price)}</td>
+                        <td className="p-3 text-right">{formatCurrency(item.discount)}</td>
+                        <td className="p-3 text-right font-bold">{formatCurrency(item.subtotal)}</td>
+                        <td className="p-3 text-center"><button onClick={() => removeFromCart(idx)}><Trash2 className="w-4 h-4 text-red-500" /></button></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-             <div className="lg:col-span-2 space-y-6">
-                {/* Header */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                   <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><FileText className="w-4 h-4 mr-2"/> Informasi Supplier</h4>
-                   <div className="grid grid-cols-2 gap-4">
-                      <div><label className="label-text">No. Internal (Auto)</label><input type="text" value={header.nomorInternal} disabled className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" /></div>
-                      <div><label className="label-text">Hari - Tanggal</label><input type="date" value={header.date} onChange={e => setHeader({...header, date: e.target.value})} className="input-field" /></div>
-                      <div><label className="label-text">Nama Supplier</label><select value={header.vendorId} onChange={e => setHeader({...header, vendorId: e.target.value})} className="input-field"><option value="">-- Pilih Supplier --</option>{vendors.filter(v => v.status === 'Aktif').map(v => (<option key={v.id} value={v.id}>{v.name}</option>))}</select></div>
-                      <div><label className="label-text">Nama Sales</label><input type="text" value={header.salesName} onChange={e => setHeader({...header, salesName: e.target.value})} className="input-field" placeholder="Masukkan nama sales" /></div>
-                      <div className="col-span-2"><label className="label-text">Alamat Supplier</label><input type="text" value={header.address} disabled className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" title="Alamat dikunci dari database vendor" /></div>
-                   </div>
+          {/* Sidebar Summary */}
+          <div className="space-y-6">
+            <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-xl sticky top-24">
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</p>
+                  <h2 className="text-4xl font-black tracking-tight">{formatCurrency(totalTagihan)}</h2>
                 </div>
-
-                {/* Item Entry */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                   <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><ShoppingCart className="w-4 h-4 mr-2"/> Input Item</h4>
-
-                   <div className="grid grid-cols-12 gap-3 items-end">
-                       <div className="col-span-8">
-                           <SearchableSelect
-                              items={header.vendorId && availableProducts.length > 0 ? availableProducts.map(p => {
-                                 const product = products.find(prod => prod.id === p.productId);
-                                 const vendorPrice = product?.vendorPrices?.find(vp => vp.vendorId == header.vendorId);
-                                 return product ? {
-                                    ...product,
-                                    displayName: `${product.name} - Modal: Rp ${vendorPrice ? formatCurrency(vendorPrice.costPrice) : 'N/A'}`
-                                 } : null;
-                              }).filter(Boolean) : []}
-                              label="Nama Item"
-                              placeholder="Ketik nama produk..."
-                              selectedValue={itemEntry.itemId}
-                              displayFormat={(item) => item.displayName || item.name}
-                              disabled={!header.vendorId}
-                              onSelect={(item) => {
-                                 if (item) {
-                                    setItemEntry({...itemEntry, itemId: item.id});
-                                 } else {
-                                    setItemEntry({...itemEntry, itemId: ''});
-                                 }
-                              }}
-                           />
-                       </div>
-                       
-
-                       <div className="col-span-2">
-                           <label className="label-text">Satuan</label>
-                           <input type="text" value={itemEntry.purchaseUnit} disabled className="input-field bg-slate-100 text-slate-500" />
-                       </div>
-
-                       <div className="col-span-2">
-                           <label className="label-text">L (m) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : ''}</label>
-                           <input
-                                type="number"
-                                className="input-field bg-slate-100 text-slate-500 cursor-not-allowed"
-                                value={itemEntry.width}
-                                placeholder="0"
-                                disabled={true}
-                           />
-                       </div>
-                       <div className="col-span-2">
-                           <label className="label-text">P (m) {selectedProduct?.lengthSellLock === 'lock' ? '(Locked)' : ''}</label>
-                           <input
-                                type="number"
-                                className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
-                                value={itemEntry.length}
-                                onChange={e => (selectedProduct?.unit === 'METER' && selectedProduct?.lengthSellLock !== 'lock') && setItemEntry({...itemEntry, length: e.target.value})}
-                                placeholder="0"
-                                disabled={selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock'}
-                                readOnly={selectedProduct?.unit !== 'METER'}
-                           />
-                       </div>
-                       <div className="col-span-2"><label className="label-text">Qty</label><input type="number" className="input-field" value={itemEntry.qty} onChange={e => setItemEntry({...itemEntry, qty: e.target.value})} placeholder="1" /></div>
-                       <div className="col-span-2">
-                           <label className="label-text">Lot</label>
-                           <input type="text" value={selectedProduct?.lot || 'Lock'} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
-                       </div>
-                       <div className="col-span-3"><label className="label-text">Harga {selectedProduct?.priceLock === 'lock' ? '(Locked)' : ''}</label><input type="number" className="input-field" value={itemEntry.price} onChange={e => selectedProduct?.priceLock !== 'lock' && setItemEntry({...itemEntry, price: e.target.value})} placeholder="0" disabled={selectedProduct?.priceLock === 'lock'} /></div>
-                       <div className="col-span-3"><label className="label-text">Disc</label><input type="number" className="input-field" value={itemEntry.discount} onChange={e => setItemEntry({...itemEntry, discount: e.target.value})} placeholder="0" /></div>
-                       
-                       <div className="col-span-4 mt-2 text-right">
-                           <button onClick={addToCart} className="btn-primary w-full h-[46px] flex items-center justify-center">
-                               <Plus className="w-4 h-4 mr-2" /> Tambah
-                           </button>
-                       </div>
-                   </div>
+                <div className="pt-4 border-t border-slate-700 space-y-4">
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-slate-400 mb-1 block">Bayar (Rp)</label>
+                    <input type="number" value={paidAmount} onChange={e => setPaidAmount(e.target.value)} className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl outline-none focus:border-red-600 font-bold text-lg" placeholder="0" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-slate-400 mb-1 block">Metode Bayar</label>
+                    <select value={header.paymentMethod} onChange={e => setHeader({ ...header, paymentMethod: e.target.value })} className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl font-bold text-sm">
+                      <option value="Cash">Uang Tunai</option>
+                      <option value="Transfer">Transfer</option>
+                    </select>
+                  </div>
+                  <div className="flex justify-between text-sm font-bold pt-2 border-t border-slate-800">
+                    <span>Sisa Tagihan</span>
+                    <span className={sisaTagihan > 0 ? 'text-red-400' : 'text-emerald-400'}>{formatCurrency(sisaTagihan)}</span>
+                  </div>
                 </div>
-
-                {/* Table */}
-                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs">
-                            <thead className="bg-slate-100 text-slate-600 font-bold uppercase">
-                                <tr>
-                                    <th className="p-3">No</th>
-                                    <th className="p-3">Nama Item</th>
-                                    <th className="p-3 text-center">L</th>
-                                    <th className="p-3 text-center">P</th>
-                                    <th className="p-3 text-center">Qty</th>
-                                    <th className="p-3 text-center">Lot</th>
-                                    <th className="p-3 text-center">Luas</th>
-                                    <th className="p-3 text-center">Sat</th>
-                                    <th className="p-3 text-right">Harga</th>
-                                    <th className="p-3 text-right">Disc</th>
-                                    <th className="p-3 text-right">Subtotal</th>
-                                    <th className="p-3"></th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {cart.map((item, idx) => (
-                                    <tr key={idx} className="hover:bg-slate-50">
-                                        <td className="p-3 text-center">{idx + 1}</td>
-                                        <td className="p-3 font-bold">{item.name}</td>
-                                        <td className="p-3 text-center">{item.width || '-'}</td>
-                                        <td className="p-3 text-center">{item.lot === 'Lock' ? '-' : (item.length || '-')}</td>
-                                        <td className="p-3 text-center font-bold">{item.qty}</td>
-                                        <td className="p-3 text-center">{item.lot}</td>
-                                        <td className="p-3 text-center">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
-                                        <td className="p-3 text-center">{item.purchaseUnit}</td>
-                                        <td className="p-3 text-right">{formatCurrency(item.price)}</td>
-                                        <td className="p-3 text-right">{formatCurrency(item.discount)}</td>
-                                        <td className="p-3 text-right font-bold">{formatCurrency(item.subtotal)}</td>
-                                        <td className="p-3 text-center"><button onClick={() => removeFromCart(idx)}><Trash2 className="w-4 h-4 text-red-500" /></button></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-             </div>
-
-             {/* Sidebar Summary */}
-             <div className="space-y-6">
-                <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-xl sticky top-24">
-                    <div className="space-y-4">
-                        <div>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</p>
-                            <h2 className="text-4xl font-black tracking-tight">{formatCurrency(totalTagihan)}</h2>
-                        </div>
-                        <div className="pt-4 border-t border-slate-700 space-y-4">
-                            <div>
-                                <label className="text-[10px] font-bold uppercase text-slate-400 mb-1 block">Bayar (Rp)</label>
-                                <input type="number" value={paidAmount} onChange={e => setPaidAmount(e.target.value)} className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl outline-none focus:border-red-600 font-bold text-lg" placeholder="0" />
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-bold uppercase text-slate-400 mb-1 block">Metode Bayar</label>
-                                <select value={header.paymentMethod} onChange={e => setHeader({...header, paymentMethod: e.target.value})} className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl font-bold text-sm">
-                                    <option value="Cash">Uang Tunai</option>
-                                    <option value="Transfer">Transfer</option>
-                                </select>
-                            </div>
-                            <div className="flex justify-between text-sm font-bold pt-2 border-t border-slate-800">
-                                <span>Sisa Tagihan</span>
-                                <span className={sisaTagihan > 0 ? 'text-red-400' : 'text-emerald-400'}>{formatCurrency(sisaTagihan)}</span>
-                            </div>
-                        </div>
-                        <button onClick={handleSave} className="w-full mt-4 bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-red-500 transition shadow-lg shadow-red-900/50 flex items-center justify-center">
-                            <Save className="w-4 h-4 mr-2" /> Simpan Transaksi
-                        </button>
-                    </div>
-                </div>
-             </div>
+                <button onClick={handleSave} className="w-full mt-4 bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-red-500 transition shadow-lg shadow-red-900/50 flex items-center justify-center">
+                  <Save className="w-4 h-4 mr-2" /> Simpan Transaksi
+                </button>
+              </div>
+            </div>
           </div>
+        </div>
       </div>
     );
   };
@@ -1883,9 +1873,9 @@ const App = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleDeleteInvoice = (id) => {
-        if(window.confirm('Hapus transaksi penjualan ini?')) {
-            setSalesInvoices(prev => prev.filter(i => i.id !== id));
-        }
+      if (window.confirm('Hapus transaksi penjualan ini?')) {
+        setSalesInvoices(prev => prev.filter(i => i.id !== id));
+      }
     }
 
     const InvoiceForm = () => {
@@ -1915,76 +1905,76 @@ const App = () => {
       // Load data for editing
       useEffect(() => {
         if (editItem && isCreatingInvoice) {
-            setHeader({
-                noTagihan: editItem.id,
-                date: editItem.date,
-                buyer: editItem.buyer,
-                paymentMethod: editItem.paymentMethod,
-                createdBy: editItem.createdBy || 'Admin'
-            });
-            setCart(editItem.items);
-            setPaidAmount(editItem.paid);
+          setHeader({
+            noTagihan: editItem.id,
+            date: editItem.date,
+            buyer: editItem.buyer,
+            paymentMethod: editItem.paymentMethod,
+            createdBy: editItem.createdBy || 'Admin'
+          });
+          setCart(editItem.items);
+          setPaidAmount(editItem.paid);
         }
       }, [editItem, isCreatingInvoice]);
 
       // Derived Logic
       const selectedProduct = products.find(p => p.id == itemEntry.selectedProductId);
       const filteredProducts = products.filter(p => {
-          const tipeItem = p.tipeItem || 'Jual dan Beli'; // Default ke 'Jual dan Beli' jika tidak ada
-          return tipeItem === 'Jual' || tipeItem === 'Jual dan Beli';
+        const tipeItem = p.tipeItem || 'Jual dan Beli'; // Default ke 'Jual dan Beli' jika tidak ada
+        return tipeItem === 'Jual' || tipeItem === 'Jual dan Beli';
       });
 
       // Effect to handle "L" and "P" from database when product changes
       // Treat both 'lock' and 'rejected' as non-editable states
       useEffect(() => {
-          if (selectedProduct) {
-              const widthLocked = selectedProduct.widthSellLock === 'lock' || selectedProduct.widthSellLock === 'rejected';
-              const lengthLocked = selectedProduct.lengthSellLock === 'lock' || selectedProduct.lengthSellLock === 'rejected';
+        if (selectedProduct) {
+          const widthLocked = selectedProduct.widthSellLock === 'lock' || selectedProduct.widthSellLock === 'rejected';
+          const lengthLocked = selectedProduct.lengthSellLock === 'lock' || selectedProduct.lengthSellLock === 'rejected';
 
-              setItemEntry(prev => ({
-                  ...prev,
-                  // "L" - jika locked/rejected, paksa nilai dari database; jika tidak, pertahankan prev atau pakai DB jika kosong
-                  width: widthLocked ? (selectedProduct.width || 0) : (prev.width || selectedProduct.width || 0),
-                  // "P" - jika locked/rejected, paksa nilai dari database; jika tidak, pertahankan prev atau pakai DB jika kosong
-                  length: lengthLocked ? (selectedProduct.length || 0) : (prev.length || selectedProduct.length || 0)
-              }));
-          }
+          setItemEntry(prev => ({
+            ...prev,
+            // "L" - jika locked/rejected, paksa nilai dari database; jika tidak, pertahankan prev atau pakai DB jika kosong
+            width: widthLocked ? (selectedProduct.width || 0) : (prev.width || selectedProduct.width || 0),
+            // "P" - jika locked/rejected, paksa nilai dari database; jika tidak, pertahankan prev atau pakai DB jika kosong
+            length: lengthLocked ? (selectedProduct.length || 0) : (prev.length || selectedProduct.length || 0)
+          }));
+        }
       }, [itemEntry.selectedProductId, selectedProduct]);
 
       const addToCart = () => {
         if (!selectedProduct) return;
-        
+
         const width = parseFloat(itemEntry.width) || 0;
         const length = parseFloat(itemEntry.length) || 0;
         const qty = parseInt(itemEntry.qty) || 1;
         const discount = parseFloat(itemEntry.discount) || 0;
         const basePrice = selectedProduct.price;
-        
+
         let luas = 0;
         let subtotal = 0;
 
         // Logic: Jika ada dimensi (L & P), hitung Luas dan asumsikan Harga Jual adalah per m2
         // Jika tidak, asumsikan Harga Jual adalah per unit
         if (selectedProduct.unit === 'METER' && width > 0 && length > 0) {
-           luas = (width * length) / 10000; // cm2 to m2
-           subtotal = (basePrice * luas * qty) - discount;
+          luas = (width * length) / 10000; // cm2 to m2
+          subtotal = (basePrice * luas * qty) - discount;
         } else {
-           subtotal = (basePrice * qty) - discount;
+          subtotal = (basePrice * qty) - discount;
         }
 
         const newItem = {
-            id: Date.now(),
-            productId: selectedProduct.id,
-            name: selectedProduct.name, // NAMA
-            // itemDesc removed
-            width: width, // L
-            length: length, // P
-            qty: qty, // Qty
-            area: luas, // Luas
-            unit: selectedProduct.unit || 'Pcs', // Satuan
-            price: basePrice, // Harga
-            discount: discount, // Discount
-            subtotal: subtotal // Sub Total
+          id: Date.now(),
+          productId: selectedProduct.id,
+          name: selectedProduct.name, // NAMA
+          // itemDesc removed
+          width: width, // L
+          length: length, // P
+          qty: qty, // Qty
+          area: luas, // Luas
+          unit: selectedProduct.unit || 'Pcs', // Satuan
+          price: basePrice, // Harga
+          discount: discount, // Discount
+          subtotal: subtotal // Sub Total
         };
 
         setCart([...cart, newItem]);
@@ -1993,7 +1983,7 @@ const App = () => {
       };
 
       const removeFromCart = (index) => {
-          setCart(cart.filter((_, i) => i !== index));
+        setCart(cart.filter((_, i) => i !== index));
       };
 
       const totalTagihan = cart.reduce((acc, item) => acc + item.subtotal, 0);
@@ -2001,7 +1991,7 @@ const App = () => {
 
       const handleSaveInvoice = () => {
         if (!header.buyer || cart.length === 0) return alert('Data pelanggan atau barang belum diisi');
-        
+
         const invoiceData = {
           id: header.noTagihan,
           date: header.date,
@@ -2016,16 +2006,16 @@ const App = () => {
         };
 
         if (editItem) {
-            setSalesInvoices(prev => prev.map(inv => inv.id === editItem.id ? invoiceData : inv));
+          setSalesInvoices(prev => prev.map(inv => inv.id === editItem.id ? invoiceData : inv));
         } else {
-            setSalesInvoices([invoiceData, ...salesInvoices]);
-            if (header.paymentMethod === 'Cash') {
-                setWallet(prev => ({...prev, cash: prev.cash + parseFloat(paidAmount)}));
-            } else {
-                setWallet(prev => ({...prev, bank: prev.bank + parseFloat(paidAmount)}));
-            }
+          setSalesInvoices([invoiceData, ...salesInvoices]);
+          if (header.paymentMethod === 'Cash') {
+            setWallet(prev => ({ ...prev, cash: prev.cash + parseFloat(paidAmount) }));
+          } else {
+            setWallet(prev => ({ ...prev, bank: prev.bank + parseFloat(paidAmount) }));
+          }
         }
-        
+
         setIsCreatingInvoice(false);
         setEditItem(null);
       };
@@ -2034,185 +2024,185 @@ const App = () => {
         <div className="space-y-6 animate-in slide-in-from-bottom-5 duration-300">
           {/* Header & Navigation */}
           <div className="flex items-center justify-between mb-4">
-             <div className="flex items-center">
-                <button onClick={() => { setIsCreatingInvoice(false); setEditItem(null); }} className="mr-4 p-2 rounded-full hover:bg-slate-200 transition"><ArrowLeft className="w-5 h-5"/></button>
-                <h3 className="text-xl font-black text-slate-800 uppercase italic">{editItem ? 'Edit Nota Pelanggan' : 'Form Nota Pelanggan'}</h3>
-             </div>
+            <div className="flex items-center">
+              <button onClick={() => { setIsCreatingInvoice(false); setEditItem(null); }} className="mr-4 p-2 rounded-full hover:bg-slate-200 transition"><ArrowLeft className="w-5 h-5" /></button>
+              <h3 className="text-xl font-black text-slate-800 uppercase italic">{editItem ? 'Edit Nota Pelanggan' : 'Form Nota Pelanggan'}</h3>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column: Form Inputs */}
             <div className="lg:col-span-2 space-y-6">
-               {/* 1. Header Nota */}
-               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><FileText className="w-4 h-4 mr-2"/> Informasi Nota</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="label-text">Nomor Tagihan</label>
-                        <input type="text" value={header.noTagihan} disabled className="input-field bg-slate-100 text-slate-500 font-mono cursor-not-allowed" />
-                    </div>
-                    <div>
-                        <label className="label-text">Hari Tanggal</label>
-                        <input type="date" value={header.date} onChange={e => setHeader({...header, date: e.target.value})} className="input-field" />
-                    </div>
-                    <div>
-                        <label className="label-text">Nama Pelanggan</label>
-                        <input type="text" value={header.buyer} onChange={e => setHeader({...header, buyer: e.target.value})} className="input-field" placeholder="Nama Customer" />
-                    </div>
-                    <div>
-                        <label className="label-text">Sistem Bayar</label>
-                        <select value={header.paymentMethod} onChange={e => setHeader({...header, paymentMethod: e.target.value})} className="input-field">
-                            <option value="Cash">Cash</option>
-                            <option value="Transfer">Transfer</option>
-                        </select>
-                    </div>
+              {/* 1. Header Nota */}
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><FileText className="w-4 h-4 mr-2" /> Informasi Nota</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="label-text">Nomor Tagihan</label>
+                    <input type="text" value={header.noTagihan} disabled className="input-field bg-slate-100 text-slate-500 font-mono cursor-not-allowed" />
                   </div>
-               </div>
+                  <div>
+                    <label className="label-text">Hari Tanggal</label>
+                    <input type="date" value={header.date} onChange={e => setHeader({ ...header, date: e.target.value })} className="input-field" />
+                  </div>
+                  <div>
+                    <label className="label-text">Nama Pelanggan</label>
+                    <input type="text" value={header.buyer} onChange={e => setHeader({ ...header, buyer: e.target.value })} className="input-field" placeholder="Nama Customer" />
+                  </div>
+                  <div>
+                    <label className="label-text">Sistem Bayar</label>
+                    <select value={header.paymentMethod} onChange={e => setHeader({ ...header, paymentMethod: e.target.value })} className="input-field">
+                      <option value="Cash">Cash</option>
+                      <option value="Transfer">Transfer</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-               {/* 2. Input Barang */}
-               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><ShoppingCart className="w-4 h-4 mr-2"/> Input Barang</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                     <div className="md:col-span-12">
-                        <SearchableSelect
-                           items={filteredProducts}
-                           label="Nama Item"
-                           placeholder="Ketik nama produk..."
-                           selectedValue={itemEntry.selectedProductId}
-                           displayFormat={(item) => `${item.name} - Rp ${formatCurrency(item.price)}`}
-                           onSelect={(item) => {
-                              if (item) {
-                                 setItemEntry({...itemEntry, selectedProductId: item.id});
-                              } else {
-                                 setItemEntry({...itemEntry, selectedProductId: ''});
-                              }
-                           }}
-                        />
-                     </div>
-                     <div className="md:col-span-2">
-                        <label className="label-text">L (m) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : selectedProduct?.widthSellLock === 'rejected' ? '(Rejected)' : ''}</label>
-                        <input
-                            type="number"
-                            value={itemEntry.width}
-                            onChange={e => (selectedProduct?.widthSellLock !== 'lock' && selectedProduct?.widthSellLock !== 'rejected') && setItemEntry({...itemEntry, width: e.target.value})}
-                            className={`input-field ${(selectedProduct?.widthSellLock === 'lock' || selectedProduct?.widthSellLock === 'rejected') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
-                            placeholder="0"
-                            disabled={selectedProduct?.widthSellLock === 'lock' || selectedProduct?.widthSellLock === 'rejected'}
-                        />
-                     </div>
-                     <div className="md:col-span-2">
-                        <label className="label-text">P (m) {selectedProduct?.unit !== 'METER' ? '(N/A)' : (selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected' ? '(Locked)' : '')}</label>
-                        <input
-                            type="number"
-                            value={itemEntry.length}
-                            onChange={e => (selectedProduct?.unit === 'METER' && selectedProduct?.lengthSellLock !== 'lock' && selectedProduct?.lengthSellLock !== 'rejected') && setItemEntry({...itemEntry, length: e.target.value})}
-                            className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
-                            placeholder="0"
-                            disabled={selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected'}
-                        />
-                     </div>
-                     <div className="md:col-span-2">
-                        <label className="label-text">Qty</label>
-                        <input type="number" value={itemEntry.qty} onChange={e => setItemEntry({...itemEntry, qty: e.target.value})} className="input-field" placeholder="1" />
-                     </div>
-                     <div className="md:col-span-2">
-                        <label className="label-text">Harga</label>
-                        <input type="text" value={selectedProduct ? formatCurrency(selectedProduct.price) : ''} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
-                     </div>
-                     <div className="md:col-span-2">
-                        <label className="label-text">Satuan</label>
-                        <input type="text" value={selectedProduct?.unit || ''} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
-                     </div>
-                     <div className="md:col-span-4">
-                        <label className="label-text">Discount (Rp)</label>
-                        <input type="number" value={itemEntry.discount} onChange={e => setItemEntry({...itemEntry, discount: e.target.value})} className="input-field" placeholder="0" />
-                     </div>
-                     <div className="md:col-span-8">
-                        <button onClick={addToCart} className="btn-primary w-full h-[46px] flex items-center justify-center">
-                            <Plus className="w-4 h-4 mr-2" /> Tambah Barang
-                        </button>
-                     </div>
+              {/* 2. Input Barang */}
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center"><ShoppingCart className="w-4 h-4 mr-2" /> Input Barang</h4>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                  <div className="md:col-span-12">
+                    <SearchableSelect
+                      items={filteredProducts}
+                      label="Nama Item"
+                      placeholder="Ketik nama produk..."
+                      selectedValue={itemEntry.selectedProductId}
+                      displayFormat={(item) => `${item.name} - Rp ${formatCurrency(item.price)}`}
+                      onSelect={(item) => {
+                        if (item) {
+                          setItemEntry({ ...itemEntry, selectedProductId: item.id });
+                        } else {
+                          setItemEntry({ ...itemEntry, selectedProductId: '' });
+                        }
+                      }}
+                    />
                   </div>
-               </div>
+                  <div className="md:col-span-2">
+                    <label className="label-text">L (m) {selectedProduct?.widthSellLock === 'lock' ? '(Locked)' : selectedProduct?.widthSellLock === 'rejected' ? '(Rejected)' : ''}</label>
+                    <input
+                      type="number"
+                      value={itemEntry.width}
+                      onChange={e => (selectedProduct?.widthSellLock !== 'lock' && selectedProduct?.widthSellLock !== 'rejected') && setItemEntry({ ...itemEntry, width: e.target.value })}
+                      className={`input-field ${(selectedProduct?.widthSellLock === 'lock' || selectedProduct?.widthSellLock === 'rejected') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+                      placeholder="0"
+                      disabled={selectedProduct?.widthSellLock === 'lock' || selectedProduct?.widthSellLock === 'rejected'}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="label-text">P (m) {selectedProduct?.unit !== 'METER' ? '(N/A)' : (selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected' ? '(Locked)' : '')}</label>
+                    <input
+                      type="number"
+                      value={itemEntry.length}
+                      onChange={e => (selectedProduct?.unit === 'METER' && selectedProduct?.lengthSellLock !== 'lock' && selectedProduct?.lengthSellLock !== 'rejected') && setItemEntry({ ...itemEntry, length: e.target.value })}
+                      className={`input-field ${(selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected') ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}`}
+                      placeholder="0"
+                      disabled={selectedProduct?.unit !== 'METER' || selectedProduct?.lengthSellLock === 'lock' || selectedProduct?.lengthSellLock === 'rejected'}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="label-text">Qty</label>
+                    <input type="number" value={itemEntry.qty} onChange={e => setItemEntry({ ...itemEntry, qty: e.target.value })} className="input-field" placeholder="1" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="label-text">Harga</label>
+                    <input type="text" value={selectedProduct ? formatCurrency(selectedProduct.price) : ''} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="label-text">Satuan</label>
+                    <input type="text" value={selectedProduct?.unit || ''} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled />
+                  </div>
+                  <div className="md:col-span-4">
+                    <label className="label-text">Discount (Rp)</label>
+                    <input type="number" value={itemEntry.discount} onChange={e => setItemEntry({ ...itemEntry, discount: e.target.value })} className="input-field" placeholder="0" />
+                  </div>
+                  <div className="md:col-span-8">
+                    <button onClick={addToCart} className="btn-primary w-full h-[46px] flex items-center justify-center">
+                      <Plus className="w-4 h-4 mr-2" /> Tambah Barang
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-               {/* 3. Tabel Barang */}
-               <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                  <div className="p-4 border-b border-slate-100 bg-slate-50">
-                      <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest">Daftar Item Nota</h4>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                        <thead className="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider">
-                            <tr>
-                                <th className="p-3 text-center border-r border-slate-200 w-10">No</th>
-                                <th className="p-3 border-r border-slate-200 min-w-[150px]">Nama</th>
-                                <th className="p-3 text-center border-r border-slate-200 w-16">L</th>
-                                <th className="p-3 text-center border-r border-slate-200 w-16">P</th>
-                                <th className="p-3 text-center border-r border-slate-200 w-16">Qty</th>
-                                <th className="p-3 text-center border-r border-slate-200 w-20">Luas</th>
-                                <th className="p-3 text-center border-r border-slate-200 w-16">Sat</th>
-                                <th className="p-3 text-right border-r border-slate-200 min-w-[100px]">Harga</th>
-                                <th className="p-3 text-right border-r border-slate-200 min-w-[80px]">Disc</th>
-                                <th className="p-3 text-right min-w-[120px]">Sub Total</th>
-                                <th className="p-3 w-10"></th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                            {cart.map((item, idx) => (
-                                <tr key={item.id} className="hover:bg-slate-50">
-                                    <td className="p-3 text-center font-mono text-slate-500 border-r border-slate-100">{idx + 1}</td>
-                                    <td className="p-3 font-bold border-r border-slate-100">{item.name}</td>
-                                    <td className="p-3 text-center border-r border-slate-100">{item.width || '-'}</td>
-                                    <td className="p-3 text-center border-r border-slate-100">{item.length || '-'}</td>
-                                    <td className="p-3 text-center border-r border-slate-100 font-bold">{item.qty}</td>
-                                    <td className="p-3 text-center border-r border-slate-100 text-slate-500">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
-                                    <td className="p-3 text-center border-r border-slate-100 text-xs">{item.unit}</td>
-                                    <td className="p-3 text-right border-r border-slate-100 font-mono">{formatCurrency(item.price)}</td>
-                                    <td className="p-3 text-right border-r border-slate-100 text-red-500">{item.discount > 0 ? formatCurrency(item.discount) : '-'}</td>
-                                    <td className="p-3 text-right font-black">{formatCurrency(item.subtotal)}</td>
-                                    <td className="p-3 text-center">
-                                        <button onClick={() => removeFromCart(idx)} className="text-red-400 hover:text-red-600 transition"><Trash2 className="w-4 h-4" /></button>
-                                    </td>
-                                </tr>
-                            ))}
-                            {cart.length === 0 && <tr><td colSpan="11" className="p-6 text-center text-slate-400 italic">Belum ada barang ditambahkan.</td></tr>}
-                        </tbody>
-                    </table>
-                  </div>
-               </div>
+              {/* 3. Tabel Barang */}
+              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                <div className="p-4 border-b border-slate-100 bg-slate-50">
+                  <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest">Daftar Item Nota</h4>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider">
+                      <tr>
+                        <th className="p-3 text-center border-r border-slate-200 w-10">No</th>
+                        <th className="p-3 border-r border-slate-200 min-w-[150px]">Nama</th>
+                        <th className="p-3 text-center border-r border-slate-200 w-16">L</th>
+                        <th className="p-3 text-center border-r border-slate-200 w-16">P</th>
+                        <th className="p-3 text-center border-r border-slate-200 w-16">Qty</th>
+                        <th className="p-3 text-center border-r border-slate-200 w-20">Luas</th>
+                        <th className="p-3 text-center border-r border-slate-200 w-16">Sat</th>
+                        <th className="p-3 text-right border-r border-slate-200 min-w-[100px]">Harga</th>
+                        <th className="p-3 text-right border-r border-slate-200 min-w-[80px]">Disc</th>
+                        <th className="p-3 text-right min-w-[120px]">Sub Total</th>
+                        <th className="p-3 w-10"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {cart.map((item, idx) => (
+                        <tr key={item.id} className="hover:bg-slate-50">
+                          <td className="p-3 text-center font-mono text-slate-500 border-r border-slate-100">{idx + 1}</td>
+                          <td className="p-3 font-bold border-r border-slate-100">{item.name}</td>
+                          <td className="p-3 text-center border-r border-slate-100">{item.width || '-'}</td>
+                          <td className="p-3 text-center border-r border-slate-100">{item.length || '-'}</td>
+                          <td className="p-3 text-center border-r border-slate-100 font-bold">{item.qty}</td>
+                          <td className="p-3 text-center border-r border-slate-100 text-slate-500">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
+                          <td className="p-3 text-center border-r border-slate-100 text-xs">{item.unit}</td>
+                          <td className="p-3 text-right border-r border-slate-100 font-mono">{formatCurrency(item.price)}</td>
+                          <td className="p-3 text-right border-r border-slate-100 text-red-500">{item.discount > 0 ? formatCurrency(item.discount) : '-'}</td>
+                          <td className="p-3 text-right font-black">{formatCurrency(item.subtotal)}</td>
+                          <td className="p-3 text-center">
+                            <button onClick={() => removeFromCart(idx)} className="text-red-400 hover:text-red-600 transition"><Trash2 className="w-4 h-4" /></button>
+                          </td>
+                        </tr>
+                      ))}
+                      {cart.length === 0 && <tr><td colSpan="11" className="p-6 text-center text-slate-400 italic">Belum ada barang ditambahkan.</td></tr>}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
 
             {/* Right Column: Payment & Summary */}
             <div className="space-y-6">
-               <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-xl sticky top-24">
-                  <div className="space-y-4">
-                     <div>
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</p>
-                        <h2 className="text-4xl font-black tracking-tight">{formatCurrency(totalTagihan)}</h2>
-                     </div>
-                     
-                     <div className="pt-4 border-t border-slate-700 space-y-4">
-                        <div>
-                            <label className="text-[10px] font-bold uppercase text-slate-400 mb-1 block">Terbayar (Rp)</label>
-                            <input type="number" value={paidAmount} onChange={e => setPaidAmount(e.target.value)} className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl outline-none focus:border-red-600 font-bold text-lg" placeholder="0" />
-                        </div>
-                        <div>
-                            <div className="flex justify-between text-sm font-bold mb-1">
-                                <span>Sisa Tagihan</span>
-                                <span className={sisaTagihan > 0 ? 'text-red-400' : 'text-emerald-400'}>{formatCurrency(sisaTagihan)}</span>
-                            </div>
-                            <div className="flex justify-between text-xs font-medium text-slate-400">
-                                <span>Status Pembayaran</span>
-                                <span className="uppercase font-bold tracking-wider">{sisaTagihan <= 0 ? 'LUNAS' : 'BELUM LUNAS'}</span>
-                            </div>
-                        </div>
-                     </div>
-
-                     <button onClick={handleSaveInvoice} className="w-full mt-4 bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-red-500 transition shadow-lg shadow-red-900/50 flex items-center justify-center">
-                        <Save className="w-4 h-4 mr-2" /> {editItem ? 'Simpan Perubahan' : 'Simpan Transaksi'}
-                     </button>
+              <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-xl sticky top-24">
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</p>
+                    <h2 className="text-4xl font-black tracking-tight">{formatCurrency(totalTagihan)}</h2>
                   </div>
-               </div>
+
+                  <div className="pt-4 border-t border-slate-700 space-y-4">
+                    <div>
+                      <label className="text-[10px] font-bold uppercase text-slate-400 mb-1 block">Terbayar (Rp)</label>
+                      <input type="number" value={paidAmount} onChange={e => setPaidAmount(e.target.value)} className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl outline-none focus:border-red-600 font-bold text-lg" placeholder="0" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm font-bold mb-1">
+                        <span>Sisa Tagihan</span>
+                        <span className={sisaTagihan > 0 ? 'text-red-400' : 'text-emerald-400'}>{formatCurrency(sisaTagihan)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs font-medium text-slate-400">
+                        <span>Status Pembayaran</span>
+                        <span className="uppercase font-bold tracking-wider">{sisaTagihan <= 0 ? 'LUNAS' : 'BELUM LUNAS'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button onClick={handleSaveInvoice} className="w-full mt-4 bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-red-500 transition shadow-lg shadow-red-900/50 flex items-center justify-center">
+                    <Save className="w-4 h-4 mr-2" /> {editItem ? 'Simpan Perubahan' : 'Simpan Transaksi'}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2220,41 +2210,41 @@ const App = () => {
     };
 
     const InvoiceList = () => {
-       const filteredList = salesInvoices.filter(i => 
-         (i.buyer.toLowerCase().includes(searchTerm.toLowerCase()) || i.id.toLowerCase().includes(searchTerm.toLowerCase())) &&
-         (statusFilter === 'all' || i.status === statusFilter)
-       );
-       
-       return (
-         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-               <div>
-                  <h3 className="text-lg font-black text-slate-800 uppercase italic">Nota Pelanggan (Penjualan)</h3>
-                  <p className="text-xs text-slate-500 font-medium">Daftar transaksi kasir.</p>
-               </div>
-               <div className="flex w-full md:w-auto gap-2">
-                 <div className="w-full md:w-48"><SearchInput placeholder="Cari Nota/Nama..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div>
-                 <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold px-3 py-2 outline-none"><option value="all">Semua Status</option><option value="lunas">Lunas</option><option value="belum_lunas">Belum Lunas</option></select>
-                 <button onClick={() => { setIsCreatingInvoice(true); setEditItem(null); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Buat Nota Baru</button>
-               </div>
+      const filteredList = salesInvoices.filter(i =>
+        (i.buyer.toLowerCase().includes(searchTerm.toLowerCase()) || i.id.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (statusFilter === 'all' || i.status === statusFilter)
+      );
+
+      return (
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div>
+              <h3 className="text-lg font-black text-slate-800 uppercase italic">Nota Pelanggan (Penjualan)</h3>
+              <p className="text-xs text-slate-500 font-medium">Daftar transaksi kasir.</p>
             </div>
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left whitespace-nowrap">
-                 <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b">
-                   <tr><th className="p-4">No Nota</th><th className="p-4">Tanggal</th><th className="p-4">Nama Pelanggan</th><th className="p-4">Created By</th><th className="p-4">Total</th><th className="p-4">Sisa</th><th className="p-4 text-center">Status</th><th className="p-4 text-center">Aksi</th></tr>
-                 </thead>
-                 <tbody className="divide-y divide-slate-50 text-sm">{filteredList.map(inv => (<tr key={inv.id} className="hover:bg-slate-50"><td className="p-4 font-mono text-xs font-bold">{inv.id}</td><td className="p-4 text-xs text-slate-500">{inv.date}</td><td className="p-4 font-bold">{inv.buyer}</td><td className="p-4 text-xs text-slate-600">{inv.createdBy || '-'}</td><td className="p-4 font-black">{formatCurrency(inv.total)}</td><td className="p-4 font-bold text-red-500">{formatCurrency(inv.remaining)}</td><td className="p-4 text-center"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${inv.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{inv.status.replace('_', ' ')}</span></td><td className="p-4 text-center">
-                    <div className="flex justify-center gap-2">
-                        <button onClick={() => { setEditItem(inv); setShowModal('invoice-detail'); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition" title="Lihat Detail"><Eye className="w-4 h-4" /></button>
-                        <button onClick={() => { setEditItem(inv); setIsCreatingInvoice(true); }} className="p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600 transition" title="Edit Transaksi"><Edit3 className="w-4 h-4" /></button>
-                        <button onClick={() => { setEditItem(inv); setShowModal('invoice-print'); }} className="p-2 bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-600 transition" title="Cetak Nota"><Printer className="w-4 h-4" /></button>
-                        <button onClick={() => handleDeleteInvoice(inv.id)} className="p-2 bg-red-50 hover:bg-red-100 rounded-lg text-red-600 transition" title="Hapus"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                 </td></tr>))}</tbody>
-              </table>
+            <div className="flex w-full md:w-auto gap-2">
+              <div className="w-full md:w-48"><SearchInput placeholder="Cari Nota/Nama..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div>
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold px-3 py-2 outline-none"><option value="all">Semua Status</option><option value="lunas">Lunas</option><option value="belum_lunas">Belum Lunas</option></select>
+              <button onClick={() => { setIsCreatingInvoice(true); setEditItem(null); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Buat Nota Baru</button>
             </div>
-         </div>
-       );
+          </div>
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <table className="w-full text-left whitespace-nowrap">
+              <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b">
+                <tr><th className="p-4">No Nota</th><th className="p-4">Tanggal</th><th className="p-4">Nama Pelanggan</th><th className="p-4">Created By</th><th className="p-4">Total</th><th className="p-4">Sisa</th><th className="p-4 text-center">Status</th><th className="p-4 text-center">Aksi</th></tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50 text-sm">{filteredList.map(inv => (<tr key={inv.id} className="hover:bg-slate-50"><td className="p-4 font-mono text-xs font-bold">{inv.id}</td><td className="p-4 text-xs text-slate-500">{inv.date}</td><td className="p-4 font-bold">{inv.buyer}</td><td className="p-4 text-xs text-slate-600">{inv.createdBy || '-'}</td><td className="p-4 font-black">{formatCurrency(inv.total)}</td><td className="p-4 font-bold text-red-500">{formatCurrency(inv.remaining)}</td><td className="p-4 text-center"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${inv.status === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{inv.status.replace('_', ' ')}</span></td><td className="p-4 text-center">
+                <div className="flex justify-center gap-2">
+                  <button onClick={() => { setEditItem(inv); setShowModal('invoice-detail'); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition" title="Lihat Detail"><Eye className="w-4 h-4" /></button>
+                  <button onClick={() => { setEditItem(inv); setIsCreatingInvoice(true); }} className="p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600 transition" title="Edit Transaksi"><Edit3 className="w-4 h-4" /></button>
+                  <button onClick={() => { setEditItem(inv); setShowModal('invoice-print'); }} className="p-2 bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-600 transition" title="Cetak Nota"><Printer className="w-4 h-4" /></button>
+                  <button onClick={() => handleDeleteInvoice(inv.id)} className="p-2 bg-red-50 hover:bg-red-100 rounded-lg text-red-600 transition" title="Hapus"><Trash2 className="w-4 h-4" /></button>
+                </div>
+              </td></tr>))}</tbody>
+            </table>
+          </div>
+        </div>
+      );
     };
 
     return isCreatingInvoice ? <InvoiceForm /> : <InvoiceList />;
@@ -2369,7 +2359,7 @@ const App = () => {
                 <input
                   type="text"
                   value={form.name}
-                  onChange={e => setForm({...form, name: e.target.value})}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
                   className="input-field"
                   placeholder="Contoh: METER, PCS, PACK"
                   required
@@ -2381,7 +2371,7 @@ const App = () => {
                   <label className="label-text">P (Panjang) Jual</label>
                   <select
                     value={form.pSellRule}
-                    onChange={e => setForm({...form, pSellRule: e.target.value})}
+                    onChange={e => setForm({ ...form, pSellRule: e.target.value })}
                     className={`input-field font-bold uppercase ${getLockStatusStyle(form.pSellRule)}`}
                   >
                     <option value="unlock">Unlock</option>
@@ -2394,7 +2384,7 @@ const App = () => {
                   <label className="label-text">P (Panjang) Beli</label>
                   <select
                     value={form.pBuyRule}
-                    onChange={e => setForm({...form, pBuyRule: e.target.value})}
+                    onChange={e => setForm({ ...form, pBuyRule: e.target.value })}
                     className={`input-field font-bold uppercase ${getLockStatusStyle(form.pBuyRule)}`}
                   >
                     <option value="unlock">Unlock</option>
@@ -2407,7 +2397,7 @@ const App = () => {
                   <label className="label-text">L (Lebar) Jual</label>
                   <select
                     value={form.lSellRule}
-                    onChange={e => setForm({...form, lSellRule: e.target.value})}
+                    onChange={e => setForm({ ...form, lSellRule: e.target.value })}
                     className={`input-field font-bold uppercase ${getLockStatusStyle(form.lSellRule)}`}
                   >
                     <option value="unlock">Unlock</option>
@@ -2420,7 +2410,7 @@ const App = () => {
                   <label className="label-text">L (Lebar) Beli</label>
                   <select
                     value={form.lBuyRule}
-                    onChange={e => setForm({...form, lBuyRule: e.target.value})}
+                    onChange={e => setForm({ ...form, lBuyRule: e.target.value })}
                     className={`input-field font-bold uppercase ${getLockStatusStyle(form.lBuyRule)}`}
                   >
                     <option value="unlock">Unlock</option>
@@ -2433,7 +2423,7 @@ const App = () => {
                   <label className="label-text">Lot</label>
                   <select
                     value={form.lotRule}
-                    onChange={e => setForm({...form, lotRule: e.target.value})}
+                    onChange={e => setForm({ ...form, lotRule: e.target.value })}
                     className={`input-field font-bold uppercase ${getLockStatusStyle(form.lotRule)}`}
                   >
                     <option value="unlock">Unlock</option>
@@ -2580,7 +2570,7 @@ const App = () => {
     };
 
     const handleDelete = (id) => {
-      if(window.confirm('Hapus vendor ini?')) {
+      if (window.confirm('Hapus vendor ini?')) {
         setVendors(vendors.filter(v => v.id !== id));
       }
     };
@@ -2628,9 +2618,8 @@ const App = () => {
                   <td className="p-4 text-slate-600">{v.sales || '-'}</td>
                   <td className="p-4 text-slate-600 max-w-xs truncate" title={v.address}>{v.address}</td>
                   <td className="p-4 text-center">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
-                      v.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
-                    }`}>
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${v.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                      }`}>
                       {v.status}
                     </span>
                   </td>
@@ -2669,27 +2658,27 @@ const App = () => {
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="label-text">Nama Vendor</label>
-                  <input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="input-field" placeholder="PT. Contoh Vendor" />
+                  <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="input-field" placeholder="PT. Contoh Vendor" />
                 </div>
                 <div>
                   <label className="label-text">Nomor Kontak</label>
-                  <input type="text" required value={form.contact} onChange={e => setForm({...form, contact: e.target.value})} className="input-field" placeholder="08123456789" />
+                  <input type="text" required value={form.contact} onChange={e => setForm({ ...form, contact: e.target.value })} className="input-field" placeholder="08123456789" />
                 </div>
                 <div>
                   <label className="label-text">Email</label>
-                  <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="input-field" placeholder="vendor@email.com" />
+                  <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="input-field" placeholder="vendor@email.com" />
                 </div>
                 <div>
                   <label className="label-text">Sales</label>
-                  <input type="text" value={form.sales} onChange={e => setForm({...form, sales: e.target.value})} className="input-field" placeholder="Nama Sales" />
+                  <input type="text" value={form.sales} onChange={e => setForm({ ...form, sales: e.target.value })} className="input-field" placeholder="Nama Sales" />
                 </div>
                 <div className="col-span-2">
                   <label className="label-text">Alamat</label>
-                  <textarea value={form.address} onChange={e => setForm({...form, address: e.target.value})} className="input-field" rows="3" placeholder="Jl. Contoh No. 123, Kota" />
+                  <textarea value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} className="input-field" rows="3" placeholder="Jl. Contoh No. 123, Kota" />
                 </div>
                 <div>
                   <label className="label-text">Kategori</label>
-                  <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="input-field">
+                  <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="input-field">
                     <option value="Bahan Baku">Bahan Baku</option>
                     <option value="Peralatan">Peralatan</option>
                     <option value="Jasa">Jasa</option>
@@ -2698,7 +2687,7 @@ const App = () => {
                 </div>
                 <div>
                   <label className="label-text">Status</label>
-                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="input-field">
+                  <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="input-field">
                     <option value="Aktif">Aktif</option>
                     <option value="Tidak Aktif">Tidak Aktif</option>
                   </select>
@@ -2749,19 +2738,17 @@ const App = () => {
                       </div>
                       <div>
                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Kategori</label>
-                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
-                          showModal.data.category === 'Bahan Baku' ? 'bg-blue-100 text-blue-700' :
+                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${showModal.data.category === 'Bahan Baku' ? 'bg-blue-100 text-blue-700' :
                           showModal.data.category === 'Peralatan' ? 'bg-green-100 text-green-700' :
-                          'bg-purple-100 text-purple-700'
-                        }`}>
+                            'bg-purple-100 text-purple-700'
+                          }`}>
                           {showModal.data.category}
                         </span>
                       </div>
                       <div>
                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Status</label>
-                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
-                          showModal.data.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
-                        }`}>
+                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${showModal.data.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                          }`}>
                           {showModal.data.status}
                         </span>
                       </div>
@@ -2808,57 +2795,57 @@ const App = () => {
 
   const PengeluaranLain = () => {
     const [form, setForm] = useState({ vendor: '', item: '', price: 0, paid: 0, paymentMethod: 'Cash' });
-    
+
     const handleSave = () => {
-       if(editItem) {
-          setExpenses(expenses.map(e => e.id === editItem.id ? { ...form, id: editItem.id } : e));
-       } else {
-          const newItem = { id: generateInvoiceCode('EXP'), date: new Date().toISOString().slice(0, 10), ...form };
-          if (form.paymentMethod === 'Cash') setWallet(prev => ({...prev, cash: prev.cash - parseInt(form.paid || form.price)})); else setWallet(prev => ({...prev, bank: prev.bank - parseInt(form.paid || form.price)}));
-          setExpenses([newItem, ...expenses]);
-       }
-       setForm({ vendor: '', item: '', price: 0, paid: 0, paymentMethod: 'Cash' });
-       setEditItem(null);
-       setShowModal(null);
+      if (editItem) {
+        setExpenses(expenses.map(e => e.id === editItem.id ? { ...form, id: editItem.id } : e));
+      } else {
+        const newItem = { id: generateInvoiceCode('EXP'), date: new Date().toISOString().slice(0, 10), ...form };
+        if (form.paymentMethod === 'Cash') setWallet(prev => ({ ...prev, cash: prev.cash - parseInt(form.paid || form.price) })); else setWallet(prev => ({ ...prev, bank: prev.bank - parseInt(form.paid || form.price) }));
+        setExpenses([newItem, ...expenses]);
+      }
+      setForm({ vendor: '', item: '', price: 0, paid: 0, paymentMethod: 'Cash' });
+      setEditItem(null);
+      setShowModal(null);
     };
 
     const handleDelete = (id) => {
-        if(window.confirm('Hapus data pengeluaran ini?')) {
-            setExpenses(prev => prev.filter(e => e.id !== id));
-        }
+      if (window.confirm('Hapus data pengeluaran ini?')) {
+        setExpenses(prev => prev.filter(e => e.id !== id));
+      }
     }
 
     const handleEdit = (item) => {
-        setEditItem(item);
-        setForm(item);
-        setShowModal('add-expense');
+      setEditItem(item);
+      setForm(item);
+      setShowModal('add-expense');
     }
 
     return (
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-           <div><h3 className="text-lg font-black text-slate-800 uppercase italic">Pengeluaran Operasional</h3><p className="text-xs text-slate-500 font-medium">Listrik, Air, Gaji, ATK, dll.</p></div>
-            <button onClick={() => { setEditItem(null); setForm({ vendor: '', item: '', price: 0, paid: 0, paymentMethod: 'Cash' }); setShowModal('add-expense'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Catat Pengeluaran</button>
+          <div><h3 className="text-lg font-black text-slate-800 uppercase italic">Pengeluaran Operasional</h3><p className="text-xs text-slate-500 font-medium">Listrik, Air, Gaji, ATK, dll.</p></div>
+          <button onClick={() => { setEditItem(null); setForm({ vendor: '', item: '', price: 0, paid: 0, paymentMethod: 'Cash' }); setShowModal('add-expense'); }} className="btn-primary flex items-center whitespace-nowrap"><Plus className="w-4 h-4 mr-2" /> Catat Pengeluaran</button>
         </div>
         <FilterBar startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} dateFilterMode={dateFilterMode} setDateFilterMode={setDateFilterMode} showStatus={false} statusFilter={null} setStatusFilter={null} />
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-           <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">TGL</th><th className="p-4">KETERANGAN</th><th className="p-4">SUBJEK</th><th className="p-4">METODE BAYAR</th><th className="p-4 text-right">TAGIHAN</th><th className="p-4 text-right">TERBAYAR</th><th className="p-4 text-right">KURANG</th><th className="p-4 text-center">AKSI</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredExpenses.map(e => (<tr key={e.id} className="hover:bg-slate-50"><td className="p-4 text-xs font-mono">{e.date}</td><td className="p-4">{e.item}</td><td className="p-4 font-bold">{e.vendor}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${e.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>{e.paymentMethod}</span></td><td className="p-4 text-right font-black">{formatCurrency(e.price || 0)}</td><td className="p-4 text-right font-bold text-emerald-600">{formatCurrency(e.paid || 0)}</td><td className="p-4 text-right font-bold text-red-600">{formatCurrency((e.price || 0) - (e.paid || 0))}</td><td className="p-4 text-center"><div className="flex justify-center gap-2"><button onClick={() => handleEdit(e)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit3 className="w-4 h-4" /></button><button onClick={() => handleDelete(e.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button></div></td></tr>))}</tbody></table>
+          <table className="w-full text-left whitespace-nowrap text-sm"><thead className="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b"><tr><th className="p-4">TGL</th><th className="p-4">KETERANGAN</th><th className="p-4">SUBJEK</th><th className="p-4">METODE BAYAR</th><th className="p-4 text-right">TAGIHAN</th><th className="p-4 text-right">TERBAYAR</th><th className="p-4 text-right">KURANG</th><th className="p-4 text-center">AKSI</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredExpenses.map(e => (<tr key={e.id} className="hover:bg-slate-50"><td className="p-4 text-xs font-mono">{e.date}</td><td className="p-4">{e.item}</td><td className="p-4 font-bold">{e.vendor}</td><td className="p-4"><span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${e.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>{e.paymentMethod}</span></td><td className="p-4 text-right font-black">{formatCurrency(e.price || 0)}</td><td className="p-4 text-right font-bold text-emerald-600">{formatCurrency(e.paid || 0)}</td><td className="p-4 text-right font-bold text-red-600">{formatCurrency((e.price || 0) - (e.paid || 0))}</td><td className="p-4 text-center"><div className="flex justify-center gap-2"><button onClick={() => handleEdit(e)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit3 className="w-4 h-4" /></button><button onClick={() => handleDelete(e.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button></div></td></tr>))}</tbody></table>
         </div>
         {/* Modal */}
         {showModal === 'add-expense' && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
-             <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6">
-                <div className="flex justify-between items-center mb-6"><h3 className="text-lg font-black text-slate-800 uppercase italic">{editItem ? 'Edit Pengeluaran' : 'Input Pengeluaran'}</h3><button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button></div>
-                <div className="space-y-4">
-                   <div><label className="label-text">KETERANGAN</label><input type="text" value={form.item} onChange={e => setForm({...form, item: e.target.value})} className="input-field" placeholder="Bayar Listrik" /></div>
-                   <div><label className="label-text">SUBJEK</label><input type="text" value={form.vendor} onChange={e => setForm({...form, vendor: e.target.value})} className="input-field" placeholder="Contoh: PLN" /></div>
-                   <div><label className="label-text">METODE BAYAR</label><select className="input-field" value={form.paymentMethod} onChange={e => setForm({...form, paymentMethod: e.target.value})}><option value="Cash">Cash (Kasir)</option><option value="Transfer">Transfer (Bank)</option></select></div>
-                   <div><label className="label-text">TAGIHAN</label><input type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="input-field" /></div>
-                   <div><label className="label-text">TERBAYAR</label><input type="number" value={form.paid} onChange={e => setForm({...form, paid: e.target.value})} className="input-field" /></div>
-                   <div><label className="label-text">KURANG</label><input type="text" value={formatCurrency((form.price || 0) - (form.paid || 0))} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled /></div>
-                   <button onClick={handleSave} className="btn-primary w-full mt-4">{editItem ? 'Simpan Perubahan' : 'Simpan'}</button>
-                </div>
-             </div>
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6">
+              <div className="flex justify-between items-center mb-6"><h3 className="text-lg font-black text-slate-800 uppercase italic">{editItem ? 'Edit Pengeluaran' : 'Input Pengeluaran'}</h3><button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button></div>
+              <div className="space-y-4">
+                <div><label className="label-text">KETERANGAN</label><input type="text" value={form.item} onChange={e => setForm({ ...form, item: e.target.value })} className="input-field" placeholder="Bayar Listrik" /></div>
+                <div><label className="label-text">SUBJEK</label><input type="text" value={form.vendor} onChange={e => setForm({ ...form, vendor: e.target.value })} className="input-field" placeholder="Contoh: PLN" /></div>
+                <div><label className="label-text">METODE BAYAR</label><select className="input-field" value={form.paymentMethod} onChange={e => setForm({ ...form, paymentMethod: e.target.value })}><option value="Cash">Cash (Kasir)</option><option value="Transfer">Transfer (Bank)</option></select></div>
+                <div><label className="label-text">TAGIHAN</label><input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} className="input-field" /></div>
+                <div><label className="label-text">TERBAYAR</label><input type="number" value={form.paid} onChange={e => setForm({ ...form, paid: e.target.value })} className="input-field" /></div>
+                <div><label className="label-text">KURANG</label><input type="text" value={formatCurrency((form.price || 0) - (form.paid || 0))} className="input-field bg-slate-100 text-slate-500 cursor-not-allowed" disabled /></div>
+                <button onClick={handleSave} className="btn-primary w-full mt-4">{editItem ? 'Simpan Perubahan' : 'Simpan'}</button>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -2867,60 +2854,142 @@ const App = () => {
 
   const Withdraw = () => {
     const [form, setForm] = useState({ amount: 0, from: 'Bank', to: 'Cash' });
-    const handleTransfer = () => {
-       const amount = parseInt(form.amount);
-       if (amount <= 0) return alert('Jumlah tidak valid');
+    const [tambahSaldoForm, setTambahSaldoForm] = useState({ amount: 0, to: 'Cash' });
 
-       if (form.from === 'Bank' && wallet.bank >= amount) { 
-           setWallet({ bank: wallet.bank - amount, cash: wallet.cash + amount }); 
-           setWithdrawHistory([{ id: Date.now(), date: new Date().toISOString().slice(0, 10), from: 'Bank', to: 'Cash', amount }, ...withdrawHistory]);
-           alert('Withdraw Sukses'); 
-       } 
-       else if (form.from === 'Cash' && wallet.cash >= amount) { 
-           setWallet({ cash: wallet.cash - amount, bank: wallet.bank + amount }); 
-           setWithdrawHistory([{ id: Date.now(), date: new Date().toISOString().slice(0, 10), from: 'Cash', to: 'Bank', amount }, ...withdrawHistory]);
-           alert('Deposit Sukses'); 
-       } 
-       else { alert('Saldo tidak mencukupi'); }
+    const handleTransfer = () => {
+      const amount = parseInt(form.amount);
+      if (amount <= 0) return alert('Jumlah tidak valid');
+
+      if (form.from === 'Bank' && wallet.bank >= amount) {
+        setWallet({ bank: wallet.bank - amount, cash: wallet.cash + amount });
+        setWithdrawHistory([{ id: Date.now(), date: new Date().toISOString().slice(0, 10), from: 'Bank', to: 'Cash', amount, type: 'Transfer' }, ...withdrawHistory]);
+        alert('Withdraw Sukses');
+      }
+      else if (form.from === 'Cash' && wallet.cash >= amount) {
+        setWallet({ cash: wallet.cash - amount, bank: wallet.bank + amount });
+        setWithdrawHistory([{ id: Date.now(), date: new Date().toISOString().slice(0, 10), from: 'Cash', to: 'Bank', amount, type: 'Transfer' }, ...withdrawHistory]);
+        alert('Deposit Sukses');
+      }
+      else { alert('Saldo tidak mencukupi'); }
+    };
+
+    const handleTambahSaldo = () => {
+      const amount = parseInt(tambahSaldoForm.amount);
+      if (amount <= 0) return alert('Jumlah tidak valid');
+
+      if (tambahSaldoForm.to === 'Cash') {
+        setWallet(prev => ({ ...prev, cash: prev.cash + amount }));
+      } else {
+        setWallet(prev => ({ ...prev, bank: prev.bank + amount }));
+      }
+
+      setWithdrawHistory([{
+        id: Date.now(),
+        date: new Date().toISOString().slice(0, 10),
+        from: 'External/Top Up',
+        to: tambahSaldoForm.to,
+        amount,
+        type: 'Top Up'
+      }, ...withdrawHistory]);
+
+      setShowModal(null);
+      setTambahSaldoForm({ amount: 0, to: 'Cash' });
+      alert('Tambah Saldo Berhasil');
     };
 
     return (
       <div className="max-w-2xl mx-auto space-y-6">
-         <div className="grid grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><div className="flex items-center space-x-3 mb-2"><div className="p-2 bg-emerald-50 rounded-lg text-emerald-600"><Banknote className="w-6 h-6"/></div><span className="text-xs font-black uppercase tracking-widest text-slate-400">Saldo Cash</span></div><h3 className="text-2xl font-black text-slate-800">{formatCurrency(wallet.cash)}</h3></div>
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><div className="flex items-center space-x-3 mb-2"><div className="p-2 bg-blue-50 rounded-lg text-blue-600"><Landmark className="w-6 h-6"/></div><span className="text-xs font-black uppercase tracking-widest text-slate-400">Saldo Bank</span></div><h3 className="text-2xl font-black text-slate-800">{formatCurrency(wallet.bank)}</h3></div>
-         </div>
-         <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-lg">
-             <h3 className="text-xl font-black text-slate-800 mb-6 uppercase italic text-center">Mutasi Kas / Withdraw</h3>
-             <div className="space-y-4">
-                <div className="flex items-center justify-center gap-4 bg-slate-50 p-4 rounded-xl"><select className="font-bold bg-transparent outline-none text-right" value={form.from} onChange={e => setForm({...form, from: e.target.value, to: e.target.value === 'Bank' ? 'Cash' : 'Bank'})}><option value="Bank">Bank (Rekening)</option><option value="Cash">Cash (Kasir)</option></select><ArrowRightLeft className="w-5 h-5 text-slate-400" /><span className="font-bold text-slate-800">{form.to}</span></div>
-                <div><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Nominal</label><input type="number" className="w-full text-center text-3xl font-black text-slate-900 border-b-2 border-slate-200 py-4 outline-none focus:border-red-600 bg-transparent" placeholder="0" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} /></div>
-                <button onClick={handleTransfer} className="btn-primary w-full py-4 mt-4">Proses Pemindahan</button>
-             </div>
-         </div>
-         
-         {/* HISTORY TABLE */}
-         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-             <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
-                 <History className="w-4 h-4 text-slate-400" />
-                 <span className="text-xs font-black uppercase text-slate-500 tracking-widest">Riwayat Mutasi</span>
-             </div>
-             <table className="w-full text-left whitespace-nowrap text-sm">
-                 <thead className="bg-white text-slate-400 text-[10px] uppercase font-black tracking-widest border-b">
-                     <tr><th className="p-4">Tanggal</th><th className="p-4">Dari</th><th className="p-4">Ke</th><th className="p-4 text-right">Nominal</th></tr>
-                 </thead>
-                 <tbody className="divide-y divide-slate-100">
-                     {withdrawHistory.map((h, i) => (
-                         <tr key={i} className="hover:bg-slate-50">
-                             <td className="p-4 text-xs font-mono">{h.date}</td>
-                             <td className="p-4 font-bold text-slate-700">{h.from}</td>
-                             <td className="p-4 font-bold text-slate-700">{h.to}</td>
-                             <td className="p-4 text-right font-black text-emerald-600">{formatCurrency(h.amount)}</td>
-                         </tr>
-                     ))}
-                 </tbody>
-             </table>
-         </div>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><div className="flex items-center space-x-3 mb-2"><div className="p-2 bg-emerald-50 rounded-lg text-emerald-600"><Banknote className="w-6 h-6" /></div><span className="text-xs font-black uppercase tracking-widest text-slate-400">Saldo Cash</span></div><h3 className="text-2xl font-black text-slate-800">{formatCurrency(wallet.cash)}</h3></div>
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><div className="flex items-center space-x-3 mb-2"><div className="p-2 bg-blue-50 rounded-lg text-blue-600"><Landmark className="w-6 h-6" /></div><span className="text-xs font-black uppercase tracking-widest text-slate-400">Saldo Bank</span></div><h3 className="text-2xl font-black text-slate-800">{formatCurrency(wallet.bank)}</h3></div>
+        </div>
+        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-lg">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-black text-slate-800 uppercase italic">Mutasi Kas / Withdraw</h3>
+            <button
+              onClick={() => setShowModal('tambah-saldo')}
+              className="px-4 py-2 bg-emerald-600 text-white text-xs font-black rounded-xl hover:bg-emerald-700 transition flex items-center shadow-lg uppercase tracking-wider"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Tambah Saldo
+            </button>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-center gap-4 bg-slate-50 p-4 rounded-xl"><select className="font-bold bg-transparent outline-none text-right" value={form.from} onChange={e => setForm({ ...form, from: e.target.value, to: e.target.value === 'Bank' ? 'Cash' : 'Bank' })}><option value="Bank">Bank (Rekening)</option><option value="Cash">Cash (Kasir)</option></select><ArrowRightLeft className="w-5 h-5 text-slate-400" /><span className="font-bold text-slate-800">{form.to}</span></div>
+            <div><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Nominal</label><input type="number" className="w-full text-center text-3xl font-black text-slate-900 border-b-2 border-slate-200 py-4 outline-none focus:border-red-600 bg-transparent" placeholder="0" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} /></div>
+            <button onClick={handleTransfer} className="btn-primary w-full py-4 mt-4">Proses Pemindahan</button>
+          </div>
+        </div>
+
+        {/* MODAL TAMBAH SALDO */}
+        {showModal === 'tambah-saldo' && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-black text-slate-800 uppercase italic">Tambah Saldo</h3>
+                <button onClick={() => setShowModal(null)}><X className="w-5 h-5" /></button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="label-text">DITAMBAHKAN KE</label>
+                  <select
+                    className="input-field"
+                    value={tambahSaldoForm.to}
+                    onChange={e => setTambahSaldoForm({ ...tambahSaldoForm, to: e.target.value })}
+                  >
+                    <option value="Cash">Cash (Kasir)</option>
+                    <option value="Bank">Bank (Rekening)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="label-text">NOMINAL</label>
+                  <input
+                    type="number"
+                    value={tambahSaldoForm.amount}
+                    onChange={e => setTambahSaldoForm({ ...tambahSaldoForm, amount: e.target.value })}
+                    className="input-field"
+                    placeholder="0"
+                  />
+                </div>
+                <div className="pt-4">
+                  <button
+                    onClick={handleTambahSaldo}
+                    className="btn-primary w-full bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Simpan & Tambah Saldo
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* HISTORY TABLE */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
+            <History className="w-4 h-4 text-slate-400" />
+            <span className="text-xs font-black uppercase text-slate-500 tracking-widest">Riwayat Mutasi</span>
+          </div>
+          <table className="w-full text-left whitespace-nowrap text-sm">
+            <thead className="bg-white text-slate-400 text-[10px] uppercase font-black tracking-widest border-b">
+              <tr><th className="p-4">Tanggal</th><th className="p-4">Dari</th><th className="p-4">Ke</th><th className="p-4 text-center">Tipe</th><th className="p-4 text-right">Nominal</th></tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {withdrawHistory.map((h, i) => (
+                <tr key={i} className="hover:bg-slate-50">
+                  <td className="p-4 text-xs font-mono">{h.date}</td>
+                  <td className="p-4 font-bold text-slate-700">{h.from}</td>
+                  <td className="p-4 font-bold text-slate-700">{h.to}</td>
+                  <td className="p-4 text-center">
+                    <span className={`px-2 py-0.5 rounded-[4px] text-[9px] font-black uppercase ${h.type === 'Top Up' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {h.type || 'Transfer'}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right font-black text-emerald-600">{formatCurrency(h.amount)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   };
@@ -3037,11 +3106,10 @@ const App = () => {
                 <td className="p-4 font-mono text-xs font-bold text-blue-600">{sale.id}</td>
                 <td className="p-4 font-bold">{sale.buyer}</td>
                 <td className="p-4">
-                  <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${
-                    sale.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' :
+                  <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${sale.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' :
                     sale.paymentMethod === 'Transfer' ? 'bg-blue-100 text-blue-700' :
-                    'bg-amber-100 text-amber-700'
-                  }`}>
+                      'bg-amber-100 text-amber-700'
+                    }`}>
                     {sale.paymentMethod}
                   </span>
                 </td>
@@ -3098,11 +3166,10 @@ const App = () => {
                 <td className="p-4 font-bold">{purchase.vendor}</td>
                 <td className="p-4">{purchase.salesName || '-'}</td>
                 <td className="p-4">
-                  <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${
-                    purchase.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' :
+                  <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${purchase.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' :
                     purchase.paymentMethod === 'Transfer' ? 'bg-blue-100 text-blue-700' :
-                    'bg-amber-100 text-amber-700'
-                  }`}>
+                      'bg-amber-100 text-amber-700'
+                    }`}>
                     {purchase.paymentMethod}
                   </span>
                 </td>
@@ -3154,11 +3221,10 @@ const App = () => {
                 <td className="p-4 font-bold">{expense.item}</td>
                 <td className="p-4">{expense.vendor}</td>
                 <td className="p-4">
-                  <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${
-                    expense.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' :
+                  <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase ${expense.paymentMethod === 'Cash' ? 'bg-emerald-100 text-emerald-700' :
                     expense.paymentMethod === 'Transfer' ? 'bg-blue-100 text-blue-700' :
-                    'bg-amber-100 text-amber-700'
-                  }`}>
+                      'bg-amber-100 text-amber-700'
+                    }`}>
                     {expense.paymentMethod}
                   </span>
                 </td>
@@ -3174,7 +3240,7 @@ const App = () => {
     );
 
     const renderActiveSubmenu = () => {
-      switch(activeSubmenu) {
+      switch (activeSubmenu) {
         case 'penjualan':
           return <PenjualanSubmenu />;
         case 'belanja-bahan':
@@ -3203,9 +3269,8 @@ const App = () => {
                 <button
                   key={submenu.id}
                   onClick={() => setActiveSubmenu(submenu.id)}
-                  className={`flex-1 py-3 text-xs font-bold rounded-lg transition flex items-center justify-center gap-2 ${
-                    activeSubmenu === submenu.id ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500'
-                  }`}
+                  className={`flex-1 py-3 text-xs font-bold rounded-lg transition flex items-center justify-center gap-2 ${activeSubmenu === submenu.id ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500'
+                    }`}
                 >
                   <Icon className="w-4 h-4" />
                   {submenu.label}
@@ -3225,154 +3290,154 @@ const App = () => {
     if (!showModal || !editItem || ['add-product', 'add-material', 'add-purchase', 'add-expense', 'add-vendor'].includes(showModal)) return null;
     const [payAdd, setPayAdd] = useState(0);
     const handleAddPayment = () => {
-       const newPaid = editItem.paid + parseInt(payAdd); const newRemaining = editItem.total - newPaid;
-       const updatedItem = { ...editItem, paid: newPaid, remaining: newRemaining < 0 ? 0 : newRemaining, status: newRemaining <= 0 ? 'lunas' : 'belum_lunas' };
-       if (showModal === 'invoice-detail') { setSalesInvoices(salesInvoices.map(i => i.id === editItem.id ? updatedItem : i)); setWallet(prev => ({...prev, cash: prev.cash + parseInt(payAdd)})); } 
-       else if (showModal === 'invoice-detail-purchase') { setPurchaseInvoices(purchaseInvoices.map(i => i.id === editItem.id ? updatedItem : i)); setWallet(prev => ({...prev, cash: prev.cash - parseInt(payAdd)})); }
-       setShowModal(null); setEditItem(null); alert('Pembayaran berhasil diupdate');
+      const newPaid = editItem.paid + parseInt(payAdd); const newRemaining = editItem.total - newPaid;
+      const updatedItem = { ...editItem, paid: newPaid, remaining: newRemaining < 0 ? 0 : newRemaining, status: newRemaining <= 0 ? 'lunas' : 'belum_lunas' };
+      if (showModal === 'invoice-detail') { setSalesInvoices(salesInvoices.map(i => i.id === editItem.id ? updatedItem : i)); setWallet(prev => ({ ...prev, cash: prev.cash + parseInt(payAdd) })); }
+      else if (showModal === 'invoice-detail-purchase') { setPurchaseInvoices(purchaseInvoices.map(i => i.id === editItem.id ? updatedItem : i)); setWallet(prev => ({ ...prev, cash: prev.cash - parseInt(payAdd) })); }
+      setShowModal(null); setEditItem(null); alert('Pembayaran berhasil diupdate');
     };
 
     if (showModal === 'invoice-print' || showModal === 'invoice-detail' || showModal === 'invoice-print-purchase' || showModal === 'invoice-detail-purchase') {
-        const isPurchase = showModal.includes('purchase');
-        return (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 overflow-y-auto">
-                <div className="bg-white w-full max-w-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 rounded-lg"> 
-                    <div className="p-8 bg-white" id="printable-area">
-                        {/* Header Invoice */}
-                        <div className="flex justify-between items-start border-b-2 border-slate-800 pb-6 mb-6">
-                            <div>
-                                <h1 className="text-3xl font-black text-slate-900 tracking-tighter italic">{isPurchase ? 'NOTA BELANJA' : <span>SAZIME <span className="text-red-600">PRINT</span></span>}</h1>
-                                {isPurchase ? (
-                                    <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-widest">{editItem.vendor}</p>
-                                ) : (
-                                    <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-widest">Digital Printing & Advertising</p>
-                                )}
-                                <p className="text-xs text-slate-500 mt-1 max-w-[250px]">{isPurchase ? editItem.address : 'Jl. Raya Sazime No. 123, Semarang, Jawa Tengah. Telp: 0812-3456-7890'}</p>
-                            </div>
-                            <div className="text-right">
-                                <h2 className="text-2xl font-black text-slate-800 uppercase tracking-wide">{isPurchase ? 'PURCHASE ORDER' : 'INVOICE'}</h2>
-                                <p className="text-sm font-mono font-bold text-red-600 mt-1">#{isPurchase ? editItem.noTagihan : editItem.id}</p>
-                                <p className="text-xs text-slate-500 font-bold mt-1">{formatDate(editItem.date)}</p>
-                            </div>
-                        </div>
+      const isPurchase = showModal.includes('purchase');
+      return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white w-full max-w-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 rounded-lg">
+            <div className="p-8 bg-white" id="printable-area">
+              {/* Header Invoice */}
+              <div className="flex justify-between items-start border-b-2 border-slate-800 pb-6 mb-6">
+                <div>
+                  <h1 className="text-3xl font-black text-slate-900 tracking-tighter italic">{isPurchase ? 'NOTA BELANJA' : <span>SAZIME <span className="text-red-600">PRINT</span></span>}</h1>
+                  {isPurchase ? (
+                    <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-widest">{editItem.vendor}</p>
+                  ) : (
+                    <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-widest">Digital Printing & Advertising</p>
+                  )}
+                  <p className="text-xs text-slate-500 mt-1 max-w-[250px]">{isPurchase ? editItem.address : 'Jl. Raya Sazime No. 123, Semarang, Jawa Tengah. Telp: 0812-3456-7890'}</p>
+                </div>
+                <div className="text-right">
+                  <h2 className="text-2xl font-black text-slate-800 uppercase tracking-wide">{isPurchase ? 'PURCHASE ORDER' : 'INVOICE'}</h2>
+                  <p className="text-sm font-mono font-bold text-red-600 mt-1">#{isPurchase ? editItem.noTagihan : editItem.id}</p>
+                  <p className="text-xs text-slate-500 font-bold mt-1">{formatDate(editItem.date)}</p>
+                </div>
+              </div>
 
-                        {/* Customer/Supplier Info */}
-                        <div className="flex justify-between mb-8">
-                            <div className="w-1/2">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{isPurchase ? 'Supplier:' : 'Kepada Yth:'}</p>
-                                <h3 className="text-lg font-bold text-slate-900">{isPurchase ? editItem.vendor : editItem.buyer}</h3>
-                                {isPurchase && <p className="text-xs text-slate-500">Sales: {editItem.salesName}</p>}
-                            </div>
-                            <div className="w-1/2 text-right">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Metode Pembayaran:</p>
-                                <span className="inline-block px-3 py-1 bg-slate-100 rounded text-xs font-bold text-slate-700 uppercase">{editItem.paymentMethod}</span>
-                            </div>
-                        </div>
+              {/* Customer/Supplier Info */}
+              <div className="flex justify-between mb-8">
+                <div className="w-1/2">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{isPurchase ? 'Supplier:' : 'Kepada Yth:'}</p>
+                  <h3 className="text-lg font-bold text-slate-900">{isPurchase ? editItem.vendor : editItem.buyer}</h3>
+                  {isPurchase && <p className="text-xs text-slate-500">Sales: {editItem.salesName}</p>}
+                </div>
+                <div className="w-1/2 text-right">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Metode Pembayaran:</p>
+                  <span className="inline-block px-3 py-1 bg-slate-100 rounded text-xs font-bold text-slate-700 uppercase">{editItem.paymentMethod}</span>
+                </div>
+              </div>
 
-                        {/* Table Items */}
-                        <table className="w-full text-left text-[10px] mb-8 border-collapse">
-                            <thead>
-                                <tr className="border-y-2 border-slate-800">
-                                    <th className="py-2 px-1 text-center">NO</th>
-                                    <th className="py-2 px-1">NAMA ITEM</th>
-                                    {isPurchase && <th className="py-2 px-1 text-center">LOT</th>}
-                                    {!isPurchase && <th className="py-2 px-1">ITEM</th>}
-                                    <th className="py-2 px-1 text-center">Lebar (M)</th>
-                                    <th className="py-2 px-1 text-center">Panjang (M)</th>
-                                    <th className="py-2 px-1 text-center">QTY</th>
-                                    <th className="py-2 px-1 text-center">LUAS</th>
-                                    <th className="py-2 px-1 text-center">SAT</th>
-                                    {isPurchase && <th className="py-2 px-1 text-center">CONV</th>}
-                                    <th className="py-2 px-1 text-right">HARGA</th>
-                                    <th className="py-2 px-1 text-right">DISKON</th>
-                                    <th className="py-2 px-1 text-right">SUB TOTAL</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-200">
-                                {editItem.items.map((item, i) => (
-                                    <tr key={i}>
-                                        <td className="py-2 px-1 text-center font-medium">{i + 1}</td>
-                                        <td className="py-2 px-1 font-bold">{item.name}</td>
-                                        {isPurchase && <td className="py-2 px-1 text-center text-slate-500">{item.lot || '-'}</td>}
-                                        {!isPurchase && <td className="py-2 px-1 text-slate-600">-</td>}
-                                        <td className="py-2 px-1 text-center">
-                                          {(() => {
-                                            const product = products.find(p => p.id === item.productId);
-                                            const lockField = isPurchase ? 'widthBuyLock' : 'widthSellLock';
-                                            if (!product || product[lockField] === 'rejected' || !product[lockField]) return '-';
-                                            return item.width || '-';
-                                          })()}
-                                        </td>
-                                        <td className="py-2 px-1 text-center">
-                                          {(() => {
-                                            const product = products.find(p => p.id === item.productId);
-                                            const lockField = isPurchase ? 'lengthBuyLock' : 'lengthSellLock';
-                                            if (!product || product[lockField] === 'rejected' || !product[lockField]) return '-';
-                                            return item.length || '-';
-                                          })()}
-                                        </td>
-                                        <td className="py-2 px-1 text-center font-bold">{item.qty}</td>
-                                        <td className="py-2 px-1 text-center">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
-                                        <td className="py-2 px-1 text-center">{item.purchaseUnit || item.unit}</td>
-                                        {isPurchase && <td className="py-2 px-1 text-center">{item.conversion || 1}</td>}
-                                        <td className="py-2 px-1 text-right">{formatCurrency(item.price)}</td>
-                                        <td className="py-2 px-1 text-right text-red-500">{item.discount > 0 ? formatCurrency(item.discount) : '-'}</td>
-                                        <td className="py-2 px-1 text-right font-bold">{formatCurrency(item.subtotal)}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+              {/* Table Items */}
+              <table className="w-full text-left text-[10px] mb-8 border-collapse">
+                <thead>
+                  <tr className="border-y-2 border-slate-800">
+                    <th className="py-2 px-1 text-center">NO</th>
+                    <th className="py-2 px-1">NAMA ITEM</th>
+                    {isPurchase && <th className="py-2 px-1 text-center">LOT</th>}
+                    {!isPurchase && <th className="py-2 px-1">ITEM</th>}
+                    <th className="py-2 px-1 text-center">Lebar (M)</th>
+                    <th className="py-2 px-1 text-center">Panjang (M)</th>
+                    <th className="py-2 px-1 text-center">QTY</th>
+                    <th className="py-2 px-1 text-center">LUAS</th>
+                    <th className="py-2 px-1 text-center">SAT</th>
+                    {isPurchase && <th className="py-2 px-1 text-center">CONV</th>}
+                    <th className="py-2 px-1 text-right">HARGA</th>
+                    <th className="py-2 px-1 text-right">DISKON</th>
+                    <th className="py-2 px-1 text-right">SUB TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {editItem.items.map((item, i) => (
+                    <tr key={i}>
+                      <td className="py-2 px-1 text-center font-medium">{i + 1}</td>
+                      <td className="py-2 px-1 font-bold">{item.name}</td>
+                      {isPurchase && <td className="py-2 px-1 text-center text-slate-500">{item.lot || '-'}</td>}
+                      {!isPurchase && <td className="py-2 px-1 text-slate-600">-</td>}
+                      <td className="py-2 px-1 text-center">
+                        {(() => {
+                          const product = products.find(p => p.id === item.productId);
+                          const lockField = isPurchase ? 'widthBuyLock' : 'widthSellLock';
+                          if (!product || product[lockField] === 'rejected' || !product[lockField]) return '-';
+                          return item.width || '-';
+                        })()}
+                      </td>
+                      <td className="py-2 px-1 text-center">
+                        {(() => {
+                          const product = products.find(p => p.id === item.productId);
+                          const lockField = isPurchase ? 'lengthBuyLock' : 'lengthSellLock';
+                          if (!product || product[lockField] === 'rejected' || !product[lockField]) return '-';
+                          return item.length || '-';
+                        })()}
+                      </td>
+                      <td className="py-2 px-1 text-center font-bold">{item.qty}</td>
+                      <td className="py-2 px-1 text-center">{item.area > 0 ? item.area.toFixed(2) : '-'}</td>
+                      <td className="py-2 px-1 text-center">{item.purchaseUnit || item.unit}</td>
+                      {isPurchase && <td className="py-2 px-1 text-center">{item.conversion || 1}</td>}
+                      <td className="py-2 px-1 text-right">{formatCurrency(item.price)}</td>
+                      <td className="py-2 px-1 text-right text-red-500">{item.discount > 0 ? formatCurrency(item.discount) : '-'}</td>
+                      <td className="py-2 px-1 text-right font-bold">{formatCurrency(item.subtotal)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-                        {/* Summary & Footer */}
-                        <div className="flex flex-row justify-between items-start">
-                            <div className="w-1/2 pr-8">
-                                <div className="border p-4 rounded-xl bg-slate-50 text-center h-full flex flex-col justify-center">
-                                    <p className="text-xs text-slate-500 italic mb-2">"Terima kasih atas kerjasamanya."</p>
-                                    <p className="text-[10px] text-slate-400 uppercase font-bold mt-4">Hormat Kami,</p>
-                                    <div className="h-16"></div>
-                                    <p className="text-xs font-bold text-slate-700 underline decoration-slate-300 underline-offset-4">{isPurchase ? 'Bagian Pembelian' : 'Admin Sazime'}</p>
-                                </div>
-                            </div>
-                            <div className="w-1/2 pl-8">
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="font-bold text-slate-500">Total Tagihan</span>
-                                        <span className="font-black text-slate-900 text-lg">{formatCurrency(editItem.total)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-sm border-b border-dashed border-slate-200 pb-3">
-                                        <span className="font-bold text-slate-500">Terbayar</span>
-                                        <span className="font-bold text-slate-700">{formatCurrency(editItem.paid)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-base pt-1">
-                                        <span className="font-black text-slate-700 uppercase tracking-tight">Sisa Tagihan</span>
-                                        <span className={`font-black text-xl ${editItem.remaining > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
-                                            {formatCurrency(editItem.remaining)}
-                                        </span>
-                                    </div>
-                                    <div className="mt-2 text-right">
-                                        <span className={`inline-block px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest ${editItem.remaining <= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
-                                            {editItem.remaining <= 0 ? 'LUNAS' : 'BELUM LUNAS'}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        {/* Print Footer */}
-                        <div className="mt-12 border-t border-slate-200 pt-4 flex justify-between items-center text-[10px] text-slate-400">
-                            <p>Dicetak pada: {new Date().toLocaleString('id-ID')}</p>
-                            <p>Halaman 1 dari 1</p>
-                        </div>
+              {/* Summary & Footer */}
+              <div className="flex flex-row justify-between items-start">
+                <div className="w-1/2 pr-8">
+                  <div className="border p-4 rounded-xl bg-slate-50 text-center h-full flex flex-col justify-center">
+                    <p className="text-xs text-slate-500 italic mb-2">"Terima kasih atas kerjasamanya."</p>
+                    <p className="text-[10px] text-slate-400 uppercase font-bold mt-4">Hormat Kami,</p>
+                    <div className="h-16"></div>
+                    <p className="text-xs font-bold text-slate-700 underline decoration-slate-300 underline-offset-4">{isPurchase ? 'Bagian Pembelian' : 'Admin Sazime'}</p>
+                  </div>
+                </div>
+                <div className="w-1/2 pl-8">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-bold text-slate-500">Total Tagihan</span>
+                      <span className="font-black text-slate-900 text-lg">{formatCurrency(editItem.total)}</span>
                     </div>
-
-                    <div className="bg-slate-50 p-4 flex justify-end gap-3 border-t border-slate-200 print:hidden">
-                        <button onClick={() => setShowModal(null)} className="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition">Tutup</button>
-                        <button onClick={() => window.print()} className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center shadow-lg">
-                            <Printer className="w-4 h-4 mr-2" /> Cetak Nota
-                        </button>
+                    <div className="flex justify-between items-center text-sm border-b border-dashed border-slate-200 pb-3">
+                      <span className="font-bold text-slate-500">Terbayar</span>
+                      <span className="font-bold text-slate-700">{formatCurrency(editItem.paid)}</span>
                     </div>
-                    {/* Print CSS */}
-                    <style>{`
+                    <div className="flex justify-between items-center text-base pt-1">
+                      <span className="font-black text-slate-700 uppercase tracking-tight">Sisa Tagihan</span>
+                      <span className={`font-black text-xl ${editItem.remaining > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                        {formatCurrency(editItem.remaining)}
+                      </span>
+                    </div>
+                    <div className="mt-2 text-right">
+                      <span className={`inline-block px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest ${editItem.remaining <= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                        {editItem.remaining <= 0 ? 'LUNAS' : 'BELUM LUNAS'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Print Footer */}
+              <div className="mt-12 border-t border-slate-200 pt-4 flex justify-between items-center text-[10px] text-slate-400">
+                <p>Dicetak pada: {new Date().toLocaleString('id-ID')}</p>
+                <p>Halaman 1 dari 1</p>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 p-4 flex justify-end gap-3 border-t border-slate-200 print:hidden">
+              <button onClick={() => setShowModal(null)} className="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition">Tutup</button>
+              <button onClick={() => window.print()} className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center shadow-lg">
+                <Printer className="w-4 h-4 mr-2" /> Cetak Nota
+              </button>
+            </div>
+            {/* Print CSS */}
+            <style>{`
                         @media print {
                             body * { visibility: hidden; }
                             #printable-area, #printable-area * { visibility: visible; }
@@ -3380,9 +3445,9 @@ const App = () => {
                             @page { size: auto; margin: 0mm; }
                         }
                     `}</style>
-                </div>
-            </div>
-        );
+          </div>
+        </div>
+      );
     }
 
     return null;
@@ -3401,44 +3466,44 @@ const App = () => {
       `}</style>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       <div className="flex-1 lg:ml-64 min-h-screen flex flex-col relative w-full">
-         <header className="lg:hidden h-16 bg-red-700 text-white flex items-center px-4 sticky top-0 z-40 shadow-md"><h1 className="font-black text-xl italic tracking-tight">{activeMenu.replace(/-/g, ' ').toUpperCase()}</h1></header>
-         <header className="hidden lg:flex h-20 bg-white/80 backdrop-blur border-b border-slate-200 items-center justify-between px-8 sticky top-0 z-40"><h2 className="text-2xl font-black text-slate-800 italic uppercase tracking-tight">{activeMenu.replace(/-/g, ' ')}</h2><div className="flex items-center space-x-4"><div className="text-right"><p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Saldo Kas</p><p className="font-black text-slate-900 text-lg">{formatCurrency(wallet.cash)}</p></div><div className="h-8 w-[1px] bg-slate-200 mx-2"></div><div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-black shadow-lg shadow-red-200">A</div></div></header>
-         <main className="flex-1 p-4 md:p-8 pb-24 lg:pb-8 max-w-[1600px] mx-auto w-full">
-            {productFormMode ? (
-               <ProductFormPage
-                  mode={productFormMode}
-                  editingProduct={editingProduct}
-                  masterUnits={masterUnits}
-                  onSave={(productData) => {
-                     if (productFormMode === 'edit') {
-                        setProducts(products.map(p => p.id === editingProduct.id ? { ...productData, id: editingProduct.id } : p));
-                     } else {
-                        setProducts([...products, { ...productData, id: Date.now() }]);
-                     }
-                     setProductFormMode(null);
-                     setEditingProduct(null);
-                  }}
-                  onCancel={() => {
-                     setProductFormMode(null);
-                     setEditingProduct(null);
-                  }}
-                  vendors={vendors}
-               />
-            ) : (
-               <>
-                  {activeMenu === 'dashboard' && <Dashboard />}
-                  {activeMenu === 'database-produk' && <DatabaseProduk />}
-                  {activeMenu === 'database-vendor' && <DatabaseVendor />}
-                  {activeMenu === 'master-satuan' && <MasterSatuan />}
-                  {activeMenu === 'tambah-user' && <TambahUser />}
-                  {activeMenu === 'nota-pelanggan' && <NotaPelanggan />}
-                  {activeMenu === 'rekap-cashflow' && <RekapCashflow />}
-                  {activeMenu === 'nota-supplier' && <NotaSupplier />}
-                  {activeMenu === 'pengeluaran-lain' && <PengeluaranLain />}
-                  {activeMenu === 'withdraw' && <Withdraw />}
-               </>
-            )}
-         </main>
+        <header className="lg:hidden h-16 bg-red-700 text-white flex items-center px-4 sticky top-0 z-40 shadow-md"><h1 className="font-black text-xl italic tracking-tight">{activeMenu.replace(/-/g, ' ').toUpperCase()}</h1></header>
+        <header className="hidden lg:flex h-20 bg-white/80 backdrop-blur border-b border-slate-200 items-center justify-between px-8 sticky top-0 z-40"><h2 className="text-2xl font-black text-slate-800 italic uppercase tracking-tight">{activeMenu.replace(/-/g, ' ')}</h2><div className="flex items-center space-x-4"><div className="text-right"><p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Saldo Kas</p><p className="font-black text-slate-900 text-lg">{formatCurrency(wallet.cash)}</p></div><div className="h-8 w-[1px] bg-slate-200 mx-2"></div><div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-black shadow-lg shadow-red-200">A</div></div></header>
+        <main className="flex-1 p-4 md:p-8 pb-24 lg:pb-8 max-w-[1600px] mx-auto w-full">
+          {productFormMode ? (
+            <ProductFormPage
+              mode={productFormMode}
+              editingProduct={editingProduct}
+              masterUnits={masterUnits}
+              onSave={(productData) => {
+                if (productFormMode === 'edit') {
+                  setProducts(products.map(p => p.id === editingProduct.id ? { ...productData, id: editingProduct.id } : p));
+                } else {
+                  setProducts([...products, { ...productData, id: Date.now() }]);
+                }
+                setProductFormMode(null);
+                setEditingProduct(null);
+              }}
+              onCancel={() => {
+                setProductFormMode(null);
+                setEditingProduct(null);
+              }}
+              vendors={vendors}
+            />
+          ) : (
+            <>
+              {activeMenu === 'dashboard' && <Dashboard />}
+              {activeMenu === 'database-produk' && <DatabaseProduk />}
+              {activeMenu === 'database-vendor' && <DatabaseVendor />}
+              {activeMenu === 'master-satuan' && <MasterSatuan />}
+              {activeMenu === 'tambah-user' && <TambahUser />}
+              {activeMenu === 'nota-pelanggan' && <NotaPelanggan />}
+              {activeMenu === 'rekap-cashflow' && <RekapCashflow />}
+              {activeMenu === 'nota-supplier' && <NotaSupplier />}
+              {activeMenu === 'pengeluaran-lain' && <PengeluaranLain />}
+              {activeMenu === 'withdraw' && <Withdraw />}
+            </>
+          )}
+        </main>
       </div>
       <BottomNavbar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       {showModal && <Modal />}
